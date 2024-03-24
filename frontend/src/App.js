@@ -1,8 +1,9 @@
+import { Button } from "@mui/material";
 import { useState } from "react";
-import { ManagerView } from "./components/ManagerView";
-import { CashierView } from "./components/CashierView";
-import { CustomerView } from "./components/CustomerView";
-import { MenuView } from "./components/MenuView";
+import { CashierView } from "./components/CashierView/CashierView";
+import { CustomerView } from "./components/CustomerView/CustomerView";
+import { ManagerView } from "./components/ManagerView/ManagerView";
+import { MenuView } from "./components/MenuView/MenuView";
 
 function App() {
   const [panel, setPanel] = useState(null);
@@ -25,10 +26,18 @@ function App() {
   ) : (
     <>
       <div>Choose a panel</div>
-      <button onClick={() => setPanel("manager")}>Manager</button>
-      <button onClick={() => setPanel("cashier")}>Cashier</button>
-      <button onClick={() => setPanel("customer")}>Customer</button>
-      <button onClick={() => setPanel("menu")}>Menu</button>
+      <Button variant="outlined" onClick={() => setPanel("manager")}>
+        Manager
+      </Button>
+      <Button variant="outlined" onClick={() => setPanel("cashier")}>
+        Cashier
+      </Button>
+      <Button variant="outlined" onClick={() => setPanel("customer")}>
+        Customer
+      </Button>
+      <Button variant="outlined" onClick={() => setPanel("menu")}>
+        Menu
+      </Button>
     </>
   );
 }
