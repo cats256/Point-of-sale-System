@@ -1,5 +1,5 @@
 const CustomerView = () => {
-  return <div>Customer View</div>;
+    return <div>Customer View</div>;
 };
 
 export { CustomerView };

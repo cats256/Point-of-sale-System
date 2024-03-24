@@ -1,5 +1,5 @@
 const ManagerView = () => {
-  return <div>Manager View</div>;
+    return <div>Manager View</div>;
 };
 
 export { ManagerView };
