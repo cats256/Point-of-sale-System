@@ -1,12 +1,20 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
+import { getMenuItems } from "./network/api";
 
 function App() {
     const [panel, setPanel] = useState(null);
+    const [menuItems, setMenuItems] = useState([]);
+
+    useEffect(() => {
+        getMenuItems().then((data) => {
+            setMenuItems(data);
+        });
+    }, []);
 
     return panel ? (
         (() => {
@@ -18,7 +26,7 @@ function App() {
                 case "customer":
                     return <CustomerView />;
                 case "menu":
-                    return <MenuView />;
+                    return <MenuView menuItems={menuItems} />;
                 default:
                     return null;
             }
