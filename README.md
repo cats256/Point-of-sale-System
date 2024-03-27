@@ -9,3 +9,7 @@
 
 # Backlog
 https://docs.google.com/spreadsheets/d/1HpwlY0PQyUtm4bFJ6zUTv4BfW8pZNC4KwQ7-rJAEdFI/edit?usp=sharing 
+
+# Formatting
+- npm run format for formatting on all files
+Install prettier, copy absolute path, to .prettierc, add that to prettier extension setting configuration path
