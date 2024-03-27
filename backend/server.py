@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2 import sql
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 conn = psycopg2.connect(host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432)
 
 
+# not standard practice to add info add the end, just have the name of the resource requested aka "/ingredients"
 # API endpoint to fetch ingredients
 @app.route("/ingredients_info", methods=["GET"])
 def get_ingredients_info():
