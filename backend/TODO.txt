@@ -1,0 +1,1 @@
+- Return the data directly with jsonify(data) instead of jsonify({ 'data': data })
