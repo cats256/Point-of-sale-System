@@ -1,6 +1,6 @@
 // Manager.js
 import React, { useState } from 'react';
-//import './App.css'; // Assuming you have CSS for styling
+import './Manager.css'; // Assuming you have CSS for styling
 
 import Sidebar from './Sidebar';
 import EmployeesPage from './pages/EmployeesPage';
