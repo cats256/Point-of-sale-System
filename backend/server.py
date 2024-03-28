@@ -62,9 +62,9 @@ def submit_order():
     assigned_employee = data.get('assigned_employee')
 
     cur = conn.cursor()
-    query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s, %s);")
+    query = sql.SQL("INSERT INTO orders (id, name, price, date, assigned_employee) VALUES (%s, %s, %s, %s, %s);")
     cur.execute(query, (id, name, price, date, assigned_employee))
-    con.commit()
+    conn.commit()
     cur.close()
     return jsonify({
         "message": "Order submitted successfully",
