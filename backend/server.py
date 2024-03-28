@@ -54,19 +54,18 @@ def get_orders_info():
 
 # API endpoint to submit an order
 # need to work on this
-@app.route("/orders_info", methods=["GET"])
+@app.route("/submit_order", methods=["GET"])
 def submit_order():
-    data = request.json
+    data = request.form
 
-    id = data.get("id")
     name = data.get("name")
     price = data.get("price")
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
 
     cur = conn.cursor()
-    query = sql.SQL("INSERT INTO orders (id, name, price, date, assigned_employee) VALUES (%s, %s, %s, %s, %s);")
-    cur.execute(query, (id, name, price, date, assigned_employee))
+    query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
+    cur.execute(query, (name, price, date, assigned_employee))
     conn.commit()
     cur.close()
     return jsonify(
