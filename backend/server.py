@@ -35,25 +35,7 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
-
-# API endpoint to fetch orders
-# not sure we need this
-@app.route("/orders_info", methods=["GET"])
-def get_orders_info():
-    cur = conn.cursor()
-    query = sql.SQL("SELECT * FROM orders")
-    cur.execute(query)
-    orders_info = cur.fetchall()
-    cur.close()
-    return jsonify(
-        {
-            "orders": orders_info,
-        }
-    )
-
-
 # API endpoint to submit an order
-# need to work on this
 @app.route("/submit_order", methods=["GET"])
 def submit_order():
     data = request.form
@@ -71,6 +53,40 @@ def submit_order():
     return jsonify(
         {
             "message": "Order submitted successfully",
+        }
+    )
+
+# API endpoint to submit a restock order
+@app.route("/restock_order", methods=["GET"])
+def restock_order():
+    data = request.form
+
+    name = data.get("name")
+    price = data.get("price")
+    quantity = data.get("quantity")
+    ingredient_id = data.get("ingredient_id")
+
+    cur = conn.cursor()
+
+    restock_query = sql.SQL("INSERT INTO restock_order (name, price, quantity, ingredient_id) VALUES (%s, %s, %s, %s);")
+    cur.execute(restock_query, (name, price, quantity, ingredient_id))
+
+    current_stock_query = sql.SQL("SELECT quantity FROM ingredients WHERE id=%s;")
+    cur.execute(current_stock_query, (ingredient_id))
+    current_stock_row = cur.fetchone()
+
+    current_stock = int(current_stock_row[0])
+    updated_quantity = current_stock + int(quantity)
+
+    quantity_query = sql.SQL("UPDATE ingredients SET quantity = %s WHERE id = %s;")
+    cur.execute(quantity_query, (updated_quantity, ingredient_id))
+
+    conn.commit()
+    cur.close()
+
+    return jsonify(
+        {
+            "message": "Restock order submitted successfully",
         }
     )
 
