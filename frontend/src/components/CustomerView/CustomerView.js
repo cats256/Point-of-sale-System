@@ -1,6 +1,36 @@
-import { Pagination } from "@mui/material";
+import { Pagination, Button, accordionActionsClasses } from "@mui/material";
+import { useState, useEffect } from "react";
 
 const CustomerView = ({ menuItems }) => {
+    const [panel, setPanel] = useState(null);
+    console.log(menuItems);
+    const buttonWithImg = (text, panel='', img = '', alt = '') => (
+        <Button variant="outlined" onClick={() => setPanel(panel || text)}>
+            {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
+            {text}
+        </Button>
+    );
+
+    const formatItemName = (name) => {
+        return name.replace(/_/g, ' ').replace(/[0-9]/g, '').trim().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+    
+    const associatedMenuItems = () => {
+        let filteredItems = menuItems.filter(item => item.type === panel);
+    
+        return (
+            <div>
+                {filteredItems.map((item, index) => (
+                    <div key={index}>
+                        <div>{formatItemName(item.name)}</div>
+                    </div>
+                ))}
+                {["Burgers", "Baskets", "Sandwiches"].includes(panel) && <div>Make it a combo</div>}
+            </div>
+        );
+    };
+    
+
     return (
         <div
             style={{
@@ -17,12 +47,14 @@ const CustomerView = ({ menuItems }) => {
                     flexDirection: "column",
                 }}
             >
-                <div style={{ flexGrow: 1 }}>Burgers</div>
-                <div style={{ flexGrow: 1 }}>Baskets</div>
-                <div style={{ flexGrow: 1 }}>Desserts</div>
-                <div style={{ flexGrow: 1 }}>Sides</div>
-                <div style={{ flexGrow: 1 }}>Drinks</div>
-                <div style={{ flexGrow: 1 }}>Sauces</div>
+                {buttonWithImg("Burgers")}
+                {buttonWithImg("Baskets")}
+                {buttonWithImg("Sandwiches")}
+                {buttonWithImg("Drinks")}
+                {buttonWithImg("Desserts")}
+                {buttonWithImg("Sides")}
+                {buttonWithImg("Sauces")}
+
             </div>
             <div
                 style={{
@@ -33,10 +65,7 @@ const CustomerView = ({ menuItems }) => {
                 }}
             >
                 <div style={{ borderBottom: "2px solid #000", flexGrow: 10 }}>
-                    <div>{menuItems[0].name}</div>
-                    <div>{menuItems[1].name}</div>
-                    <div>{menuItems[2].name}</div>
-                    <div>{menuItems[3].name}</div>
+                    {associatedMenuItems()}
                 </div>
                 <Pagination style={{ flexGrow: 1 }} count={10} />
             </div>
