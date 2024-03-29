@@ -41,10 +41,15 @@ def get_menu_item_info():
 @app.route("/orders_info", methods=["GET"])
 def get_orders_info():
     cur = conn.cursor()
-    query = sql.SQL("SELECT * FROM orders")
-    cur.execute(query)
+
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    query = sql.SQL("SELECT * FROM orders o WHERE o.date >= %s AND o.date <= %s")
+    cur.execute(query, (start_date, end_date))
     orders_info = cur.fetchall()
     cur.close()
+
     return jsonify({
         "orders": orders_info,
     })
