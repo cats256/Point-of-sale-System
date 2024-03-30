@@ -24,7 +24,7 @@ function App() {
                 case "cashier":
                     return <CashierView />;
                 case "customer":
-                    return <CustomerView />;
+                    return <CustomerView  menuItems={menuItems} />;
                 case "menu":
                     return <MenuView menuItems={menuItems} />;
                 default:
