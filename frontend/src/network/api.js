@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:5000/";
+const API_BASE = process.env.NODE_ENV === 'production' ? "https://project-3-315-flask.onrender.com" : "http://127.0.0.1:5000/";
 
 async function handleResponse(response) {
     const contentType = response.headers.get("content-type");
