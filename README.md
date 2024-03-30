@@ -5,7 +5,8 @@
 4. npm run format to format all files again for shared formatting
 
 # Backend
-1. python server.py
+1. pip install -r requirements.txt
+2. python server.py
 
 # Backlog
 https://docs.google.com/spreadsheets/d/1HpwlY0PQyUtm4bFJ6zUTv4BfW8pZNC4KwQ7-rJAEdFI/edit?usp=sharing 
