@@ -36,9 +36,9 @@ def get_menu_item_info():
     return jsonify(menu_info)
 
 # API endpoint to submit an order
-@app.route("/submit_order", methods=["GET"])
+@app.route("/submit_order", methods=["POST"])
 def submit_order():
-    data = request.form
+    data = request.json
 
     name = data.get("name")
     price = data.get("price")

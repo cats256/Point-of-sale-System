@@ -168,7 +168,7 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const placeOrder = async (basket) => {
-        const apiUrl = 'http://localhost:3000/submit_order'; // Adjust this to your actual API URL
+        const apiUrl = 'http://192.168.1.135:3000/submit_order'; // TODO: find correct link
     
         // Ensure basket is iterable
         if (!basket || !Array.isArray(basket)) {
@@ -179,9 +179,9 @@ const CustomerView = ({ menuItems }) => {
         for (let item of basket) {
             const orderData = {
                 name: item.name,
-                price: String(item.price * item.quantity), // Assuming the API expects a string
-                date: new Date().toISOString(), // Format the date as needed by your API
-                assigned_employee: "1" // TODO: currently set as "1", adjust as needed
+                price: String(item.price * item.quantity),
+                date: new Date().toISOString(), 
+                assigned_employee: "1" // TODO: currently set to matthew
             };
     
             try {
