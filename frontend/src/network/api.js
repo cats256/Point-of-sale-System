@@ -22,6 +22,7 @@ async function handleResponse(response) {
         } else {
             errorMessage = `Request failed with status: ${response.status}`;
         }
+        // TODO: fix error checking for failed api calls
         // switch (response.status) {
         //     case 401:
         //         throw new UnauthorizedError(errorMessage);
