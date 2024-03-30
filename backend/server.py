@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2 import sql
@@ -35,6 +36,7 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["GET"])
 def submit_order():
@@ -55,6 +57,7 @@ def submit_order():
             "message": "Order submitted successfully",
         }
     )
+
 
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["GET"])
@@ -92,4 +95,8 @@ def restock_order():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    env = os.getenv("FLASK_ENV", "development")
+    if env == "production":
+        app.run(debug=False, host="0.0.0.0")
+    else:
+        app.run(debug=True)
