@@ -14,13 +14,12 @@ const CashierView = () => {
         'beverages'
     ];
 
-    // Initializing states
     const [orderItems, setOrderItems] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
 
     // Items in each category
     const categoryItems = {
-        // will be updated to be API endpoints/queries. just for MVP
+        // will be updated to be API endpoints/queries. just for MVP rn
         'value meals': [
             { id: 38, name: 'burger_combo_28.0', price: 1.69 },
             { id: 39, name: 'burger_combo_28.1', price: 1.69 },
@@ -77,13 +76,28 @@ const CashierView = () => {
         ]
     };
     
+    // Adding Items to Order
     const addItemToOrder = (itemName, price) => {
-        const newItem = { name: itemName, price: price };
-        setOrderItems([...orderItems, newItem]);
+        const existingItemIndex = orderItems.findIndex(item => item.name === itemName);
+
+        if (existingItemIndex >= 0) {
+            const newOrderItems = [...orderItems];
+            newOrderItems[existingItemIndex] = {
+                ...newOrderItems[existingItemIndex],
+                quantity: (newOrderItems[existingItemIndex].quantity || 1) + 1,
+                price: newOrderItems[existingItemIndex].price + price
+            };
+            setOrderItems(newOrderItems);
+        } 
+        
+        else {
+            setOrderItems(prevItems => [...prevItems, { name: itemName, price, quantity: 1 }]);
+        }
     };
 
+    // Order Calculations
     const calculateSubtotal = () => {
-        return orderItems.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+        return orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0).toFixed(2);
     };
 
     const calculateTax = () => {
@@ -100,16 +114,23 @@ const CashierView = () => {
         setSelectedCategory(category);
     };
 
+    // Handling Checkout Summary
     const handleCheckout = () => {
-        let orderDetails = "Order Details:\n";
-        orderItems.forEach((item, index) => {
-            orderDetails += `${index + 1}. ${item.name} x ${item.quantity}: $${(item.price * item.quantity).toFixed(2)}\n`;
-        });
-        orderDetails += `\nSubtotal: $${calculateSubtotal()}\n`;
-        orderDetails += `Tax: $${calculateTax()}\n`;
-        orderDetails += `Total: $${calculateTotal()}`;
+        let orderSummary = "Order Summary:\n\n";
     
-        alert(orderDetails);
+        orderItems.forEach((item, index) => {
+            orderSummary += `${index + 1}. ${item.name} x ${item.quantity}: $${(item.price).toFixed(2)}\n`;
+        });
+    
+        const subtotal = calculateSubtotal();
+        const tax = calculateTax();
+        const total = calculateTotal();
+        
+        orderSummary += `\nSubtotal: $${subtotal}\n`;
+        orderSummary += `Tax: $${tax}\n`;
+        orderSummary += `Total: $${total}`;
+    
+        alert(orderSummary);
     };
 
     return (
@@ -122,8 +143,11 @@ const CashierView = () => {
                         <h2>{selectedCategory}</h2>
                         <ul>
                             {categoryItems[selectedCategory]?.map((item) => (
-                                <li key={item.id}>{item.name}: ${item.price.toFixed(2)}</li>
-                            )) || <div>No items found for this category.</div>}
+                                <li key={item.id}>
+                                    {item.name}: ${item.price.toFixed(2)}{" "}
+                                    <button onClick={() => addItemToOrder(item.name, item.price)}>Add to Order</button>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 )}
