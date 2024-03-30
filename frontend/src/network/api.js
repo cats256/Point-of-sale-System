@@ -1,4 +1,4 @@
-import { ConflictError, UnauthorizedError } from "../errors.js";
+import { ConflictError, UnauthorizedError } from "./errors.js";
 const API_BASE =
     process.env.NODE_ENV === "production"
         ? "https://project-3-315-flask.onrender.com"
