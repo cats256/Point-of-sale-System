@@ -60,8 +60,6 @@ const TotalOrdersGraph = ({ start_date, end_date }) => {
     <div>
       <h2>Orders Line Chart</h2>
       <div>
-        <h3>Order Data</h3>
-        <h2> for {start_date.toDateString()} to {end_date.toDateString()}</h2>
         <pre>{JSON.stringify(orderData, null, 2)}</pre>
       </div>
       <div className="chart-container">
