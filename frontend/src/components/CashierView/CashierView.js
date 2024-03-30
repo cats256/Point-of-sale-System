@@ -4,17 +4,19 @@ import NavigationBar from './NavigationBar';
 const CashierView = () => {
     const categories = [
         'value meals',
-        'limited time offers',
-        'seasonal items',
+        // 'limited time offers',
+        // 'seasonal items',
         'burgers',
         'sandwiches',
-        'salads',
+        // 'salads',
         'shakes & more',
-        'appetizers',
+        'sides',
         'beverages'
     ];
 
+    // Initializing states
     const [orderItems, setOrderItems] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
     
     const addItemToOrder = (itemName, price) => {
         const newItem = { name: itemName, price: price };
@@ -34,25 +36,41 @@ const CashierView = () => {
         return (parseFloat(calculateSubtotal()) + parseFloat(calculateTax())).toFixed(2);
     };
 
-     return (
+    // Handling the dynamic main interface
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category);
+    };
+
+    const handleCheckout = () => {
+        let orderDetails = "Order Details:\n";
+        orderItems.forEach((item, index) => {
+            orderDetails += `${index + 1}. ${item.name} x ${item.quantity}: $${(item.price * item.quantity).toFixed(2)}\n`;
+        });
+        orderDetails += `\nSubtotal: $${calculateSubtotal()}\n`;
+        orderDetails += `Tax: $${calculateTax()}\n`;
+        orderDetails += `Total: $${calculateTotal()}`;
+    
+        alert(orderDetails);
+    };
+
+    return (
         <div className="cashier-container">
-            <NavigationBar categories={categories} />
+            <NavigationBar categories={categories} handleCategoryClick={handleCategoryClick} />
 
             <div className="main-content">
-                <div className="order-view">
-                    <h2>Current Order</h2>
-                    <ul>
-                        {orderItems.map((item, index) => (
-                            <li key={index}>{item.name}: ${item.price.toFixed(2)}</li>
-                        ))}
-                    </ul>
-                </div>
+                {selectedCategory && (
+                    <div className="category-items">
+                        <h2>{selectedCategory}</h2>
+                        <ul>
+                            {categoryItems[selectedCategory]?.map((item) => (
+                                <li key={item.id}>{item.name}: ${item.price.toFixed(2)}</li>
+                            )) || <div>No items found for this category.</div>}
+                        </ul>
+                    </div>
+                )}
 
-                <div className="order-summary">
-                    <h2>Order Summary</h2>
-                    <p>Subtotal: ${calculateSubtotal()}</p>
-                    <p>Tax: ${calculateTax()}</p>
-                    <p>Total: ${calculateTotal()}</p>
+                <div className="checkout-order">
+                    <button onClick={handleCheckout}>Checkout</button>
                 </div>
             </div>
         </div>
