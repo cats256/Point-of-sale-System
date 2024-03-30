@@ -23,7 +23,7 @@ const CustomerView = ({ menuItems }) => {
             {text}
         </Button>
     );
-
+// TODO: Separate style out to separate css files
     const Popup = ({ item, onClose }) => (
         <div style={{
             position: 'fixed',
