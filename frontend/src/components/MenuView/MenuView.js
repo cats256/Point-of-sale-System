@@ -1,3 +1,5 @@
+import { formatItemName } from "../../utils/formatItemName";
+
 const MenuView = ({ menuItems }) => {
     const menuItemsByType = menuItems.reduce((acc, item) => {
         if (!acc[item.type]) {
@@ -15,7 +17,7 @@ const MenuView = ({ menuItems }) => {
                     <ul>
                         {menuItemsByType[type].map((item) => (
                             <li key={item.id}>
-                                {item.name} - ${item.price}
+                                {formatItemName(item)} - ${item.price}
                             </li>
                         ))}
                     </ul>
