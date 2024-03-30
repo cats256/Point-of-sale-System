@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import NavigationBar from './NavigationBar';
-
+//TODO: Make dynamic from databse through backend connection
 const CashierView = () => {
     const categories = [
         'value meals',
