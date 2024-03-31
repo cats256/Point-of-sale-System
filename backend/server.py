@@ -1,8 +1,10 @@
 import os
-from flask import Flask, request, jsonify
+
+import deepl
 import psycopg2
-from psycopg2 import sql
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from psycopg2 import sql
 
 app = Flask(__name__)
 CORS(app)
@@ -36,23 +38,27 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+
 # API endpoint to fetch orders
-# not sure we need this 
+# not sure we need this
 @app.route("/orders_info", methods=["GET"])
 def get_orders_info():
     cur = conn.cursor()
 
-    start_date = request.args.get('start_date')
-    end_date = request.args.get('end_date')
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
 
     query = sql.SQL("SELECT * FROM orders o WHERE o.date >= %s AND o.date <= %s")
     cur.execute(query, (start_date, end_date))
     orders_info = cur.fetchall()
     cur.close()
 
-    return jsonify({
-        "orders": orders_info,
-    })
+    return jsonify(
+        {
+            "orders": orders_info,
+        }
+    )
+
 
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["GET"])
@@ -109,6 +115,29 @@ def restock_order():
             "message": "Restock order submitted successfully",
         }
     )
+
+
+auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
+translator = deepl.Translator(auth_key)
+
+
+@app.route("/translate", methods=["POST"])
+def translate_text():
+    request_json = request.json
+    text = request_json["text"]
+    print(request_json)
+    target_lang = request_json["targetLanguage"]
+
+    result = translator.translate_text(text, target_lang=target_lang)
+    return jsonify(result.text)
+
+
+@app.route("/languages", methods=["GET"])
+def get_languages():
+    languages = {}
+    for lang in translator.get_target_languages():
+        languages[lang.name] = lang.code
+    return jsonify(languages)
 
 
 if __name__ == "__main__":
