@@ -38,7 +38,7 @@ const StatsPage = () =>{
       {/* Total Orders Over Time */}
       <div>
         <h2>Total Orders Over Time from {comparisonDate.toDateString()} to {currentDate.toDateString()}</h2>
-        <TotalOrdersGraph start_date={currentDate} end_date={comparisonDate} />
+        {/* <TotalOrdersGraph start_date={currentDate} end_date={comparisonDate} /> */}
       </div>
     </div>
   );
