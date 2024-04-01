@@ -168,10 +168,11 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const placeOrder = async (basket) => {
-        const apiUrl = 'http://192.168.1.135:3000/submit_order'; // TODO: find correct link
+        const apiUrl = 'http://127.0.0.1:5000/submit_order'; // TODO: find correct link
     
         // Ensure basket is iterable
         if (!basket || !Array.isArray(basket)) {
+            console.log(basket);
             console.error('Basket is not iterable');
             return;
         }

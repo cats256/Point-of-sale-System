@@ -55,9 +55,9 @@ def get_orders_info():
     })
 
 # API endpoint to submit an order
-@app.route("/submit_order", methods=["POST"])
+@app.route("/submit_order", methods=["GET"])
 def submit_order():
-    data = request.json
+    data = request.form
 
     name = data.get("name")
     price = data.get("price")

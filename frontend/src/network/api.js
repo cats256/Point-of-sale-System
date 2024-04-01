@@ -48,6 +48,6 @@ export async function getMenuItems() {
     return request("/menu_item_info", { method: "GET" });
 }
 
-export async function getIngredients() {
-    return request("/ingredients_info", { method: "GET" });
-}
+// export async function getIngredients() {
+//     return request("/ingredients_info", { method: "GET" });
+// }
