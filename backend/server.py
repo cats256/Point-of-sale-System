@@ -16,7 +16,13 @@ conn = psycopg2.connect(host="csce-315-db.engr.tamu.edu", user="csce315_902_03_u
 # API endpoint to fetch ingredients
 @app.route("/ingredients_info", methods=["GET"])
 def get_ingredients_info():
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
     query = sql.SQL("SELECT * FROM ingredients")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -29,7 +35,13 @@ def get_ingredients_info():
 # API endpoint to fetch menu items
 @app.route("/menu_item_info", methods=["GET"])
 def get_menu_item_info():
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
     query = sql.SQL("SELECT * FROM menu_items")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -43,7 +55,13 @@ def get_menu_item_info():
 # not sure we need this
 @app.route("/orders_info", methods=["GET"])
 def get_orders_info():
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
 
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
@@ -70,7 +88,13 @@ def submit_order():
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
 
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
     query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(query, (name, price, date, assigned_employee))
     conn.commit()
@@ -92,7 +116,13 @@ def restock_order():
     quantity = data.get("quantity")
     ingredient_id = data.get("ingredient_id")
 
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
 
     restock_query = sql.SQL("INSERT INTO restock_order (name, price, quantity, ingredient_id) VALUES (%s, %s, %s, %s);")
     cur.execute(restock_query, (name, price, quantity, ingredient_id))
