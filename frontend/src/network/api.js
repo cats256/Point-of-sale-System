@@ -51,3 +51,17 @@ export async function getMenuItems() {
 export async function getIngredients() {
     return request("/ingredients_info", { method: "GET" });
 }
+
+export async function getLanguages() {
+    return request("/languages", { method: "GET" });
+}
+
+export async function translate(text, targetLanguage) {
+    return request(`/translate`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text, targetLanguage }),
+    });
+}
