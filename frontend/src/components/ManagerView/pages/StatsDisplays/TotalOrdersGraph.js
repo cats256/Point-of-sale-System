@@ -1,16 +1,17 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import axios from "axios";
-import { Chart, registerables } from "chart.js";
 import lowess from "@stdlib/stats-lowess";
+import { Chart, registerables } from "chart.js";
 import { sgg } from "ml-savitzky-golay-generalized";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { getOrders } from "../../../../network/api";
 
 Chart.register(...registerables);
 
 const TotalOrdersGraph = ({ start_date, end_date }) => {
     const [orderData, setOrderData] = useState({ labels: [], datasets: [] });
     const [smoothingOption, setSmoothingOption] = useState("None");
+    const smoothingOptions = ["None", "Savitzky-Golay Filter", "LOWESS"];
 
     const handleChange = (event) => {
         setSmoothingOption(event.target.value);
@@ -19,17 +20,7 @@ const TotalOrdersGraph = ({ start_date, end_date }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:5000/orders_info",
-                    {
-                        params: {
-                            start_date: start_date,
-                            end_date: end_date,
-                        },
-                    }
-                );
-
-                const orders = response.data.orders;
+                const orders = await getOrders(start_date, end_date);
                 const ordersPerDay = {};
 
                 orders.forEach((order) => {
@@ -83,8 +74,6 @@ const TotalOrdersGraph = ({ start_date, end_date }) => {
                     ],
                 };
 
-                // console.log("Order Data:", data);
-
                 setOrderData(newOrderData);
             } catch (error) {
                 console.error("Error fetching order data:", error);
@@ -93,8 +82,6 @@ const TotalOrdersGraph = ({ start_date, end_date }) => {
 
         fetchData();
     }, [start_date, end_date, smoothingOption]);
-
-    // console.log("Render Order Data:", orderData);
 
     return (
         <div>
@@ -109,18 +96,11 @@ const TotalOrdersGraph = ({ start_date, end_date }) => {
                         label={smoothingOption}
                         onChange={handleChange}
                     >
-                        <MenuItem key="None" value="None">
-                            None
-                        </MenuItem>
-                        <MenuItem
-                            key="Savitzky-Golay Filter"
-                            value="Savitzky-Golay Filter"
-                        >
-                            Savitzky-Golay Filter
-                        </MenuItem>
-                        <MenuItem key="LOWESS" value="LOWESS">
-                            LOWESS
-                        </MenuItem>
+                        {smoothingOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
                 <Line data={orderData} />

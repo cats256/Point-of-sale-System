@@ -1,8 +1,10 @@
+import axios from "axios";
 import { ConflictError, UnauthorizedError } from "./errors.js";
+
 const API_BASE =
     process.env.NODE_ENV === "production"
         ? "https://project-3-315-flask.onrender.com"
-        : "http://127.0.0.1:5000/";
+        : "http://127.0.0.1:5000";
 
 async function handleResponse(response) {
     const contentType = response.headers.get("content-type");
@@ -26,16 +28,14 @@ async function handleResponse(response) {
         } else {
             errorMessage = `Request failed with status: ${response.status}`;
         }
-        // TODO: fix error checking for failed api calls
-        // switch (response.status) {
-        //     case 401:
-        //         throw new UnauthorizedError(errorMessage);
-        //     case 409:
-        //         throw new ConflictError(errorMessage);
-        //     default:
-        //         throw new Error(errorMessage);
-        // }
-        throw new Error(errorMessage);
+        switch (response.status) {
+            case 401:
+                throw new UnauthorizedError(errorMessage);
+            case 409:
+                throw new ConflictError(errorMessage);
+            default:
+                throw new Error(errorMessage);
+        }
     }
 }
 
@@ -54,6 +54,17 @@ export async function getIngredients() {
 
 export async function getLanguages() {
     return request("/languages", { method: "GET" });
+}
+
+export async function getOrders(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/orders_info`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data.orders;
 }
 
 export async function translate(text, targetLanguage) {

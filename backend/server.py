@@ -71,11 +71,7 @@ def get_orders_info():
     orders_info = cur.fetchall()
     cur.close()
 
-    return jsonify(
-        {
-            "orders": orders_info,
-        }
-    )
+    return orders_info
 
 
 # API endpoint to submit an order
@@ -155,7 +151,7 @@ translator = deepl.Translator(auth_key)
 def translate_text():
     request_json = request.json
     text = request_json["text"]
-    print(request_json)
+
     target_lang = request_json["targetLanguage"]
 
     result = translator.translate_text(text, target_lang=target_lang)
