@@ -35,6 +35,18 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+# API endpoint to fetch menu items
+@app.route("/restock_info", methods=["GET"])
+def get_restock_info():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT * FROM restock_order")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    restock_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(restock_info)
+
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["GET"])
 def submit_order():
@@ -57,14 +69,17 @@ def submit_order():
     )
 
 # API endpoint to submit a restock order
-@app.route("/restock_order", methods=["GET"])
+@app.route("/restock_order", methods=["POST"])
 def restock_order():
-    data = request.form
+    data = request.json
 
+    print('end')
     name = data.get("name")
     price = data.get("price")
     quantity = data.get("quantity")
     ingredient_id = data.get("ingredient_id")
+
+    print(name, price, quantity, ingredient_id)
 
     cur = conn.cursor()
 
@@ -72,8 +87,10 @@ def restock_order():
     cur.execute(restock_query, (name, price, quantity, ingredient_id))
 
     current_stock_query = sql.SQL("SELECT quantity FROM ingredients WHERE id=%s;")
-    cur.execute(current_stock_query, (ingredient_id))
+    cur.execute(current_stock_query, (ingredient_id,))
     current_stock_row = cur.fetchone()
+
+    # print(current_stock_row)
 
     current_stock = int(current_stock_row[0])
     updated_quantity = current_stock + int(quantity)

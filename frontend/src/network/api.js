@@ -46,3 +46,7 @@ export async function getMenuItems() {
 export async function getIngredients() {
     return request("/ingredients_info", { method: "GET" });
 }
+
+export async function submitRestockOrder(formData) {
+    return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+}
