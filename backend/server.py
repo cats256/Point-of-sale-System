@@ -54,6 +54,7 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+
 # API endpoint to fetch employees
 @app.route("/employee_info", methods=["GET"])
 def get_employee_info():
@@ -170,28 +171,13 @@ translator = deepl.Translator(deepl_auth_key)
 
 
 @app.route("/translate", methods=["POST"])
-async def translate_text():
+def translate_text():
     request_json = request.json
     text = request_json["text"]
     target_lang = request_json["targetLanguage"]
 
-    print("start")
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "https://api-free.deepl.com/v2/translate",
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data={"auth_key": deepl_auth_key, "text": text, "target_lang": target_lang},
-        )
-        print("end")
-
-        if response.status_code == 200:
-            json_response = response.json()
-            translations = json_response["translations"]
-
-            if translations:
-                return translations[0].get("text", "")
-            return "No translation found."
-        return f"Error: {response.status_code}, {response.text}"
+    result = translator.translate_text(text, target_lang=target_lang)
+    return jsonify(result.text)
 
 
 @app.route("/languages", methods=["GET"])
