@@ -4,17 +4,23 @@ import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
-import { getMenuItems } from "./network/api";
+import { getLanguages, getMenuItems } from "./network/api";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 function App() {
     const [panel, setPanel] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
+    const [languages, setLanguages] = useState({});
+    const [language, setLanguage] = useState("English (American)");
 
     useEffect(() => {
-        getMenuItems().then((data) => {
-            setMenuItems(data);
-        });
+        getMenuItems().then((data) => setMenuItems(data));
+        getLanguages().then((data) => setLanguages(data));
     }, []);
+
+    const handleChange = (event) => {
+        setLanguage(event.target.value);
+    };
 
     return panel ? (
         (() => {
@@ -24,9 +30,15 @@ function App() {
                 case "cashier":
                     return <CashierView />;
                 case "customer":
-                    return <CustomerView />;
+                    return <CustomerView menuItems={menuItems} />;
                 case "menu":
-                    return <MenuView menuItems={menuItems} />;
+                    return (
+                        <MenuView
+                            languages={languages}
+                            language={language}
+                            menuItems={menuItems}
+                        />
+                    );
                 default:
                     return null;
             }
@@ -46,6 +58,20 @@ function App() {
             <Button variant="outlined" onClick={() => setPanel("menu")}>
                 Menu
             </Button>
+            <FormControl>
+                <InputLabel>Language</InputLabel>
+                <Select
+                    value={language}
+                    label={language}
+                    onChange={handleChange}
+                >
+                    {Object.keys(languages).map((language) => (
+                        <MenuItem key={language} value={language}>
+                            {language}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
         </>
     );
 }

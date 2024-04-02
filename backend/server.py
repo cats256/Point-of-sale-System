@@ -1,7 +1,10 @@
-from flask import Flask, request, jsonify
+import os
+import httpx
+import deepl
 import psycopg2
-from psycopg2 import sql
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from psycopg2 import sql
 
 app = Flask(__name__)
 CORS(app)
@@ -13,7 +16,13 @@ conn = psycopg2.connect(host="csce-315-db.engr.tamu.edu", user="csce315_902_03_u
 # API endpoint to fetch ingredients
 @app.route("/ingredients_info", methods=["GET"])
 def get_ingredients_info():
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
     query = sql.SQL("SELECT * FROM ingredients")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -26,7 +35,13 @@ def get_ingredients_info():
 # API endpoint to fetch menu items
 @app.route("/menu_item_info", methods=["GET"])
 def get_menu_item_info():
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
     query = sql.SQL("SELECT * FROM menu_items")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -47,6 +62,30 @@ def get_restock_info():
     cur.close()
     return jsonify(restock_info)
 
+
+# API endpoint to fetch orders
+# not sure we need this
+@app.route("/orders_info", methods=["GET"])
+def get_orders_info():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL("SELECT * FROM orders o WHERE o.date >= %s AND o.date <= %s")
+    cur.execute(query, (start_date, end_date))
+    orders_info = cur.fetchall()
+    cur.close()
+
+    return orders_info
+
+
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["GET"])
 def submit_order():
@@ -57,7 +96,13 @@ def submit_order():
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
 
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
     query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(query, (name, price, date, assigned_employee))
     conn.commit()
@@ -67,6 +112,7 @@ def submit_order():
             "message": "Order submitted successfully",
         }
     )
+
 
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])
@@ -79,9 +125,13 @@ def restock_order():
     quantity = data.get("quantity")
     ingredient_id = data.get("ingredient_id")
 
-    print(name, price, quantity, ingredient_id)
-
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
 
     restock_query = sql.SQL("INSERT INTO restock_order (name, price, quantity, ingredient_id) VALUES (%s, %s, %s, %s);")
     cur.execute(restock_query, (name, price, quantity, ingredient_id))
@@ -108,5 +158,46 @@ def restock_order():
     )
 
 
+auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
+translator = deepl.Translator(auth_key)
+
+
+@app.route("/translate", methods=["POST"])
+async def translate_text():
+    request_json = request.json
+    text = request_json["text"]
+    target_lang = request_json["targetLanguage"]
+
+    print("start")
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://api-free.deepl.com/v2/translate",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data={"auth_key": auth_key, "text": text, "target_lang": target_lang},
+        )
+        print("end")
+
+        if response.status_code == 200:
+            json_response = response.json()
+            translations = json_response["translations"]
+
+            if translations:
+                return translations[0].get("text", "")
+            return "No translation found."
+        return f"Error: {response.status_code}, {response.text}"
+
+
+@app.route("/languages", methods=["GET"])
+def get_languages():
+    languages = {}
+    for lang in translator.get_target_languages():
+        languages[lang.name] = lang.code
+    return jsonify(languages)
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    env = os.getenv("FLASK_ENV", "development")
+    if env == "production":
+        app.run(debug=False, host="0.0.0.0")
+    else:
+        app.run(debug=True)
