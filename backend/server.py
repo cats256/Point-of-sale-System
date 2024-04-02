@@ -3,7 +3,6 @@ import eventlet
 eventlet.monkey_patch()
 
 import os
-import httpx
 import deepl
 import psycopg2
 from flask import Flask, jsonify, request
@@ -176,7 +175,9 @@ def translate_text():
     text = request_json["text"]
     target_lang = request_json["targetLanguage"]
 
+    print("start")
     result = translator.translate_text(text, target_lang=target_lang)
+    print("end")
     return jsonify(result.text)
 
 
