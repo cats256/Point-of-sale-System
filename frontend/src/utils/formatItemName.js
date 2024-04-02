@@ -6,9 +6,9 @@ export const formatItemName = (item) => {
         item.name.toUpperCase().includes("gig_em_patty_melt")
     ) {
         if (lastChar === "1") {
-            prefix = "BEAN ";
+            prefix = "Bean ";
         } else if (lastChar === "0") {
-            prefix = "BEEF ";
+            prefix = "Beef ";
         }
     } else if (item.name.toUpperCase().includes("fountain_drink")) {
         if (lastChar === "1") {
