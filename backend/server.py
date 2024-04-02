@@ -50,6 +50,24 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+# API endpoint to fetch employees
+@app.route("/employee_info", methods=["GET"])
+def get_employee_info():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+    query = sql.SQL("SELECT * FROM employees")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    menu_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(menu_info)
+
 
 # API endpoint to fetch orders
 # not sure we need this
