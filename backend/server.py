@@ -1,3 +1,7 @@
+import eventlet
+
+eventlet.monkey_patch()
+
 import os
 import httpx
 import deepl
@@ -5,9 +9,6 @@ import psycopg2
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from psycopg2 import sql
-import eventlet
-
-eventlet.monkey_patch()
 
 app = Flask(__name__)
 CORS(app)
@@ -146,8 +147,8 @@ def restock_order():
     )
 
 
-auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
-translator = deepl.Translator(auth_key)
+deepl_auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
+translator = deepl.Translator(deepl_auth_key)
 
 
 @app.route("/translate", methods=["POST"])
@@ -161,7 +162,7 @@ async def translate_text():
         response = await client.post(
             "https://api-free.deepl.com/v2/translate",
             headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data={"auth_key": auth_key, "text": text, "target_lang": target_lang},
+            data={"auth_key": deepl_auth_key, "text": text, "target_lang": target_lang},
         )
         print("end")
 
