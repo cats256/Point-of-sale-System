@@ -5,6 +5,9 @@ import psycopg2
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from psycopg2 import sql
+import eventlet
+
+eventlet.monkey_patch()
 
 app = Flask(__name__)
 CORS(app)
