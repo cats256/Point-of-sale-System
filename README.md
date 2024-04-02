@@ -7,6 +7,7 @@
 # Backend
 1. pip install -r requirements.txt
 2. python server.py
+3. pip freeze > requirements.txt to generate packages
 
 # Backlog
 https://docs.google.com/spreadsheets/d/1HpwlY0PQyUtm4bFJ6zUTv4BfW8pZNC4KwQ7-rJAEdFI/edit?usp=sharing 
