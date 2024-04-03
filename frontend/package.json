@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
+    "digital-clock-react": "^1.1.7",
     "eslint": "^8.57.0",
     "ml-savitzky-golay": "^5.0.0",
     "ml-savitzky-golay-generalized": "^4.0.1",
@@ -47,5 +48,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "sass": "^1.72.0"
   }
 }

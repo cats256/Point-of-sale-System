@@ -1,13 +1,15 @@
 # Frontend
 1. cd frontend
 2. npm install to install all required packages
-3. npm start
-4. npm run format to format all files again for shared formatting
+3. npm install sass --save-dev
+4. npm install @babel/plugin-proposal-private-property-in-object --save-dev
+5. npm start
+6. npm run format to format all files again for shared formatting
 
 # Backend
-1. pip install -r requirements.txt
+1. pip install -r requirements.txt 
 2. python server.py
-3. pip freeze > requirements.txt to generate packages
+3. pip freeze > requirements.txt to generate packages (needed for deployment)
 
 # Backlog
 https://docs.google.com/spreadsheets/d/1HpwlY0PQyUtm4bFJ6zUTv4BfW8pZNC4KwQ7-rJAEdFI/edit?usp=sharing 

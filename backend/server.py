@@ -175,9 +175,7 @@ def translate_text():
     text = request_json["text"]
     target_lang = request_json["targetLanguage"]
 
-    print("start")
-    result = translator.translate_text(text, target_lang=target_lang)
-    print("end")
+    result = translator.translate_text(text, source_lang="EN", target_lang=target_lang)
     return jsonify(result.text)
 
 
