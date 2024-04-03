@@ -68,6 +68,10 @@ export async function getOrders(start_date, end_date) {
     return response.data.orders;
 }
 
+export async function getEmployees() {
+    return request("/employee_info", { method: "GET" });
+}
+
 export async function translate(text, targetLanguage) {
     return request(`/translate`, {
         method: "POST",

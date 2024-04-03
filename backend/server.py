@@ -1,5 +1,8 @@
+import eventlet
+
+eventlet.monkey_patch()
+
 import os
-import httpx
 import deepl
 import psycopg2
 from flask import Flask, jsonify, request
@@ -43,6 +46,25 @@ def get_menu_item_info():
         )
         cur = conn.cursor()
     query = sql.SQL("SELECT * FROM menu_items")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    menu_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(menu_info)
+
+
+# API endpoint to fetch employees
+@app.route("/employee_info", methods=["GET"])
+def get_employee_info():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+    query = sql.SQL("SELECT * FROM employees")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
@@ -143,33 +165,18 @@ def restock_order():
     )
 
 
-auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
-translator = deepl.Translator(auth_key)
+deepl_auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
+translator = deepl.Translator(deepl_auth_key)
 
 
 @app.route("/translate", methods=["POST"])
-async def translate_text():
+def translate_text():
     request_json = request.json
     text = request_json["text"]
     target_lang = request_json["targetLanguage"]
 
-    print("start")
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "https://api-free.deepl.com/v2/translate",
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data={"auth_key": auth_key, "text": text, "target_lang": target_lang},
-        )
-        print("end")
-
-        if response.status_code == 200:
-            json_response = response.json()
-            translations = json_response["translations"]
-
-            if translations:
-                return translations[0].get("text", "")
-            return "No translation found."
-        return f"Error: {response.status_code}, {response.text}"
+    result = translator.translate_text(text, source_lang="EN", target_lang=target_lang)
+    return jsonify(result.text)
 
 
 @app.route("/languages", methods=["GET"])
