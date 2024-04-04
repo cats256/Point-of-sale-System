@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { translate } from "../../network/api";
 import { formatItemName } from "../../utils/formatItemName";
 import ReactWeather from "react-open-weather";
-import Button from "@mui/material/Button";
 
 import "./MenuView.css";
 
@@ -19,14 +18,13 @@ const MenuView = ({
 }) => {
     const [translatedMenuItems, setTranslatedMenuItems] = useState(null);
     const [page, setPage] = useState(1);
-    const [showWeather, setShowWeather] = useState(false);
 
     useEffect(() => {
         const timerId = setInterval(() => {
             setPage((prevPage) =>
-                (prevPage + 1) % 7 === 0 ? 1 : prevPage + 1
+                (prevPage + 1) % 8 === 0 ? 1 : prevPage + 1
             );
-        }, 1000);
+        }, 5000);
 
         return () => {
             clearInterval(timerId);
@@ -125,7 +123,7 @@ const MenuView = ({
                 justifyContent: "space-between",
             }}
         >
-            {showWeather ? (
+            {page === 1 ? (
                 <div
                     style={{
                         height: "80%",
@@ -146,7 +144,7 @@ const MenuView = ({
                 </div>
             ) : (
                 <div style={{ height: "80%" }} className="grid-container">
-                    {gridItems.slice((page - 1) * 8, page * 8)}
+                    {gridItems.slice((page - 2) * 8, (page - 1) * 8)}
                 </div>
             )}
             <div
@@ -158,23 +156,15 @@ const MenuView = ({
                     margin: 0,
                 }}
             >
-                <Button
-                    style={{ height: "80px", width: "160px" }}
-                    variant={showWeather ? "outlined" : "contained"}
-                    onClick={() => setShowWeather((prev) => !prev)}
-                >
-                    {showWeather ? "Hide Weather" : "Show Weather"}
-                </Button>
-                {!showWeather && (
-                    <Pagination
-                        count={6}
-                        variant="outlined"
-                        color="primary"
-                        hidePrevButton
-                        hideNextButton
-                        page={page}
-                    />
-                )}
+                <div style={{ height: "80px", width: "200px" }}></div>
+                <Pagination
+                    count={7}
+                    variant="outlined"
+                    color="primary"
+                    hidePrevButton
+                    hideNextButton
+                    page={page}
+                />
                 <Clock isMode24H size="small" />
             </div>
         </div>
