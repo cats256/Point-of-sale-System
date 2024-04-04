@@ -11,13 +11,20 @@
 .grid-item {
     background-color: #f3f3f3;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     border: 1px solid #ddd;
+    flex-direction: column;
+    padding: 20px;
+    height: 256px;
 }
 
 .grid-item img {
     max-width: 50%;
     height: auto;
     object-fit: contain;
+}
+
+.clock-component-container.small {
+    font-variant: small-caps;
 }

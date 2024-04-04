@@ -64,7 +64,7 @@ export async function getOrders(start_date, end_date) {
         },
     });
 
-    return response.data.orders;
+    return response.data;
 }
 
 export async function getEmployees() {

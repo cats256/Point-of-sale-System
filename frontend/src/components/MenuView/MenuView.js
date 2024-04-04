@@ -1,14 +1,25 @@
-import { CircularProgress, Pagination, Stack } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { Clock } from "digital-clock-react";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { translate } from "../../network/api";
 import { formatItemName } from "../../utils/formatItemName";
+import ReactWeather from "react-open-weather";
+import Button from "@mui/material/Button";
+
 import "./MenuView.css";
 
-const MenuView = ({ languages, language, menuItems }) => {
+const MenuView = ({
+    languages,
+    language,
+    menuItems,
+    weatherData,
+    isWeatherLoading,
+    weatherErrorMessage,
+}) => {
     const [translatedMenuItems, setTranslatedMenuItems] = useState(null);
     const [page, setPage] = useState(1);
+    const [showWeather, setShowWeather] = useState(false);
 
     useEffect(() => {
         const timerId = setInterval(() => {
@@ -71,15 +82,7 @@ const MenuView = ({ languages, language, menuItems }) => {
 
     const gridItems = Object.keys(translatedMenuItems).flatMap((type) => [
         ...translatedMenuItems[type].map((item, index) => (
-            <div
-                key={type + index}
-                className="grid-item"
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                }}
-            >
+            <div key={type + index} className="grid-item">
                 <img
                     src="/square_image.jpg"
                     alt={item.translatedName + " Image"}
@@ -109,21 +112,43 @@ const MenuView = ({ languages, language, menuItems }) => {
     gridItems.push(...emptyItems);
 
     return (
-        <Stack
+        <div
             style={{
                 height: "100vh",
                 padding: "32px 32px 0px 32px",
                 fontFamily:
                     'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif',
-                fontVariant: "small-caps",
                 fontSize: "16px",
                 fontWeight: 500,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
             }}
-            spacing={2}
         >
-            <div style={{ flexGrow: 1.5 }} className="grid-container">
-                {gridItems.slice((page - 1) * 8, page * 8)}
-            </div>
+            {showWeather ? (
+                <div
+                    style={{
+                        height: "80%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <ReactWeather
+                        isLoading={isWeatherLoading}
+                        errorMessage={weatherErrorMessage}
+                        data={weatherData}
+                        lang="en"
+                        locationLabel="College Station, TX"
+                        unitsLabels={{ temperature: "F", windSpeed: "mph" }}
+                        showForecast
+                    />
+                </div>
+            ) : (
+                <div style={{ height: "80%" }} className="grid-container">
+                    {gridItems.slice((page - 1) * 8, page * 8)}
+                </div>
+            )}
             <div
                 style={{
                     flexGrow: 1,
@@ -133,18 +158,26 @@ const MenuView = ({ languages, language, menuItems }) => {
                     margin: 0,
                 }}
             >
-                <div style={{ height: "80px", width: "200px" }}></div>
-                <Pagination
-                    count={6}
-                    variant="outlined"
-                    color="primary"
-                    hidePrevButton
-                    hideNextButton
-                    page={page}
-                />
+                <Button
+                    style={{ height: "80px", width: "160px" }}
+                    variant={showWeather ? "outlined" : "contained"}
+                    onClick={() => setShowWeather((prev) => !prev)}
+                >
+                    {showWeather ? "Hide Weather" : "Show Weather"}
+                </Button>
+                {!showWeather && (
+                    <Pagination
+                        count={6}
+                        variant="outlined"
+                        color="primary"
+                        hidePrevButton
+                        hideNextButton
+                        page={page}
+                    />
+                )}
                 <Clock isMode24H size="small" />
             </div>
-        </Stack>
+        </div>
     );
 };
 

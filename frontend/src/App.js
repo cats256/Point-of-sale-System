@@ -6,12 +6,22 @@ import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
 import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import ReactWeather, { useVisualCrossing } from "react-open-weather";
 
 function App() {
     const [panel, setPanel] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
     const [languages, setLanguages] = useState({});
     const [language, setLanguage] = useState("English (American)");
+
+    // may need to do something with API key exposure
+    const { data, isLoading, errorMessage } = useVisualCrossing({
+        key: "HLRHT43XJPSVMQHAMK7PDLL92",
+        lat: "30.622370",
+        lon: "-96.325851",
+        lang: "en",
+        unit: "us",
+    });
 
     useEffect(() => {
         getMenuItems().then((data) => setMenuItems(data));
@@ -37,6 +47,9 @@ function App() {
                             languages={languages}
                             language={language}
                             menuItems={menuItems}
+                            weatherData={data}
+                            isWeatherLoading={isLoading}
+                            weatherErrorMessage={errorMessage}
                         />
                     );
                 default:
@@ -58,6 +71,7 @@ function App() {
             <Button variant="outlined" onClick={() => setPanel("menu")}>
                 Menu
             </Button>
+
             <FormControl>
                 <InputLabel>Language</InputLabel>
                 <Select

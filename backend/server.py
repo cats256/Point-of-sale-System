@@ -172,10 +172,8 @@ translator = deepl.Translator(deepl_auth_key)
 @app.route("/translate", methods=["POST"])
 def translate_text():
     request_json = request.json
-    text = request_json["text"]
-    target_lang = request_json["targetLanguage"]
 
-    result = translator.translate_text(text, source_lang="EN", target_lang=target_lang)
+    result = translator.translate_text(request_json["text"], source_lang="EN", target_lang=request_json["targetLanguage"])
     return jsonify(result.text)
 
 
