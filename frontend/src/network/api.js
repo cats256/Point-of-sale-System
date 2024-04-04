@@ -64,7 +64,7 @@ export async function getOrders(start_date, end_date) {
         },
     });
 
-    return response.data.orders;
+    return response.data;
 }
 
 export async function getEmployees() {
@@ -96,3 +96,6 @@ export async function submitOrder(orderData) {
     }
 }
 
+export async function submitRestockOrder(formData) {
+    return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+}
