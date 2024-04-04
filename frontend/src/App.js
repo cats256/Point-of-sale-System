@@ -61,20 +61,19 @@ function App() {
                 })()
             ) : (
                 <div>Choose a panel</div>
+                <Button variant="outlined" onClick={() => setPanel("manager")}>
+                    Manager
+                </Button>
+                <Button variant="outlined" onClick={() => setPanel("cashier")}>
+                    Cashier
+                </Button>
+                <Button variant="outlined" onClick={() => setPanel("customer")}>
+                    Customer
+                </Button>
+                <Button variant="outlined" onClick={() => setPanel("menu")}>
+                    Menu
+                </Button>
             )}
-            <Button variant="outlined" onClick={() => setPanel("manager")}>
-                Manager
-            </Button>
-            <Button variant="outlined" onClick={() => setPanel("cashier")}>
-                Cashier
-            </Button>
-            <Button variant="outlined" onClick={() => setPanel("customer")}>
-                Customer
-            </Button>
-            <Button variant="outlined" onClick={() => setPanel("menu")}>
-                Menu
-            </Button>
-
             <FormControl>
                 <InputLabel>Language</InputLabel>
                 <Select
