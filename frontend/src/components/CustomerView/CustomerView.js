@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 
@@ -6,6 +7,8 @@ const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [activeButton, setActiveButton] = useState(null);
     const [basket, setBasket] = useState([]);
+    const [showPopup, setShowPopup] = useState(Boolean);
+    const [popupContent, setPopupContent] = useState("");
 
     const buttonWithImg = (text, panel = "", img = "", alt = "") => (
         <Button
@@ -70,6 +73,7 @@ const CustomerView = ({ menuItems }) => {
                         display: "flex",
                         justifyContent: "space-between",
                         width: "100%",
+                        gap: 10
                     }}
                 >
                     <button onClick={onClose}>Close</button>
@@ -86,8 +90,6 @@ const CustomerView = ({ menuItems }) => {
 
     const AssociatedMenuItems = () => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
-        const [showPopup, setShowPopup] = useState(Boolean);
-        const [popupContent, setPopupContent] = useState("");
 
         const handleItemClick = (itemContent) => {
             setShowPopup(true);
@@ -97,7 +99,7 @@ const CustomerView = ({ menuItems }) => {
         return (
             <div>
                 {filteredItems.map((item, index) => {
-                    let temp = formatItemName(item);
+                    let itemName = formatItemName(item);
 
                     return (
                         <div key={index}>
@@ -105,8 +107,8 @@ const CustomerView = ({ menuItems }) => {
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
                             >
-                                {/* <img src={formattedItemName.replace(' ', /_/g)} alt={`Photo of ${formattedItemName}`} style={{ marginRight: 8 }} /> */}{" "}
-                                {temp} ${item.price}
+                                <img src={"temp_burger.jpg"} alt={itemName} style={{ marginRight: 8 }} />{" "}
+                                {itemName} ${item.price}
                             </Button>
                         </div>
                     );
@@ -132,17 +134,33 @@ const CustomerView = ({ menuItems }) => {
         return (
             <div>
                 {basket.map((item, index) => (
-                    <div key={index} style={{ marginBottom: "10px" }}>
-                        <div>
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "10px"}}>
+                        <div style={{ flexGrow: 1 }}>
                             {formatItemName(item)}: $
                             {parseFloat(item.price * item.quantity).toFixed(2)}
+                            {/* Quantity modification buttons */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <button 
+                                    onClick={() => decreaseQuantity(item.name)}
+                                    aria-label="Decrease item">
+                                    -
+                                </button>
+                                {item.quantity}
+                                <button 
+                                    style={{ marginRight: '20px' }}
+                                    onClick={() => increaseQuantity(item.name)}
+                                    aria-label="Increase item">
+                                    +
+                                </button>
+                            </div>
                         </div>
-                        <button onClick={() => decreaseQuantity(item.name)}>
-                            -
-                        </button>
-                        {item.quantity}
-                        <button onClick={() => increaseQuantity(item.name)}>
-                            +
+
+                        {/* Delete button */}
+                        <button 
+                            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                            aria-label="Delete"
+                            onClick={() => {/* TODO:function to handle delete */}}>
+                            <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
                         </button>
                     </div>
                 ))}
@@ -168,6 +186,10 @@ const CustomerView = ({ menuItems }) => {
                 return [...currentBasket, { ...itemToAdd, quantity: 1 }];
             }
         });
+
+        setTimeout(() => {
+            setShowPopup(false);
+        }, 700); 
     };
 
     const increaseQuantity = (itemName) => {
@@ -279,6 +301,7 @@ const CustomerView = ({ menuItems }) => {
                 {buttonWithImg("Desserts")}
                 {buttonWithImg("Sides")}
                 {buttonWithImg("Sauces")}
+                {buttonWithImg("All")}
             </div>
 
             <div
@@ -294,10 +317,10 @@ const CustomerView = ({ menuItems }) => {
                 </div>
             </div>
 
-            <div style={{ flexGrow: 3 }}>
-                <div>Your Order</div>
+            <div style={{ flexGrow: 3, margin: 10}}>
+                <h1>Your Order</h1>
                 {AddToBasket()}
-                <button onClick={() => placeOrder()}>Place Order</button>
+                <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
             </div>
         </div>
     );

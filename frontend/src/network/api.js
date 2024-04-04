@@ -52,7 +52,6 @@ export async function getIngredients() {
     return request("/ingredients_info", { method: "GET" });
 }
 
-<<<<<<< Updated upstream
 export async function getLanguages() {
     return request("/languages", { method: "GET" });
 }
@@ -81,8 +80,7 @@ export async function translate(text, targetLanguage) {
         body: JSON.stringify({ text, targetLanguage }),
     });
 }
-=======
+
 export async function submitOrder() {
     return request("/submit_order", { method: "GET" });
 }
->>>>>>> Stashed changes
