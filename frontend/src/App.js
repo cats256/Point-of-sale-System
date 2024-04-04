@@ -7,13 +7,13 @@ import { MenuView } from "./components/MenuView/MenuView";
 import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { BasketProvider } from '../src/components/CustomerView/BasketContext';
-import ReactWeather, { useVisualCrossing } from "react-open-weather";
+import { useVisualCrossing } from "react-open-weather";
 
 function App() {
     const [panel, setPanel] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
     const [languages, setLanguages] = useState({});
-    const [language, setLanguage] = useState("English (American)");
+    const [currLanguage, setCurrLanguage] = useState("English (American)");
 
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
@@ -30,7 +30,7 @@ function App() {
     }, []);
 
     const handleChange = (event) => {
-        setLanguage(event.target.value);
+        setCurrLanguage(event.target.value);
     };
 
     return (
@@ -48,7 +48,7 @@ function App() {
                             return (
                                 <MenuView
                                     languages={languages}
-                                    language={language}
+                                    language={currLanguage}
                                     menuItems={menuItems}
                                     weatherData={data}
                                     isWeatherLoading={isLoading}
@@ -61,7 +61,7 @@ function App() {
                 })()
             ) : (
                 <div>Choose a panel</div>
-            )}
+                )}
             <Button variant="outlined" onClick={() => setPanel("manager")}>
                 Manager
             </Button>
@@ -78,13 +78,13 @@ function App() {
             <FormControl>
                 <InputLabel>Language</InputLabel>
                 <Select
-                    value={language}
-                    label={language}
+                    value={currLanguage}
+                    label={currLanguage}
                     onChange={handleChange}
                 >
-                    {Object.keys(languages).map((language) => (
-                        <MenuItem key={language} value={language}>
-                            {language}
+                    {Object.keys(languages).map((currLanguage) => (
+                        <MenuItem key={currLanguage} value={currLanguage}>
+                            {currLanguage}
                         </MenuItem>
                     ))}
                 </Select>

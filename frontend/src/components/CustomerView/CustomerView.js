@@ -1,11 +1,14 @@
 import { Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
+import CloseIcon from '@mui/icons-material/Close';
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
+    // const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
     const [currType, setCurrType] = useState(null);
     const { basket, 
             addItemToBasket, 
@@ -139,7 +142,7 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
-    const displayBasket = () => {
+    const DisplayBasket = () => {
         return (
             <div>
                 <h1>My Basket</h1>
@@ -192,6 +195,45 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
+    const Accessibility = () => {
+        const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+        return (
+            <>
+                <button 
+                    style={{ 
+                        position: 'absolute',  
+                        bottom: 10, 
+                        left: '50%', 
+                        transform: 'translateX(-50%)', 
+                        justifyContent: 'center' 
+                    }}
+                    aria-label="accessibility options"
+                    onClick={() => setShowAccessibilityPanel(prevState => !prevState)} // Adjusted to call the toggle function
+                >
+                    <SettingsAccessibilityIcon />
+                </button>
+                {showAccessibilityPanel && (
+                    <div style={{
+                        position: 'fixed', 
+                        bottom: '50px', 
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: 'white',
+                        padding: '20px',
+                        borderRadius: '8px', 
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}>
+                        <button onClick={() => setShowAccessibilityPanel(prevState => !prevState)}>
+                            <CloseIcon/>
+                        </button>
+                        <span> Accessibility Options </span>
+                        
+                    </div>
+                )}
+            </>
+        );
+    };
+
     return (
         <div
             style={{
@@ -205,7 +247,8 @@ const CustomerView = ({ menuItems }) => {
                     borderRight: "2px solid #000",
                     display: "flex",
                     flexDirection: "column",
-                    width: "15%"
+                    width: "15%",
+                    position: 'relative'
                 }}
             >
                 {buttonWithImg("Burgers")}
@@ -216,6 +259,8 @@ const CustomerView = ({ menuItems }) => {
                 {buttonWithImg("Sides")}
                 {buttonWithImg("Sauces")}
                 {buttonWithImg("All")}
+
+                {Accessibility()}
             </div>
 
             <div
@@ -235,7 +280,7 @@ const CustomerView = ({ menuItems }) => {
                     margin: 10,
                     width: "25%"
                 }}>
-                {displayBasket()}
+                {DisplayBasket()}
             </div>
         </div>
     );
