@@ -1,22 +1,35 @@
 import { Button } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
+import { useBasket } from "../CustomerView/BasketContext";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
-    const [activeButton, setActiveButton] = useState(null);
-    const [basket, setBasket] = useState([]);
+    const [currType, setCurrType] = useState(null);
+    const { basket, 
+            addItemToBasket, 
+            increaseItemQuantity, 
+            decreaseItemQuantity, 
+            removeItemFromBasket, 
+            emptyBasket, 
+            placeOrder, 
+            totalCost,
+            setShowItemInfoPopup, 
+            showItemInfoPopup
+        } = useBasket();
+    const [popupContent, setPopupContent] = useState("");
 
-    const buttonWithImg = (text, panel = "", img = "", alt = "") => (
+    const buttonWithImg = (text, panel = '', img = '', alt = '') => (
         <Button
             variant="outlined"
             onClick={() => {
                 setPanel(panel || text);
-                setActiveButton(text);
+                setCurrType(text);
             }}
             style={{
-                backgroundColor: activeButton === text ? "#C2A061" : "",
-                color: activeButton === text ? "white" : "",
+                backgroundColor: currType === text ? "#C2A061" : '',
+                color: currType === text ? "white" : '',
                 marginRight: 8,
             }}
         >
@@ -24,7 +37,7 @@ const CustomerView = ({ menuItems }) => {
             {text}
         </Button>
     );
-    // TODO: Separate style out to separate css files
+
     const Popup = ({ item, onClose }) => (
         <div
             style={{
@@ -70,11 +83,12 @@ const CustomerView = ({ menuItems }) => {
                         display: "flex",
                         justifyContent: "space-between",
                         width: "100%",
+                        gap: 10
                     }}
                 >
                     <button onClick={onClose}>Close</button>
                     <button
-                        onClick={() => handleAddToBasket(item)}
+                        onClick={() => addItemToBasket(item)}
                         style={{ backgroundColor: "#C2A061", color: "white" }}
                     >
                         Add to Basket
@@ -86,38 +100,40 @@ const CustomerView = ({ menuItems }) => {
 
     const AssociatedMenuItems = () => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
-        const [showPopup, setShowPopup] = useState(Boolean);
-        const [popupContent, setPopupContent] = useState("");
 
         const handleItemClick = (itemContent) => {
-            setShowPopup(true);
+            setShowItemInfoPopup(true);
             setPopupContent(itemContent);
         };
 
         return (
-            <div>
+            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap", backgroundColor: 'red'}}>
                 {filteredItems.map((item, index) => {
-                    let temp = formatItemName(item);
+                    let itemName = formatItemName(item);
 
                     return (
                         <div key={index}>
-                            <Button
+                            <button
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
+                                style={{fontWeight: "bold"}}
                             >
-                                {/* <img src={formattedItemName.replace(' ', /_/g)} alt={`Photo of ${formattedItemName}`} style={{ marginRight: 8 }} /> */}{" "}
-                                {temp} ${item.price}
-                            </Button>
+                                <img src={require('../../img/temp_burger.jpeg')} alt={itemName} style={{ marginRight: 8, width:180, height:100 }} />
+                                <div style = {{ fontFamily: "bold" }}>
+                                    {itemName} 
+                                </div>
+                                ${item.price}
+                            </button>
                         </div>
                     );
                 })}
                 {["Burgers", "Baskets", "Sandwiches"].includes(panel) && (
                     <div>Make it a combo</div>
                 )}
-                {showPopup && (
+                {showItemInfoPopup && (
                     <Popup
                         item={popupContent}
-                        onClose={() => setShowPopup(false)}
+                        onClose={() => setShowItemInfoPopup(false)}
                     />
                 )}
             </div>
@@ -125,135 +141,51 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const AddToBasket = () => {
-        const totalCost = basket.reduce((total, item) => {
-            return total + parseFloat(item.price) * item.quantity;
-        }, 0);
-
         return (
             <div>
                 {basket.map((item, index) => (
-                    <div key={index} style={{ marginBottom: "10px" }}>
-                        <div>
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "10px"}}>
+                        <div style={{ flexGrow: 1 }}>
                             {formatItemName(item)}: $
                             {parseFloat(item.price * item.quantity).toFixed(2)}
+                            {/* Quantity modification buttons */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <button 
+                                    onClick={() => decreaseItemQuantity(item.name)}
+                                    aria-label="Decrease item">
+                                    -
+                                </button>
+                                {item.quantity}
+                                <button 
+                                    style={{ marginRight: '20px' }}
+                                    onClick={() => increaseItemQuantity(item.name)}
+                                    aria-label="Increase item">
+                                    +
+                                </button>
+                            </div>
                         </div>
-                        <button onClick={() => decreaseQuantity(item.name)}>
-                            -
-                        </button>
-                        {item.quantity}
-                        <button onClick={() => increaseQuantity(item.name)}>
-                            +
+
+                        {/* Delete button */}
+                        <button 
+                            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                            aria-label="Delete"
+                            onClick={() => {removeItemFromBasket(item.name)}}>
+                            <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
                         </button>
                     </div>
                 ))}
                 <div style={{ marginTop: "20px", fontWeight: "bold" }}>
                     Total: ${totalCost.toFixed(2)}
                 </div>
+
+                {/* Clear Cart button */}
+                <button 
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                    onClick={() => {emptyBasket()}}>
+                    Clear Cart
+                </button>
             </div>
         );
-    };
-
-    const handleAddToBasket = (itemToAdd) => {
-        setBasket((currentBasket) => {
-            const exists = currentBasket.find(
-                (item) => item.name === itemToAdd.name
-            );
-            if (exists) {
-                return currentBasket.map((item) =>
-                    item.name === itemToAdd.name
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            } else {
-                return [...currentBasket, { ...itemToAdd, quantity: 1 }];
-            }
-        });
-    };
-
-    const increaseQuantity = (itemName) => {
-        setBasket((currentBasket) =>
-            currentBasket.map((item) =>
-                item.name === itemName
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-            )
-        );
-    };
-
-    const placeOrder = async (basket) => {
-        const apiUrl = "http://localhost:3000/submit_order"; // Adjust this to your actual API URL
-
-        // Ensure basket is iterable
-        if (!basket || !Array.isArray(basket)) {
-            console.error("Basket is not iterable");
-            return;
-        }
-
-        for (let item of basket) {
-            const orderData = {
-                name: item.name,
-                price: String(item.price * item.quantity), // Assuming the API expects a string
-                date: new Date().toISOString(), // Format the date as needed by your API
-                assigned_employee: "1", // TODO: currently set as "1", adjust as needed
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: "POST", // Using POST as the method
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(orderData),
-                });
-
-                if (!response.ok) {
-                    // If the response is not ok, throw an error
-                    throw new Error(`Failed to place order for ${item.name}`);
-                }
-
-                // Assuming you want to process the response data
-                const responseData = await response.json();
-                console.log(
-                    `${item.name} order response:`,
-                    responseData.message
-                );
-            } catch (error) {
-                console.error("Error placing order:", error);
-                return; // Exit if an error occurs
-            }
-        }
-
-        alert("All orders submitted successfully.");
-    };
-
-    const decreaseQuantity = (itemName) => {
-        setBasket((currentBasket) => {
-            const itemIndex = currentBasket.findIndex(
-                (item) => item.name === itemName
-            );
-            if (itemIndex === -1) return currentBasket; // Item not found, no changes
-
-            const newItem = { ...currentBasket[itemIndex] };
-            if (newItem.quantity > 1) {
-                newItem.quantity -= 1;
-                return [
-                    ...currentBasket.slice(0, itemIndex),
-                    newItem,
-                    ...currentBasket.slice(itemIndex + 1),
-                ];
-            } else {
-                // Only show the confirmation if the quantity is 1
-                const confirmRemoval = window.confirm(
-                    "Do you want to remove this item from your basket?"
-                );
-                if (confirmRemoval) {
-                    return currentBasket.filter(
-                        (_, index) => index !== itemIndex
-                    );
-                }
-                return currentBasket; // No changes if user cancels
-            }
-        });
     };
 
     return (
@@ -267,9 +199,9 @@ const CustomerView = ({ menuItems }) => {
             <div
                 style={{
                     borderRight: "2px solid #000",
-                    flexGrow: 2,
                     display: "flex",
                     flexDirection: "column",
+                    width: "15%"
                 }}
             >
                 {buttonWithImg("Burgers")}
@@ -279,6 +211,7 @@ const CustomerView = ({ menuItems }) => {
                 {buttonWithImg("Desserts")}
                 {buttonWithImg("Sides")}
                 {buttonWithImg("Sauces")}
+                {buttonWithImg("All")}
             </div>
 
             <div
@@ -287,17 +220,20 @@ const CustomerView = ({ menuItems }) => {
                     flexGrow: 10,
                     display: "flex",
                     flexDirection: "column",
+                    borderBottom: "2px solid #000", 
+                    margin: 10
                 }}
             >
-                <div style={{ borderBottom: "2px solid #000", flexGrow: 9 }}>
-                    {AssociatedMenuItems()}
-                </div>
+                {AssociatedMenuItems()}
             </div>
 
-            <div style={{ flexGrow: 3 }}>
-                <div>Your Order</div>
+            <div style={{ 
+                    margin: 10,
+                    width: "20%"
+                }}>
+                <h1>Your Order</h1>
                 {AddToBasket()}
-                <button onClick={() => placeOrder()}>Place Order</button>
+                <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
             </div>
         </div>
     );

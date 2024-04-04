@@ -109,15 +109,14 @@ def get_orders_info():
 
 
 # API endpoint to submit an order
-@app.route("/submit_order", methods=["GET"])
+@app.route("/submit_order", methods=["POST"])
 def submit_order():
-    data = request.form
+    data = request.json
 
     name = data.get("name")
     price = data.get("price")
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
-
     try:
         cur = conn.cursor()
     except:
@@ -125,6 +124,7 @@ def submit_order():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
+    
     query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(query, (name, price, date, assigned_employee))
     conn.commit()

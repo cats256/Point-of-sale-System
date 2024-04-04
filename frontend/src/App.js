@@ -6,6 +6,7 @@ import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
 import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { BasketProvider } from '../src/components/CustomerView/BasketContext';
 import ReactWeather, { useVisualCrossing } from "react-open-weather";
 
 function App() {
@@ -32,33 +33,35 @@ function App() {
         setLanguage(event.target.value);
     };
 
-    return panel ? (
-        (() => {
-            switch (panel) {
-                case "manager":
-                    return <ManagerView />;
-                case "cashier":
-                    return <CashierView />;
-                case "customer":
-                    return <CustomerView menuItems={menuItems} />;
-                case "menu":
-                    return (
-                        <MenuView
-                            languages={languages}
-                            language={language}
-                            menuItems={menuItems}
-                            weatherData={data}
-                            isWeatherLoading={isLoading}
-                            weatherErrorMessage={errorMessage}
-                        />
-                    );
-                default:
-                    return null;
-            }
-        })()
-    ) : (
-        <>
-            <div>Choose a panel</div>
+    return (
+        <BasketProvider>
+            { panel ? (
+                (() => {
+                    switch (panel) {
+                        case "manager":
+                            return <ManagerView />;
+                        case "cashier":
+                            return <CashierView />;
+                        case "customer":
+                            return <CustomerView menuItems={menuItems} />;
+                        case "menu":
+                            return (
+                                <MenuView
+                                    languages={languages}
+                                    language={language}
+                                    menuItems={menuItems}
+                                    weatherData={data}
+                                    isWeatherLoading={isLoading}
+                                    weatherErrorMessage={errorMessage}
+                                />
+                            );
+                        default:
+                            return null;
+                    }
+                })()
+            ) : (
+                <div>Choose a panel</div>
+            )}
             <Button variant="outlined" onClick={() => setPanel("manager")}>
                 Manager
             </Button>
@@ -86,7 +89,7 @@ function App() {
                     ))}
                 </Select>
             </FormControl>
-        </>
+        </BasketProvider>
     );
 }
 
