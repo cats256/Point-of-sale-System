@@ -80,3 +80,8 @@ export async function translate(text, targetLanguage) {
         body: JSON.stringify({ text, targetLanguage }),
     });
 }
+
+
+export async function submitRestockOrder(formData) {
+    return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+}
