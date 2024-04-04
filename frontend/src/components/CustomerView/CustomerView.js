@@ -7,7 +7,7 @@ import { tempBurger } from '../../img/temp_burger.jpeg';
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
-    const [activeButton, setActiveButton] = useState(null);
+    const [currType, setCurrType] = useState(null);
     const [basket, setBasket] = useState([]);
     const [showPopup, setShowPopup] = useState(Boolean);
     const [popupContent, setPopupContent] = useState("");
@@ -17,11 +17,11 @@ const CustomerView = ({ menuItems }) => {
             variant="outlined"
             onClick={() => {
                 setPanel(panel || text);
-                setActiveButton(text);
+                setCurrType(text);
             }}
             style={{
-                backgroundColor: activeButton === text ? "#C2A061" : '',
-                color: activeButton === text ? "white" : '',
+                backgroundColor: currType === text ? "#C2A061" : '',
+                color: currType === text ? "white" : '',
                 marginRight: 8,
             }}
         >
@@ -29,7 +29,7 @@ const CustomerView = ({ menuItems }) => {
             {text}
         </Button>
     );
-    // TODO: Separate style out to separate css files
+
     const Popup = ({ item, onClose }) => (
         <div
             style={{
@@ -165,7 +165,7 @@ const CustomerView = ({ menuItems }) => {
                         <button 
                             style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
                             aria-label="Delete"
-                            onClick={() => {/* TODO:function to handle delete */}}>
+                            onClick={() => {removeItem(item.name)}}>
                             <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
                         </button>
                     </div>
@@ -173,6 +173,13 @@ const CustomerView = ({ menuItems }) => {
                 <div style={{ marginTop: "20px", fontWeight: "bold" }}>
                     Total: ${totalCost.toFixed(2)}
                 </div>
+
+                {/* Clear Cart button */}
+                <button 
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                    onClick={() => {emptyBasket()}}>
+                    Clear Cart
+                </button>
             </div>
         );
     };
@@ -225,14 +232,12 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
-    
-
     const decreaseQuantity = (itemName) => {
         setBasket((currentBasket) => {
             const itemIndex = currentBasket.findIndex(
                 (item) => item.name === itemName
             );
-            if (itemIndex === -1) return currentBasket; // Item not found, no changes
+            if (itemIndex === -1) return currentBasket;
 
             const newItem = { ...currentBasket[itemIndex] };
             if (newItem.quantity > 1) {
@@ -243,7 +248,6 @@ const CustomerView = ({ menuItems }) => {
                     ...currentBasket.slice(itemIndex + 1),
                 ];
             } else {
-                // Only show the confirmation if the quantity is 1
                 const confirmRemoval = window.confirm(
                     "Do you want to remove this item from your basket?"
                 );
@@ -252,10 +256,18 @@ const CustomerView = ({ menuItems }) => {
                         (_, index) => index !== itemIndex
                     );
                 }
-                return currentBasket; // No changes if user cancels
+                return currentBasket;
             }
         });
     };
+
+    const removeItem = (itemName) => {
+        setBasket(currentBasket => currentBasket.filter(item => item.name !== itemName));
+    }
+
+    const emptyBasket = () => {
+        setBasket([]);
+    }
 
     return (
         <div
@@ -270,7 +282,7 @@ const CustomerView = ({ menuItems }) => {
                     borderRight: "2px solid #000",
                     display: "flex",
                     flexDirection: "column",
-                    width: "300px"
+                    width: "15%"
                 }}
             >
                 {buttonWithImg("Burgers")}
@@ -290,8 +302,7 @@ const CustomerView = ({ menuItems }) => {
                     display: "flex",
                     flexDirection: "column",
                     borderBottom: "2px solid #000", 
-                    flexGrow: 9, 
-                    margin: 10 
+                    margin: 10
                 }}
             >
                 {AssociatedMenuItems()}
@@ -299,7 +310,7 @@ const CustomerView = ({ menuItems }) => {
 
             <div style={{ 
                     margin: 10,
-                    width: "300"
+                    width: "20%"
                 }}>
                 <h1>Your Order</h1>
                 {AddToBasket()}
