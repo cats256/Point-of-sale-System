@@ -77,30 +77,6 @@ export async function translate(text, targetLanguage) {
     });
 }
 
-export async function getLanguages() {
-    return request("/languages", { method: "GET" });
-}
-
-export async function getOrders(start_date, end_date) {
-    const response = await axios.get(`${API_BASE}/orders_info`, {
-        params: {
-            start_date,
-            end_date,
-        },
-    });
-
-    return response.data.orders;
-}
-
-export async function translate(text, targetLanguage) {
-    return request(`/translate`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text, targetLanguage }),
-    });
-}
 
 export async function submitRestockOrder(formData) {
     return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });

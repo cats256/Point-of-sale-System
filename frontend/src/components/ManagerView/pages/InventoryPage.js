@@ -49,11 +49,8 @@ const InventoryPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     submitRestockOrder(formData)
     .then(data => {
-      console.log(formData);
-      // Handle response
       alert("success")
     })
     .catch(error => {

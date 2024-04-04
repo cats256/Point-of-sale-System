@@ -140,8 +140,6 @@ def restock_order():
     cur.execute(current_stock_query, (ingredient_id,))
     current_stock_row = cur.fetchone()
 
-    # print(current_stock_row)
-
     current_stock = int(current_stock_row[0])
     updated_quantity = current_stock + int(quantity)
 
