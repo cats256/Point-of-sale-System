@@ -1,15 +1,23 @@
-import { Button, List, ListItem } from "@mui/material";
+import { Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
-import { submitOrder } from "../../network/api";
-import { tempBurger } from '../../img/temp_burger.jpeg'; 
+import { useBasket } from "../CustomerView/BasketContext";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
-    const [basket, setBasket] = useState([]);
-    const [showPopup, setShowPopup] = useState(Boolean);
+    const { basket, 
+            addItemToBasket, 
+            increaseItemQuantity, 
+            decreaseItemQuantity, 
+            removeItemFromBasket, 
+            emptyBasket, 
+            placeOrder, 
+            totalCost,
+            setShowItemInfoPopup, 
+            showItemInfoPopup
+        } = useBasket();
     const [popupContent, setPopupContent] = useState("");
 
     const buttonWithImg = (text, panel = '', img = '', alt = '') => (
@@ -80,7 +88,7 @@ const CustomerView = ({ menuItems }) => {
                 >
                     <button onClick={onClose}>Close</button>
                     <button
-                        onClick={() => handleAddToBasket(item)}
+                        onClick={() => addItemToBasket(item)}
                         style={{ backgroundColor: "#C2A061", color: "white" }}
                     >
                         Add to Basket
@@ -94,7 +102,7 @@ const CustomerView = ({ menuItems }) => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
 
         const handleItemClick = (itemContent) => {
-            setShowPopup(true);
+            setShowItemInfoPopup(true);
             setPopupContent(itemContent);
         };
 
@@ -122,10 +130,10 @@ const CustomerView = ({ menuItems }) => {
                 {["Burgers", "Baskets", "Sandwiches"].includes(panel) && (
                     <div>Make it a combo</div>
                 )}
-                {showPopup && (
+                {showItemInfoPopup && (
                     <Popup
                         item={popupContent}
-                        onClose={() => setShowPopup(false)}
+                        onClose={() => setShowItemInfoPopup(false)}
                     />
                 )}
             </div>
@@ -133,10 +141,6 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const AddToBasket = () => {
-        const totalCost = basket.reduce((total, item) => {
-            return total + parseFloat(item.price) * item.quantity;
-        }, 0);
-
         return (
             <div>
                 {basket.map((item, index) => (
@@ -147,14 +151,14 @@ const CustomerView = ({ menuItems }) => {
                             {/* Quantity modification buttons */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <button 
-                                    onClick={() => decreaseQuantity(item.name)}
+                                    onClick={() => decreaseItemQuantity(item.name)}
                                     aria-label="Decrease item">
                                     -
                                 </button>
                                 {item.quantity}
                                 <button 
                                     style={{ marginRight: '20px' }}
-                                    onClick={() => increaseQuantity(item.name)}
+                                    onClick={() => increaseItemQuantity(item.name)}
                                     aria-label="Increase item">
                                     +
                                 </button>
@@ -165,7 +169,7 @@ const CustomerView = ({ menuItems }) => {
                         <button 
                             style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
                             aria-label="Delete"
-                            onClick={() => {removeItem(item.name)}}>
+                            onClick={() => {removeItemFromBasket(item.name)}}>
                             <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
                         </button>
                     </div>
@@ -183,91 +187,6 @@ const CustomerView = ({ menuItems }) => {
             </div>
         );
     };
-
-    const placeOrder = async () => {
-        for (const item of basket) {
-            const orderData = {
-                name: item.name,
-                price: String(item.price * item.quantity),
-                date: new Date().toISOString(),
-                assigned_employee: "1", 
-            };
-            try {
-                const response = await submitOrder(orderData);
-                console.log(response.message); 
-            } catch (error) {
-                console.error("Error placing order:", error);
-            }
-        }
-    };
-
-    const handleAddToBasket = (itemToAdd) => {
-        setBasket((currentBasket) => {
-            const exists = currentBasket.find(
-                (item) => item.name === itemToAdd.name
-            );
-            if (exists) {
-                return currentBasket.map((item) =>
-                    item.name === itemToAdd.name
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            } else {
-                return [...currentBasket, { ...itemToAdd, quantity: 1 }];
-            }
-        });
-
-        setTimeout(() => {
-            setShowPopup(false);
-        }, 700); 
-    };
-
-    const increaseQuantity = (itemName) => {
-        setBasket((currentBasket) =>
-            currentBasket.map((item) =>
-                item.name === itemName
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-            )
-        );
-    };
-
-    const decreaseQuantity = (itemName) => {
-        setBasket((currentBasket) => {
-            const itemIndex = currentBasket.findIndex(
-                (item) => item.name === itemName
-            );
-            if (itemIndex === -1) return currentBasket;
-
-            const newItem = { ...currentBasket[itemIndex] };
-            if (newItem.quantity > 1) {
-                newItem.quantity -= 1;
-                return [
-                    ...currentBasket.slice(0, itemIndex),
-                    newItem,
-                    ...currentBasket.slice(itemIndex + 1),
-                ];
-            } else {
-                const confirmRemoval = window.confirm(
-                    "Do you want to remove this item from your basket?"
-                );
-                if (confirmRemoval) {
-                    return currentBasket.filter(
-                        (_, index) => index !== itemIndex
-                    );
-                }
-                return currentBasket;
-            }
-        });
-    };
-
-    const removeItem = (itemName) => {
-        setBasket(currentBasket => currentBasket.filter(item => item.name !== itemName));
-    }
-
-    const emptyBasket = () => {
-        setBasket([]);
-    }
 
     return (
         <div
