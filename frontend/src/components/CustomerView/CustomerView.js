@@ -178,24 +178,20 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const placeOrder = async () => {
-        // // Assuming basket is an array of items where each item has name, price, and quantity
-        // for (const item of basket) {
-        //     console.log(item);
-        //     const orderData = {
-        //         name: item.name,
-        //         price: String(item.price * item.quantity),
-        //         date: new Date().toISOString(),  // Assuming the backend expects a string date
-        //         assigned_employee: "1",  // Example value, adjust as needed
-        //     };
-        //     console.log(orderData);
-        //     try {
-        //         const response = await submitOrder(orderData);
-        //         const responseData = await response.json();  // Assuming the response is JSON
-        //         console.log(responseData.message);  // Logging the response message
-        //     } catch (error) {
-        //         console.error("Error placing order:", error);
-        //     }
-        // }
+        for (const item of basket) {
+            const orderData = {
+                name: item.name,
+                price: String(item.price * item.quantity),
+                date: new Date().toISOString(),
+                assigned_employee: "1", 
+            };
+            try {
+                const response = await submitOrder(orderData);
+                console.log(response.message); 
+            } catch (error) {
+                console.error("Error placing order:", error);
+            }
+        }
     };
 
     const handleAddToBasket = (itemToAdd) => {

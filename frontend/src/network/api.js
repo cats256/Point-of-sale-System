@@ -90,16 +90,7 @@ export async function submitOrder(orderData) {
             },
             body: JSON.stringify(orderData),
         });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        console.log("Order submitted successfully", response);
         return response;
-
-        const responseData = await response.json();
-        return responseData;
     } catch (error) {
         console.error("Error submitting order:", error);
     }
