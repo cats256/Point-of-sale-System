@@ -81,6 +81,27 @@ export async function translate(text, targetLanguage) {
     });
 }
 
-export async function submitOrder() {
-    return request("/submit_order", { method: "GET" });
+export async function submitOrder(orderData) {
+    try {
+        const response = await request("/submit_order", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log("Order submitted successfully", response);
+        return response;
+
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        console.error("Error submitting order:", error);
+    }
 }
+

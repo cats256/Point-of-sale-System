@@ -40,7 +40,7 @@ const EmployeesPage = () => {
         <div className="employee-tiles">
           {employeeNames.map((employee, index) => (
             <div key={index} className="employee-tile" style={{ width: '50%', marginBottom: '20px', cursor: 'pointer', border: '1px solid #ccc', padding: '10px' }} onClick={() => handleEmployeeClick(employee)}>
-              <img src="placeholder.jpg" alt="Employee" style={{ width: '100px', height: '100px', marginBottom: '10px' }} />
+              <img src = {require('../../../img/temp_burger.jpeg')} alt="Employee" style={{ width: '100px', height: '100px', marginBottom: '10px' }} />
               <div>{employee}</div>
             </div>
           ))}

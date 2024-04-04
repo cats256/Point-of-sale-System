@@ -1,7 +1,9 @@
-import { Button } from "@mui/material";
+import { Button, List, ListItem } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
+import { submitOrder } from "../../network/api";
+import { tempBurger } from '../../img/temp_burger.jpeg'; 
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
@@ -10,7 +12,7 @@ const CustomerView = ({ menuItems }) => {
     const [showPopup, setShowPopup] = useState(Boolean);
     const [popupContent, setPopupContent] = useState("");
 
-    const buttonWithImg = (text, panel = "", img = "", alt = "") => (
+    const buttonWithImg = (text, panel = '', img = '', alt = '') => (
         <Button
             variant="outlined"
             onClick={() => {
@@ -18,8 +20,8 @@ const CustomerView = ({ menuItems }) => {
                 setActiveButton(text);
             }}
             style={{
-                backgroundColor: activeButton === text ? "#C2A061" : "",
-                color: activeButton === text ? "white" : "",
+                backgroundColor: activeButton === text ? "#C2A061" : '',
+                color: activeButton === text ? "white" : '',
                 marginRight: 8,
             }}
         >
@@ -97,19 +99,23 @@ const CustomerView = ({ menuItems }) => {
         };
 
         return (
-            <div>
+            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap", backgroundColor: 'red'}}>
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
 
                     return (
                         <div key={index}>
-                            <Button
+                            <button
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
+                                style={{fontWeight: "bold"}}
                             >
-                                <img src={"temp_burger.jpg"} alt={itemName} style={{ marginRight: 8 }} />{" "}
-                                {itemName} ${item.price}
-                            </Button>
+                                <img src={require('../../img/temp_burger.jpeg')} alt={itemName} style={{ marginRight: 8, width:180, height:100 }} />
+                                <div style = {{ fontFamily: "bold" }}>
+                                    {itemName} 
+                                </div>
+                                ${item.price}
+                            </button>
                         </div>
                     );
                 })}
@@ -171,6 +177,27 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
+    const placeOrder = async () => {
+        // // Assuming basket is an array of items where each item has name, price, and quantity
+        // for (const item of basket) {
+        //     console.log(item);
+        //     const orderData = {
+        //         name: item.name,
+        //         price: String(item.price * item.quantity),
+        //         date: new Date().toISOString(),  // Assuming the backend expects a string date
+        //         assigned_employee: "1",  // Example value, adjust as needed
+        //     };
+        //     console.log(orderData);
+        //     try {
+        //         const response = await submitOrder(orderData);
+        //         const responseData = await response.json();  // Assuming the response is JSON
+        //         console.log(responseData.message);  // Logging the response message
+        //     } catch (error) {
+        //         console.error("Error placing order:", error);
+        //     }
+        // }
+    };
+
     const handleAddToBasket = (itemToAdd) => {
         setBasket((currentBasket) => {
             const exists = currentBasket.find(
@@ -202,51 +229,7 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
-    const placeOrder = async (basket) => {
-        const apiUrl = 'http://127.0.0.1:5000/submit_order'; // TODO: find correct link
     
-        // Ensure basket is iterable
-        if (!basket || !Array.isArray(basket)) {
-            console.error("Basket is not iterable");
-            return;
-        }
-
-        for (let item of basket) {
-            const orderData = {
-                name: item.name,
-                price: String(item.price * item.quantity), // Assuming the API expects a string
-                date: new Date().toISOString(), // Format the date as needed by your API
-                assigned_employee: "1", // TODO: currently set as "1", adjust as needed
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: "POST", // Using POST as the method
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(orderData),
-                });
-
-                if (!response.ok) {
-                    // If the response is not ok, throw an error
-                    throw new Error(`Failed to place order for ${item.name}`);
-                }
-
-                // Assuming you want to process the response data
-                const responseData = await response.json();
-                console.log(
-                    `${item.name} order response:`,
-                    responseData.message
-                );
-            } catch (error) {
-                console.error("Error placing order:", error);
-                return; // Exit if an error occurs
-            }
-        }
-
-        alert("All orders submitted successfully.");
-    };
 
     const decreaseQuantity = (itemName) => {
         setBasket((currentBasket) => {
@@ -289,9 +272,9 @@ const CustomerView = ({ menuItems }) => {
             <div
                 style={{
                     borderRight: "2px solid #000",
-                    flexGrow: 2,
                     display: "flex",
                     flexDirection: "column",
+                    width: "300px"
                 }}
             >
                 {buttonWithImg("Burgers")}
@@ -310,14 +293,18 @@ const CustomerView = ({ menuItems }) => {
                     flexGrow: 10,
                     display: "flex",
                     flexDirection: "column",
+                    borderBottom: "2px solid #000", 
+                    flexGrow: 9, 
+                    margin: 10 
                 }}
             >
-                <div style={{ borderBottom: "2px solid #000", flexGrow: 9 }}>
-                    {AssociatedMenuItems()}
-                </div>
+                {AssociatedMenuItems()}
             </div>
 
-            <div style={{ flexGrow: 3, margin: 10}}>
+            <div style={{ 
+                    margin: 10,
+                    width: "300"
+                }}>
                 <h1>Your Order</h1>
                 {AddToBasket()}
                 <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
