@@ -117,7 +117,6 @@ def submit_order():
     price = data.get("price")
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
-    print("test print")
     try:
         cur = conn.cursor()
     except:
@@ -126,11 +125,8 @@ def submit_order():
         )
         cur = conn.cursor()
     
-    print("test print")
     query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(query, (name, price, date, assigned_employee))
-
-
     conn.commit()
     cur.close()
     return jsonify(
