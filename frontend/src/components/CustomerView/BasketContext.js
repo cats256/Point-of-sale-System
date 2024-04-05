@@ -81,7 +81,7 @@ export const BasketProvider = ({ children }) => {
                 name: item.name,
                 price: String(item.price * item.quantity),
                 date: new Date().toISOString(),
-                assigned_employee: "1", // TODO: change to actual employee
+                assigned_employee: "7", // 7 is kiosk employee
             };
             try {
                 const response = await submitOrder(orderData);

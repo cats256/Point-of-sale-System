@@ -1,11 +1,14 @@
 import { Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
+import CloseIcon from '@mui/icons-material/Close';
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
+    // const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
     const [currType, setCurrType] = useState(null);
     const { basket, 
             addItemToBasket, 
@@ -116,10 +119,9 @@ const CustomerView = ({ menuItems }) => {
                             <button
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
-                                style={{fontWeight: "bold"}}
                             >
                                 <img src={require('../../img/temp_burger.jpeg')} alt={itemName} style={{ marginRight: 8, width:180, height:100 }} />
-                                <div style = {{ fontFamily: "bold" }}>
+                                <div style = {{ fontWeight: "bold" }}>
                                     {itemName} 
                                 </div>
                                 ${item.price}
@@ -140,14 +142,24 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
-    const AddToBasket = () => {
+    const DisplayBasket = () => {
         return (
             <div>
+                <h1>My Basket</h1>
+                
+                {/* Clear Cart button */}
+                <button 
+                    style={{ marginBottom: "20px", marginTop: "20px", display: 'flex', justifyContent: 'center' }}
+                    onClick={() => {emptyBasket()}}>
+                    Clear Basket
+                </button>
+
                 {basket.map((item, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "10px"}}>
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "25px"}}>
                         <div style={{ flexGrow: 1 }}>
-                            {formatItemName(item)}: $
-                            {parseFloat(item.price * item.quantity).toFixed(2)}
+                            <span style={{ fontWeight: 'bold' }}>{formatItemName(item)} </span>
+                            ${parseFloat(item.price * item.quantity).toFixed(2)}
+                            
                             {/* Quantity modification buttons */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <button 
@@ -174,17 +186,51 @@ const CustomerView = ({ menuItems }) => {
                         </button>
                     </div>
                 ))}
-                <div style={{ marginTop: "20px", fontWeight: "bold" }}>
-                    Total: ${totalCost.toFixed(2)}
-                </div>
 
-                {/* Clear Cart button */}
-                <button 
-                    style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                    onClick={() => {emptyBasket()}}>
-                    Clear Cart
-                </button>
+                <div style={{ position: 'fixed', display: 'flex', gap: 20, bottom: 10, marginTop: "20px", fontWeight: "bold" }}>
+                    Total: ${totalCost.toFixed(2)}
+                    <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
+                </div>
             </div>
+        );
+    };
+
+    const Accessibility = () => {
+        const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+        return (
+            <>
+                <button 
+                    style={{ 
+                        position: 'absolute',  
+                        bottom: 10, 
+                        left: '50%', 
+                        transform: 'translateX(-50%)', 
+                        justifyContent: 'center' 
+                    }}
+                    aria-label="accessibility options"
+                    onClick={() => setShowAccessibilityPanel(prevState => !prevState)} // Adjusted to call the toggle function
+                >
+                    <SettingsAccessibilityIcon />
+                </button>
+                {showAccessibilityPanel && (
+                    <div style={{
+                        position: 'fixed', 
+                        bottom: '50px', 
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: 'white',
+                        padding: '20px',
+                        borderRadius: '8px', 
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}>
+                        <button onClick={() => setShowAccessibilityPanel(prevState => !prevState)}>
+                            <CloseIcon/>
+                        </button>
+                        <span> Accessibility Options </span>
+                        
+                    </div>
+                )}
+            </>
         );
     };
 
@@ -201,7 +247,8 @@ const CustomerView = ({ menuItems }) => {
                     borderRight: "2px solid #000",
                     display: "flex",
                     flexDirection: "column",
-                    width: "15%"
+                    width: "15%",
+                    position: 'relative'
                 }}
             >
                 {buttonWithImg("Burgers")}
@@ -212,6 +259,8 @@ const CustomerView = ({ menuItems }) => {
                 {buttonWithImg("Sides")}
                 {buttonWithImg("Sauces")}
                 {buttonWithImg("All")}
+
+                {Accessibility()}
             </div>
 
             <div
@@ -229,11 +278,9 @@ const CustomerView = ({ menuItems }) => {
 
             <div style={{ 
                     margin: 10,
-                    width: "20%"
+                    width: "25%"
                 }}>
-                <h1>Your Order</h1>
-                {AddToBasket()}
-                <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
+                {DisplayBasket()}
             </div>
         </div>
     );

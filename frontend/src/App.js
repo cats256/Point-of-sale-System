@@ -1,19 +1,19 @@
 import { Button } from "@mui/material";
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
-import { MenuView } from "./components/MenuView/MenuView";
+import { MenuView } from "./components/MenuView/MenuView"; 
 import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { BasketProvider } from '../src/components/CustomerView/BasketContext';
-import ReactWeather, { useVisualCrossing } from "react-open-weather";
+import { useVisualCrossing } from "react-open-weather";
 
 function App() {
-    const [panel, setPanel] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
     const [languages, setLanguages] = useState({});
-    const [language, setLanguage] = useState("English (American)");
+    const [currLanguage, setCurrLanguage] = useState("English (American)");
 
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
@@ -30,65 +30,49 @@ function App() {
     }, []);
 
     const handleChange = (event) => {
-        setLanguage(event.target.value);
+        setCurrLanguage(event.target.value);
     };
 
     return (
-        <BasketProvider>
-            { panel ? (
-                (() => {
-                    switch (panel) {
-                        case "manager":
-                            return <ManagerView />;
-                        case "cashier":
-                            return <CashierView />;
-                        case "customer":
-                            return <CustomerView menuItems={menuItems} />;
-                        case "menu":
-                            return (
-                                <MenuView
-                                    languages={languages}
-                                    language={language}
-                                    menuItems={menuItems}
-                                    weatherData={data}
-                                    isWeatherLoading={isLoading}
-                                    weatherErrorMessage={errorMessage}
-                                />
-                            );
-                        default:
-                            return null;
-                    }
-                })()
-            ) : (
-                <div>Choose a panel</div>
-                <Button variant="outlined" onClick={() => setPanel("manager")}>
-                    Manager
-                </Button>
-                <Button variant="outlined" onClick={() => setPanel("cashier")}>
-                    Cashier
-                </Button>
-                <Button variant="outlined" onClick={() => setPanel("customer")}>
-                    Customer
-                </Button>
-                <Button variant="outlined" onClick={() => setPanel("menu")}>
-                    Menu
-                </Button>
-            )}
-            <FormControl>
-                <InputLabel>Language</InputLabel>
-                <Select
-                    value={language}
-                    label={language}
-                    onChange={handleChange}
-                >
-                    {Object.keys(languages).map((language) => (
-                        <MenuItem key={language} value={language}>
-                            {language}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        </BasketProvider>
+        <BrowserRouter>
+            <BasketProvider>
+                <div style = {{ margin: 10}}>
+                    <Link to="/manager"><Button variant="outlined">Manager</Button></Link>
+                    <Link to="/cashier"><Button variant="outlined">Cashier</Button></Link>
+                    <Link to="/customer"><Button variant="outlined">Customer</Button></Link>
+                    <Link to="/menu"><Button variant="outlined">Menu</Button></Link>
+
+                    <FormControl>
+                        <InputLabel>Language</InputLabel>
+                        <Select
+                            value={currLanguage}
+                            label={currLanguage}
+                            onChange={handleChange}
+                            >
+                            {Object.keys(languages).map((currLanguage) => (
+                                <MenuItem key={currLanguage} value={currLanguage}>
+                                    {currLanguage}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
+
+                <Routes>
+                    <Route path="/manager" element={<ManagerView />} />
+                    <Route path="/cashier" element={<CashierView />} />
+                    <Route path="/customer" element={<CustomerView menuItems={menuItems} />} />
+                    <Route path="/menu" element={<MenuView 
+                                                languages={languages} 
+                                                language={currLanguage} 
+                                                menuItems={menuItems} 
+                                                weatherData={data}
+                                                isWeatherLoading={isLoading}
+                                                weatherErrorMessage={errorMessage}
+                                                />} />
+                </Routes>
+            </BasketProvider>
+        </BrowserRouter>
     );
 }
 
