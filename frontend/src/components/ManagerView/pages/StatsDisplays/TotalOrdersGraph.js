@@ -1,4 +1,3 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import lowess from "@stdlib/stats-lowess";
 import { Chart, registerables } from "chart.js";
 import { sgg } from "ml-savitzky-golay-generalized";
@@ -8,14 +7,8 @@ import { getOrders } from "../../../../network/api";
 
 Chart.register(...registerables);
 
-const TotalOrdersGraph = ({ start_date, end_date }) => {
+const TotalOrdersGraph = ({ start_date, end_date, smoothingOption }) => {
     const [orderData, setOrderData] = useState({ labels: [], datasets: [] });
-    const [smoothingOption, setSmoothingOption] = useState("None");
-    const smoothingOptions = ["None", "Savitzky-Golay Filter", "LOWESS"];
-
-    const handleChange = (event) => {
-        setSmoothingOption(event.target.value);
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,25 +78,26 @@ const TotalOrdersGraph = ({ start_date, end_date }) => {
 
     return (
         <div>
-            <h2>Orders Line Chart</h2>
+            {/* <h2>Orders Line Chart</h2> */}
             <div>{/* <pre>{JSON.stringify(orderData, null, 2)}</pre> */}</div>
             <div className="chart-container">
                 <h3>Orders Line Chart</h3>
-                <FormControl style={{ width: "200px" }}>
-                    <InputLabel>Smoothing Option</InputLabel>
-                    <Select
-                        value={smoothingOption}
-                        label={smoothingOption}
-                        onChange={handleChange}
-                    >
-                        {smoothingOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Line data={orderData} />
+                <Line
+                    data={orderData}
+                    options={{
+                        scales: {
+                            x: {
+                                // Note the change from 'xAxes' to 'x'
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    maxTicksLimit: 5,
+                                },
+                            },
+                        },
+                    }}
+                />
             </div>
         </div>
     );

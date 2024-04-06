@@ -6,7 +6,7 @@ import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
 import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import ReactWeather, { useVisualCrossing } from "react-open-weather";
+import { useVisualCrossing } from "react-open-weather";
 
 function App() {
     const [panel, setPanel] = useState(null);
