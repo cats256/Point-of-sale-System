@@ -82,13 +82,13 @@ const MenuView = ({
         ...translatedMenuItems[type].map((item, index) => (
             <div key={type + index} className="grid-item">
                 <img
-                    src="/square_image.jpg"
+                    src={"/square_image.jpg"}
                     alt={item.translatedName + " Image"}
                 />
                 <div
                     style={{
-                        paddingLeft: "8px",
-                        paddingRight: "8px",
+                        paddingLeft: "16px",
+                        paddingRight: "16px",
                         textAlign: "center",
                     }}
                 >
