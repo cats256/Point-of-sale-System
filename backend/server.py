@@ -107,6 +107,17 @@ def get_orders_info():
 
     return orders_info
 
+# API endpoint to return order id
+@app.route("/order_id", methods=["GET"])
+def order_id():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT id FROM orders WHERE id=(SELECT max(id) FROM orders);")
+    cur.execute(query)
+    order_id = cur.fetchone()[0] 
+    cur.close()
+    return jsonify({"order_id": order_id})
+
+
 
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["POST"])
@@ -125,8 +136,9 @@ def submit_order():
         )
         cur = conn.cursor()
     
-    query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
-    cur.execute(query, (name, price, date, assigned_employee))
+    orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
+    cur.execute(orders_query, (name, price, date, assigned_employee))
+
     conn.commit()
     cur.close()
     return jsonify(
