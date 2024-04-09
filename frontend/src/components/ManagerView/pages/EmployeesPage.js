@@ -13,17 +13,22 @@ const EmployeesPage = () => {
 
     // const employees = ["Laine", "Matthew", "Brinley", "Nhat", "Carolina", "Tatiana"];
     const [employeeNames, setEmployeeNames] = useState([]);
+    const [employeeEmails, setEmployeeEmails] = useState([]);
+
     const fetchData = async () => {
         const employees = await getEmployees();
-        console.log(employees);
+        //console.log(employees);
         const employee_names = [];
+        const employee_emails = [];
 
         employees.forEach((employee) => {
             employee_names.push(employee["name"]);
-            console.log(employee["name"]);
+            employee_emails.push(employee["email"]);
+            //console.log(employee["name"]);
         });
 
         setEmployeeNames(employee_names);
+        setEmployeeEmails(employee_emails);
     };
     fetchData();
 
