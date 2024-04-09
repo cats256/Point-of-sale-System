@@ -1,83 +1,220 @@
-import React, { useState, useEffect } from 'react';
 import { Button } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
+import CloseIcon from '@mui/icons-material/Close';
+import { useState } from "react";
+import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 
-const CashierView = () => {
-    const { basket, totalCost, placeOrder, addItemToBasket } = useBasket();
-    const [menuItems, setMenuItems] = useState([]);
-    const [categories, setCategories] = useState([]);
+const CashierView = ({ menuItems }) => {
+    const [panel, setPanel] = useState(null);
+    // const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+    const [currType, setCurrType] = useState(null);
+    const { basket, 
+            addItemToBasket, 
+            increaseItemQuantity, 
+            decreaseItemQuantity, 
+            removeItemFromBasket, 
+            emptyBasket, 
+            placeOrder, 
+            totalCost,
+        } = useBasket();
+    // const [popupContent, setPopupContent] = useState("");
 
-    // dynamically getting menu items & categories
-    useEffect(() => {
-        fetchMenuItems();
-        fetchCategories();
-    }, []);
+    const buttonWithImg = (text, panel = '', img = '', alt = '') => (
+        <Button
+            variant="outlined"
+            onClick={() => {
+                setPanel(panel || text);
+                setCurrType(text);
+            }}
+            style={{
+                backgroundColor: currType === text ? "#C2A061" : '',
+                color: currType === text ? "white" : '',
+                marginRight: 8,
+            }}
+        >
+            {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
+            {text}
+        </Button>
+    );
 
-    // API call to fetch the menu items
-    const fetchMenuItems = async () => {
-        try {
-            const response = await fetch('/api/menu_items');
-            const data = await response.json();
-            setMenuItems(data.menuItems);
-        } catch (error) {
-            console.error('Error fetching menu items:', error);
-        }
+    const AssociatedMenuItems = () => {
+        let filteredItems = menuItems.filter((item) => item.type === panel);
+
+        const handleItemClick = (item) => {
+            addItemToBasket(item);
+        };
+
+        return (
+            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap", backgroundColor: 'white'}}>
+                {filteredItems.map((item, index) => {
+                    let itemName = formatItemName(item);
+
+                    return (
+                        <div key={index}>
+                            <button
+                                variant="outlined"
+                                onClick={() => handleItemClick(item)}
+                                style={{
+                                    width: "100px",
+                                    height: "100px",
+                                }}
+                            >
+                                <div style = {{ fontWeight: "bold" }}>
+                                    {itemName} 
+                                </div>
+                                ${item.price}
+                            </button>
+                        </div>
+                    );
+                })}
+                {["Burgers", "Baskets", "Sandwiches"].includes(panel) && (
+                    <div>Make it a combo</div>
+                )}
+            </div>
+        );
     };
 
-    // API call to fetch the categories
-    const fetchCategories = async () => {
-        try {
-            const response = await fetch('/api/categories');
-            const data = await response.json();
-            setCategories(data.categories);
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-        }
+    const DisplayBasket = () => {
+        return (
+            <div>
+                <h1>Order #399823</h1> {/* }
+                
+                {/* Clear Cart button */}
+                <button 
+                    style={{ marginBottom: "20px", marginTop: "20px", display: 'flex', justifyContent: 'center' }}
+                    onClick={() => {emptyBasket()}}>
+                    Clear Basket
+                </button>
+
+                {basket.map((item, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "25px"}}>
+                        <div style={{ flexGrow: 1 }}>
+                            <span style={{ fontWeight: 'bold' }}>{formatItemName(item)} </span>
+                            ${parseFloat(item.price * item.quantity).toFixed(2)}
+                            
+                            {/* Quantity modification buttons */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <button 
+                                    onClick={() => decreaseItemQuantity(item.name)}
+                                    aria-label="Decrease item">
+                                    -
+                                </button>
+                                {item.quantity}
+                                <button 
+                                    style={{ marginRight: '20px' }}
+                                    onClick={() => increaseItemQuantity(item.name)}
+                                    aria-label="Increase item">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Delete button */}
+                        <button 
+                            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                            aria-label="Delete"
+                            onClick={() => {removeItemFromBasket(item.name)}}>
+                            <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
+                        </button>
+                    </div>
+                ))}
+
+                <div style={{ position: 'fixed', display: 'flex', gap: 20, bottom: 10, marginTop: "20px", fontWeight: "bold" }}>
+                    Total: ${totalCost.toFixed(2)}
+                    <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
+                </div>
+            </div>
+        );
     };
 
-    useEffect(() => {
-        console.log('Categories:', categories);
-    }, [categories]);
-
-    const handleCategoryClick = (category) => {
-        console.log('Category clicked:', category);
-    };
-
-    const handleItemClick = (item) => {
-        addItemToBasket(item);
+    const Accessibility = () => {
+        const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+        return (
+            <>
+                <button 
+                    style={{ 
+                        position: 'absolute',  
+                        bottom: 10, 
+                        left: '50%', 
+                        transform: 'translateX(-50%)', 
+                        justifyContent: 'center' 
+                    }}
+                    aria-label="accessibility options"
+                    onClick={() => setShowAccessibilityPanel(prevState => !prevState)} // Adjusted to call the toggle function
+                >
+                    <SettingsAccessibilityIcon />
+                </button>
+                {showAccessibilityPanel && (
+                    <div style={{
+                        position: 'fixed', 
+                        bottom: '50px', 
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: 'white',
+                        padding: '20px',
+                        borderRadius: '8px', 
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}>
+                        <button onClick={() => setShowAccessibilityPanel(prevState => !prevState)}>
+                            <CloseIcon/>
+                        </button>
+                        <span> Accessibility Options </span>
+                        
+                    </div>
+                )}
+            </>
+        );
     };
 
     return (
-        <div style={{ display: "flex", justifyContent: "space-between", minHeight: "100vh" }}>
-            <div style={{ borderRight: "2px solid #000", display: "flex", flexDirection: "column", width: "15%", position: 'relative' }}>
-                {categories.map((category, index) => (
-                    <Button key={index} variant="outlined" onClick={() => handleCategoryClick(category)}>
-                        {category}
-                    </Button>
-                ))}
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+                minHeight: "100vh",
+            }}
+        >
+            <div
+                style={{
+                    borderRight: "2px solid #000",
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "15%",
+                    position: 'relative'
+                }}
+            >
+                {buttonWithImg("Burgers")}
+                {buttonWithImg("Baskets")}
+                {buttonWithImg("Sandwiches")}
+                {buttonWithImg("Drinks")}
+                {buttonWithImg("Desserts")}
+                {buttonWithImg("Sides")}
+                {buttonWithImg("Sauces")}
+                {buttonWithImg("All")}
+
+                {Accessibility()}
             </div>
 
-            <div style={{ borderRight: "2px solid #000", flexGrow: 10, display: "flex", flexDirection: "column", borderBottom: "2px solid #000", margin: 10 }}>
-                {menuItems.map((item, index) => (
-                    <div key={index}>
-                        <h2>{item.name}</h2>
-                        <p>Price: ${item.price.toFixed(2)}</p>
-                        <Button onClick={() => handleItemClick(item)}>Add to Basket</Button>
-                    </div>
-                ))}
+            <div
+                style={{
+                    borderRight: "2px solid #000",
+                    flexGrow: 10,
+                    display: "flex",
+                    flexDirection: "column",
+                    borderBottom: "2px solid #000", 
+                    margin: 10
+                }}
+            >
+                {AssociatedMenuItems()}
             </div>
 
-            <div style={{ margin: 10, width: "25%" }}>
-                <h1>Order #87940066</h1> {/* TO DO: Dynamically put in order numbers */}
-                {basket.map((item, index) => (
-                    <div key={index}>
-                        <h2>{item.name}</h2>
-                        <p>Quantity: {item.quantity}</p>
-                        <p>Price: ${parseFloat(item.price * item.quantity).toFixed(2)}</p>
-                    </div>
-                ))}
-                <p>Total: ${totalCost.toFixed(2)}</p>
-                <Button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</Button>
+            <div style={{ 
+                    margin: 10,
+                    width: "25%"
+                }}>
+                {DisplayBasket()}
             </div>
         </div>
     );
