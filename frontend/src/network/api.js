@@ -81,21 +81,26 @@ export async function translate(text, targetLanguage) {
     });
 }
 
-export async function submitOrder(orderData) {
-    try {
-        const response = await request("/submit_order", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData),
-        });
-        return response;
-    } catch (error) {
-        console.error("Error submitting order:", error);
-    }
+export async function submitOrder(formData) {
+    return request("/submit_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
 
 export async function submitRestockOrder(formData) {
     return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
+
+export async function getOrderId() {
+    return request("/order_id", { method: "GET" });
+}
+
+export async function getItemId(menuItemName) {
+    const response = await request(`/menu_item_id?name=${encodeURIComponent(menuItemName)}`, { method: "GET" });
+    return response; // Return the entire response object
+}
+
+export async function attachMenuItem(formData) {
+    return request("/attach_menu_items", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+}
+
+
+
