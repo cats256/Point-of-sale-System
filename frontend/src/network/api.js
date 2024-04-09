@@ -1,4 +1,10 @@
-const API_BASE = "http://127.0.0.1:5000/";
+import axios from "axios";
+import { ConflictError, UnauthorizedError } from "./errors.js";
+
+const API_BASE =
+    process.env.NODE_ENV === "production"
+        ? "https://project-3-315-flask.onrender.com"
+        : "http://127.0.0.1:5000";
 
 async function handleResponse(response) {
     const contentType = response.headers.get("content-type");
@@ -40,4 +46,56 @@ export async function request(endpoint, options = {}) {
 
 export async function getMenuItems() {
     return request("/menu_item_info", { method: "GET" });
+}
+
+export async function getIngredients() {
+    return request("/ingredients_info", { method: "GET" });
+}
+
+export async function getLanguages() {
+    return request("/languages", { method: "GET" });
+}
+
+export async function getOrders(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/orders_info`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
+export async function getEmployees() {
+    return request("/employee_info", { method: "GET" });
+}
+
+export async function translate(text, targetLanguage) {
+    return request(`/translate`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text, targetLanguage }),
+    });
+}
+
+export async function submitOrder(orderData) {
+    try {
+        const response = await request("/submit_order", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+        return response;
+    } catch (error) {
+        console.error("Error submitting order:", error);
+    }
+}
+
+export async function submitRestockOrder(formData) {
+    return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
