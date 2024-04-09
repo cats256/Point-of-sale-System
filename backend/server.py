@@ -65,6 +65,17 @@ def get_restock_info():
     cur.close()
     return jsonify(restock_info)
 
+@app.route("/order_menu_item", methods=["GET"])
+def get_order_menu_item():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT * FROM order_menu_items")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    order_menu_items_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(order_menu_items_info)
+
 
 # API endpoint to fetch employees
 @app.route("/employee_info", methods=["GET"])
@@ -107,6 +118,44 @@ def get_orders_info():
 
     return orders_info
 
+# API endpoint to return order id
+@app.route("/order_id", methods=["GET"])
+def order_id():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT id FROM orders WHERE id=(SELECT max(id) FROM orders);")
+    cur.execute(query)
+    order_id = cur.fetchone()[0] 
+    cur.close()
+    return jsonify({"order_id": order_id})
+
+@app.route("/menu_item_id", methods=["GET"])
+def menu_item_id():
+    item_name = request.args.get("name")
+
+    cur = conn.cursor()
+    query = sql.SQL("SELECT id FROM menu_items WHERE name=%s;")
+    cur.execute(query, (item_name,))
+    item_id = cur.fetchone()[0] 
+    cur.close()
+    return jsonify({"item_id": item_id})
+
+@app.route("/attach_menu_items", methods=["POST"])
+def attach_menu_items():
+    data = request.json
+
+    order_id = data.get("order_id")
+    item_id = data.get("item_id")
+
+    cur = conn.cursor()
+    query = sql.SQL("INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (%s, %s);")
+    cur.execute(query, (order_id, item_id))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Table successfully updated",
+        }
+    )
 
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["POST"])
@@ -125,8 +174,9 @@ def submit_order():
         )
         cur = conn.cursor()
     
-    query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
-    cur.execute(query, (name, price, date, assigned_employee))
+    orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
+    cur.execute(orders_query, (name, price, date, assigned_employee))
+
     conn.commit()
     cur.close()
     return jsonify(

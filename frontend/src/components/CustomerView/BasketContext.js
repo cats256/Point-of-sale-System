@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import { submitOrder } from "../../network/api";
+import { submitOrder, getOrderId, getItemId, attachMenuItem } from "../../network/api";
 
 export const BasketContext = createContext();
 
@@ -76,21 +76,41 @@ export const BasketProvider = ({ children }) => {
     }
 
     const placeOrder = async () => {
+        const orderData = {
+            name: "kiosk",
+            price: String(calculateTotalPrice(basket)),
+            date: new Date().toISOString(),
+            assigned_employee: "7", // 7 is kiosk employee
+        };
+        submitOrder(orderData)
+        const orderIDResponse = await getOrderId();
         for (const item of basket) {
-            const orderData = {
-                name: item.name,
-                price: String(item.price * item.quantity),
-                date: new Date().toISOString(),
-                assigned_employee: "7", // 7 is kiosk employee
-            };
             try {
-                const response = await submitOrder(orderData);
-                console.log(response.message);
+                const itemIDResponse = await getItemId(item.name);
+                const menuItemData = {
+                    order_id: orderIDResponse.order_id,
+                    item_id: itemIDResponse.item_id,
+                };
+                try {
+                    const response = await attachMenuItem(menuItemData);
+                    // Handle the response here
+                    console.log(response);
+                    emptyBasket();
+                } catch (error) {
+                    console.error("Error attaching menu item:", error);
+                }
                 emptyBasket();
             } catch (error) {
                 console.error("Error placing order:", error);
             }
         }
+                const orderID = orderIDResponse.order_id;
+                if (orderID) {
+                    alert("Success! Your order number is " + orderID);
+                    emptyBasket();
+                } else {
+                    throw new Error("Failed to retrieve order ID");
+                }
     };
 
     const totalCost = basket.reduce((total, item) => {
@@ -102,6 +122,14 @@ export const BasketProvider = ({ children }) => {
             {children}
         </BasketContext.Provider>
     );
+};
+
+const calculateTotalPrice = (basket) => {
+    let totalPrice = 0;
+    for (const item of basket) {
+        totalPrice += item.price * item.quantity;
+    }
+    return totalPrice;
 };
 
 export const useBasket = () => useContext(BasketContext);

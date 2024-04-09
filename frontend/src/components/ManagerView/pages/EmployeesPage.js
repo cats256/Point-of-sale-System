@@ -7,29 +7,54 @@ import { getEmployees } from "../../../network/api";
   employee image (either on same list as names in dictionary form or gathered from name),
   all employee information for name (could also be from id if that's easier) */
 import React, { useState } from "react";
+import sha256 from "crypto-js/sha256";
 
 const EmployeesPage = () => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [selectedEmployeeNum, setSelectedEmployeeNum] = useState(null);
 
     // const employees = ["Laine", "Matthew", "Brinley", "Nhat", "Carolina", "Tatiana"];
     const [employeeNames, setEmployeeNames] = useState([]);
-    const fetchData = async () => {
-        const employees = await getEmployees();
-        console.log(employees);
-        const employee_names = [];
+    const [employeeImages, setEmployeeImages] = useState([]);
+    const [employees, setEmployees] = useState([]);
 
-        employees.forEach((employee) => {
+    const fetchData = async () => {
+        const employees_ = await getEmployees();
+        //console.log(employees);
+        const employee_names = [];
+        const employee_images = [];
+
+        employees_.forEach((employee) => {
             employee_names.push(employee["name"]);
-            console.log(employee["name"]);
+            const imagelink = "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
+            console.log(imagelink);
+            employee_images.push(imagelink);
+            //console.log(employee["name"]);
         });
 
         setEmployeeNames(employee_names);
+        setEmployeeImages(employee_images);
+        setEmployees(employees_);
     };
-    fetchData();
 
-    const handleEmployeeClick = (employee) => {
+    // const CryptoJS = require('crypto-js');
+
+    const hashEmail = (email) => {
+        const trimmedEmail = email.trim().toLowerCase();
+        const hashedEmail = sha256(trimmedEmail).toString(); //CryptoJS.SHA256(trimmedEmail).toString(CryptoJS.enc.Hex);
+        return hashedEmail;
+    }
+
+    const handleEmployeeClick = (employee, num) => {
         setSelectedEmployee(employee);
+        setSelectedEmployeeNum(num);
     };
+
+    const handleUpdateSalary = (employee) => {
+        console.log("update " + employee + " salary");
+    }
+
+    fetchData();
 
     return (
         <div style={{ display: "flex" }}>
@@ -47,10 +72,10 @@ const EmployeesPage = () => {
                                 border: "1px solid #ccc",
                                 padding: "10px",
                             }}
-                            onClick={() => handleEmployeeClick(employee)}
+                            onClick={() => handleEmployeeClick(employee, index)}
                         >
                             <img
-                                src={require("../../../img/temp_burger.jpeg")}
+                                src={employeeImages[index]}
                                 alt="Employee"
                                 style={{
                                     width: "100px",
@@ -66,9 +91,32 @@ const EmployeesPage = () => {
             <div style={{ flex: "1", marginLeft: "20px" }}>
                 <h2>Employee Information</h2>
                 {selectedEmployee && (
-                    <div>
-                        <h3>{selectedEmployee}</h3>
-                        <p>info goes here</p>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", border: "1px solid #ccc", borderRadius: "10px", padding: "10px" }}>
+                        <div style={{ display: "flex", alignItems: "left" }}>
+                            <img
+                                src={employeeImages[selectedEmployeeNum]}
+                                alt="Employee"
+                                style={{
+                                    width: "100px",
+                                    height: "100px",
+                                    borderRadius: "50%",
+                                    marginRight: "20px",
+                                }}
+                            />
+                            <h3 style={{ margin: 0, textAlign: "center" }}>{selectedEmployee}</h3>
+                        </div>
+                        <div style={{ marginTop: "10px" }}>
+                            <div style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
+                                <span style={{ fontWeight: "bold" }}>Salary:</span> {employees[selectedEmployeeNum]["salary"]}
+                                <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button>
+                            </div>
+                            <div style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
+                                <span style={{ fontWeight: "bold" }}>Total Orders Made:</span> {employees[selectedEmployeeNum]["sales"]}
+                            </div>
+                            <div>
+                                <span style={{ fontWeight: "bold" }}>Manager:</span> {employees[selectedEmployeeNum]["manager"].toString()}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
