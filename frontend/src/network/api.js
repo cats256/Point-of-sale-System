@@ -81,21 +81,14 @@ export async function translate(text, targetLanguage) {
     });
 }
 
-export async function submitOrder(orderData) {
-    try {
-        const response = await request("/submit_order", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData),
-        });
-        return response;
-    } catch (error) {
-        console.error("Error submitting order:", error);
-    }
+export async function submitOrder(formData) {
+    return request("/submit_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
 
 export async function submitRestockOrder(formData) {
     return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+}
+
+export async function getOrderId() {
+    return request("/order_id", { method: "GET" });
 }

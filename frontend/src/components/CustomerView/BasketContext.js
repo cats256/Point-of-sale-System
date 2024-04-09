@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import { submitOrder } from "../../network/api";
+import { submitOrder, getOrderId } from "../../network/api";
 
 export const BasketContext = createContext();
 
@@ -85,12 +85,19 @@ export const BasketProvider = ({ children }) => {
             };
             try {
                 const response = await submitOrder(orderData);
-                console.log(response.message);
                 emptyBasket();
             } catch (error) {
                 console.error("Error placing order:", error);
             }
         }
+        const orderIDResponse = await getOrderId();
+                const orderID = orderIDResponse.order_id;
+                if (orderID) {
+                    alert("Success! Your order number is " + orderID);
+                    emptyBasket();
+                } else {
+                    throw new Error("Failed to retrieve order ID");
+                }
     };
 
     const totalCost = basket.reduce((total, item) => {
