@@ -2,6 +2,7 @@
 // tiles with name, id, orders completed
 // gravatar images?..
 import { getEmployees } from "../../../network/api";
+// import { updateSalary } from "../../../network/api";
 
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
   employee image (either on same list as names in dictionary form or gathered from name),
@@ -51,6 +52,15 @@ const EmployeesPage = () => {
     };
 
     const handleUpdateSalary = (employee) => {
+        // const newSalary = prompt("Enter the new salary:");
+        // if (newSalary !== null) {
+        //     const parsedNewSalary = parseInt(newSalary);
+        //     if (!isNaN(parsedNewSalary)) {
+        //         updateSalary(parsedNewSalary);
+        //     } else {
+        //         alert("Please enter a valid number for the salary.");
+        //     }
+        // }
         console.log("update " + employee + " salary");
     }
 

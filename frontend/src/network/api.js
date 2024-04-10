@@ -81,6 +81,10 @@ export async function translate(text, targetLanguage) {
     });
 }
 
+export async function updateSalary(formData) {
+    return request("/update_salary", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+}
+
 export async function submitOrder(formData) {
     return request("/submit_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
