@@ -27,9 +27,12 @@ const CashierView = ({ menuItems }) => {
                 setCurrType(text);
             }}
             style={{
+                padding: "10px",
                 backgroundColor: currType === text ? "#C2A061" : '',
                 color: currType === text ? "white" : '',
                 marginRight: 8,
+                width: "175px",
+                height: "50px",
             }}
         >
             {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
@@ -55,8 +58,12 @@ const CashierView = ({ menuItems }) => {
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
                                 style={{
-                                    width: "100px",
-                                    height: "100px",
+                                    width: "135px",
+                                    height: "135px",
+                                    margin: "8px",
+                                    fontSize: "16px",
+                                    fontWeight: "bold",
+                                    backgroundColor: itemName.startsWith("Bean") ? "green" : itemName.startsWith("Beef") ? "pink" : "inherit",
                                 }}
                             >
                                 <div style = {{ fontWeight: "bold" }}>
@@ -67,9 +74,6 @@ const CashierView = ({ menuItems }) => {
                         </div>
                     );
                 })}
-                {["Burgers", "Baskets", "Sandwiches"].includes(panel) && (
-                    <div>Make it a combo</div>
-                )}
             </div>
         );
     };
@@ -200,14 +204,30 @@ const CashierView = ({ menuItems }) => {
 
             <div
                 style={{
-                    borderRight: "2px solid #000",
+                    borderRight: "2px solid black",
                     flexGrow: 10,
                     display: "flex",
                     flexDirection: "column",
-                    borderBottom: "2px solid #000", 
+                    borderTop: "2px solid #000",
+                    padding: "10px",
+                    paddingTop: "25px",
+                    paddingLeft: "9px",
                     margin: 10
                 }}
             >
+            
+            <div 
+                style={{ 
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: "20px",
+                }}     
+            >
+                <Button variant="outlined" style={{ marginTop: 'auto', padding: "10px" }}>Item Availability</Button>
+                <Button variant="outlined">Copy Item</Button> 
+                <Button variant="outlined">Make a Combo</Button>
+            </div>
+
                 <AssociatedMenuItems />
             </div>
 
@@ -217,17 +237,34 @@ const CashierView = ({ menuItems }) => {
                     display: "flex",
                     flexDirection: "column",
                     width: "15%",
-                    position: 'relative'
+                    position: 'relative',
+                    marginTop: "10px",
                 }}
             >
-                {generateButtons("Burgers")}
-                {generateButtons("Baskets")}
-                {generateButtons("Sandwiches")}
-                {generateButtons("Drinks")}
-                {generateButtons("Desserts")}
-                {generateButtons("Sides")}
-                {generateButtons("Sauces")}
-                {generateButtons("All")}
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Burgers")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Baskets")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Sandwiches")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Drinks")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Desserts")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Sides")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("Sauces")}
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                    {generateButtons("All")}
+                </div>
 
                 {Accessibility()}
             </div>
