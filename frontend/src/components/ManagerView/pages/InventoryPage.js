@@ -50,6 +50,8 @@ const InventoryPage = () => {
     e.preventDefault();
     submitRestockOrder(formData)
     .then(data => {
+      getIngredients()
+      .then(ingredientsData => setIngredients(ingredientsData));
       alert("Success! Your " + formData.name + " restock order cost $" + formData.price + ".")
     })
     .catch(error => {
@@ -90,7 +92,8 @@ const InventoryPage = () => {
               <td>{ingredient.name}</td>
               <td>{ingredient.quantity}</td>
               <td>
-                <button onClick={() => handleIngredientClick(ingredient)}>
+                <button onClick={() => handleIngredientClick(ingredient)}
+                style={{ backgroundColor: ingredient.quantity < 1005 ? 'red' : '' }}>
                   Restock
                 </button>
               </td>
