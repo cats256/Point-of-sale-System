@@ -185,6 +185,35 @@ def submit_order():
         }
     )
 
+# API endpoint to submit a restock order
+@app.route("/update_salary", methods=["POST"])
+def update_salary(id):
+    data = request.json
+
+    print('end')
+    new_salary = data.get("name")
+
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+
+    quantity_query = sql.SQL("UPDATE employees SET salary = %s WHERE id = %s;")
+    cur.execute(quantity_query, (new_salary, id))
+
+    conn.commit()
+    cur.close()
+
+    return jsonify(
+        {
+            "message": "Salary changed successfully",
+        }
+    )
+
+
 
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])
