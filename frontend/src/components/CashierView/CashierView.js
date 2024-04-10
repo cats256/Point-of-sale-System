@@ -2,14 +2,14 @@ import { Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
-import { getOrderId } from "../../network/api";
 
 const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
+
     const { basket, 
             addItemToBasket, 
             increaseItemQuantity, 
@@ -20,6 +20,7 @@ const CashierView = ({ menuItems }) => {
         } = useBasket();
 
     const generateButtons = (text, panel = '', img = '', alt = '') => (
+        // menu item category buttons
         <Button
             variant="outlined"
             onClick={() => {
@@ -27,9 +28,10 @@ const CashierView = ({ menuItems }) => {
                 setCurrType(text);
             }}
             style={{
+                borderColor: 'black',
                 padding: "10px",
-                backgroundColor: currType === text ? "#C2A061" : '',
-                color: currType === text ? "white" : '',
+                backgroundColor: currType === text ? "#C2A061" : '#ecebed',
+                color: currType === text ? "white" : 'black',
                 marginRight: 8,
                 width: "175px",
                 height: "50px",
@@ -41,7 +43,17 @@ const CashierView = ({ menuItems }) => {
     );
 
     const AssociatedMenuItems = () => {
+        // sorting the beef & bean burgers to group by type
+        const customSort = (a, b) => {
+            if (a.name.includes("beef") && !b.name.includes("beef")) return -1;
+            if (!a.name.includes("beef") && b.name.includes("beef")) return 1;
+            if (a.name.includes("bean") && !b.name.includes("bean")) return 1;
+            if (!a.name.includes("bean") && b.name.includes("bean")) return -1;
+            return 0;
+        };
+
         let filteredItems = menuItems.filter((item) => item.type === panel);
+        filteredItems.sort(customSort);
 
         const handleItemClick = (item) => {
             addItemToBasket(item);
@@ -54,6 +66,7 @@ const CashierView = ({ menuItems }) => {
 
                     return (
                         <div key={index}>
+                            {/* menu item buttons */}
                             <button
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
@@ -62,11 +75,30 @@ const CashierView = ({ menuItems }) => {
                                     height: "135px",
                                     margin: "8px",
                                     fontSize: "16px",
-                                    fontWeight: "bold",
-                                    backgroundColor: itemName.startsWith("Bean") ? "green" : itemName.startsWith("Beef") ? "pink" : "inherit",
+                                    borderRadius: 5,
+                                    backgroundColor: itemName.startsWith("Beef") ? "#efdcfc" : 
+                                        itemName.startsWith("Bean") ? "#fffdd4" :
+                                        itemName.includes("Tender") ? "#fff2c9" :
+                                        itemName.includes("Steak Finger") ? "#efdcfc" : 
+                                        itemName.includes("Sandwich") ? "#e8fce8" : 
+                                        itemName.includes("Grilled Cheese") ? "#fff5e3" :
+                                        itemName.includes("Coffee") ? "#d4c0b8" :
+                                        itemName.includes("Fountain Drink") ? "#e3f8ff" :
+                                        itemName.includes("Scoop") ? "#fffef0" :
+                                        itemName.includes("Cookie") ? "#d4c0b8" :
+                                        itemName.includes("Brownie") ? "#d4c0b8" :
+                                        itemName.includes("Shake") ? "#ffdef3" :
+                                        itemName.includes("Fries") ? "#fff2c9" :
+                                        itemName.includes("Tots") ? "#fff2c9" :
+                                        itemName.includes("Rings") ? "#fff2c9" :
+                                        itemName.includes("Chips") ? "#fff2c9" :
+                                        itemName.includes("Sauce") ? "#deb0a9" :
+                                        itemName.includes("Mustard") ? "#fff2c9" :
+                                        itemName.includes("Ranch") ? "#e8ffff" :
+                                        "inherit",
                                 }}
                             >
-                                <div style = {{ fontWeight: "bold" }}>
+                                <div style = {{ paddingBottom: "15px" }}>
                                     {itemName} 
                                 </div>
                                 ${item.price}
@@ -148,6 +180,7 @@ const CashierView = ({ menuItems }) => {
 
     const Accessibility = () => {
         const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+
         return (
             <>
                 <button 
@@ -223,11 +256,11 @@ const CashierView = ({ menuItems }) => {
                     marginBottom: "20px",
                 }}     
             >
-                <Button variant="outlined" style={{ marginTop: 'auto', padding: "10px" }}>Item Availability</Button>
-                <Button variant="outlined">Copy Item</Button> 
-                <Button variant="outlined">Make a Combo</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }}>Item Availability</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Copy Item</Button> 
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Make a Combo</Button>
             </div>
-
+            
                 <AssociatedMenuItems />
             </div>
 
@@ -261,9 +294,6 @@ const CashierView = ({ menuItems }) => {
                 </div>
                 <div style={{ marginBottom: "10px" }}>
                     {generateButtons("Sauces")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("All")}
                 </div>
 
                 {Accessibility()}
