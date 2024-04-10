@@ -26,7 +26,7 @@ def get_ingredients_info():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
-    query = sql.SQL("SELECT * FROM ingredients")
+    query = sql.SQL("SELECT * FROM ingredients ORDER BY name ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
