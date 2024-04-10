@@ -179,7 +179,8 @@ const CustomerView = ({ menuItems }) => {
                 {/* Clear Cart button */}
                 <button 
                     style={{ marginBottom: "20px", marginTop: "20px", display: 'flex', justifyContent: 'center' }}
-                    onClick={() => {emptyBasket()}}>
+                    onClick={() => {emptyBasket()}}
+                    disabled={basket.length === 0}>
                     Clear Basket
                 </button>
 
