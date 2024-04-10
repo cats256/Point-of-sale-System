@@ -17,6 +17,7 @@ const EmployeesPage = () => {
     // const employees = ["Laine", "Matthew", "Brinley", "Nhat", "Carolina", "Tatiana"];
     const [employeeNames, setEmployeeNames] = useState([]);
     const [employeeImages, setEmployeeImages] = useState([]);
+    const [employeeJob, setEmployeeJob] = useState("");
     const [employees, setEmployees] = useState([]);
 
     const fetchData = async () => {
@@ -49,6 +50,12 @@ const EmployeesPage = () => {
     const handleEmployeeClick = (employee, num) => {
         setSelectedEmployee(employee);
         setSelectedEmployeeNum(num);
+        if (employees[num]["manager"]){
+            setEmployeeJob("Manager");
+        }
+        else{
+            setEmployeeJob("Employee");
+        }
     };
 
     const handleUpdateSalary = (employee) => {
@@ -124,7 +131,7 @@ const EmployeesPage = () => {
                                 <span style={{ fontWeight: "bold" }}>Total Orders Made:</span> {employees[selectedEmployeeNum]["sales"]}
                             </div>
                             <div>
-                                <span style={{ fontWeight: "bold" }}>Manager:</span> {employees[selectedEmployeeNum]["manager"].toString()}
+                                <span style={{ fontWeight: "bold" }}>Position: </span> {employeeJob}
                             </div>
                         </div>
                     </div>
