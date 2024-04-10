@@ -2,13 +2,13 @@ import { Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
+import { getOrderId } from "../../network/api";
 
 const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
-    // const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
     const [currType, setCurrType] = useState(null);
     const { basket, 
             addItemToBasket, 
@@ -17,11 +17,9 @@ const CashierView = ({ menuItems }) => {
             removeItemFromBasket, 
             emptyBasket, 
             placeOrder, 
-            totalCost,
         } = useBasket();
-    // const [popupContent, setPopupContent] = useState("");
 
-    const buttonWithImg = (text, panel = '', img = '', alt = '') => (
+    const generateButtons = (text, panel = '', img = '', alt = '') => (
         <Button
             variant="outlined"
             onClick={() => {
@@ -77,10 +75,16 @@ const CashierView = ({ menuItems }) => {
     };
 
     const DisplayBasket = () => {
+        // Subtotal, tax, & total
+        const subtotal = basket.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        const rate = 0.08;
+        const tax = subtotal * rate;
+        const total = subtotal + tax;
+
         return (
             <div>
-                <h1>Order #399823</h1> {/* }
-                
+                <h1>Order #232323</h1> {/* This is where I want it to display the current order # */}
+
                 {/* Clear Cart button */}
                 <button 
                     style={{ marginBottom: "20px", marginTop: "20px", display: 'flex', justifyContent: 'center' }}
@@ -96,13 +100,13 @@ const CashierView = ({ menuItems }) => {
                             
                             {/* Quantity modification buttons */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <button 
+                                <button
                                     onClick={() => decreaseItemQuantity(item.name)}
                                     aria-label="Decrease item">
                                     -
                                 </button>
                                 {item.quantity}
-                                <button 
+                                <button
                                     style={{ marginRight: '20px' }}
                                     onClick={() => increaseItemQuantity(item.name)}
                                     aria-label="Increase item">
@@ -121,8 +125,17 @@ const CashierView = ({ menuItems }) => {
                     </div>
                 ))}
 
-                <div style={{ position: 'fixed', display: 'flex', gap: 20, bottom: 10, marginTop: "20px", fontWeight: "bold" }}>
-                    Total: ${totalCost.toFixed(2)}
+                {/* Display subtotal, tax, and total */}
+                <div style={{ position: 'fixed', display: 'flex', flexDirection: 'column', bottom: 10, marginTop: "20px", fontWeight: "bold" }}>
+                    <div>
+                        Subtotal: ${subtotal.toFixed(2)}
+                    </div>
+                    <div style={{ marginBottom: "10px" }}>
+                        Tax (8%): ${tax.toFixed(2)}
+                    </div>
+                    <div style={{ marginBottom: "20px" }}>
+                        Total: ${total.toFixed(2)}
+                    </div>
                     <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
                 </div>
             </div>
@@ -176,25 +189,13 @@ const CashierView = ({ menuItems }) => {
                 minHeight: "100vh",
             }}
         >
-            <div
-                style={{
-                    borderRight: "2px solid #000",
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "15%",
-                    position: 'relative'
-                }}
-            >
-                {buttonWithImg("Burgers")}
-                {buttonWithImg("Baskets")}
-                {buttonWithImg("Sandwiches")}
-                {buttonWithImg("Drinks")}
-                {buttonWithImg("Desserts")}
-                {buttonWithImg("Sides")}
-                {buttonWithImg("Sauces")}
-                {buttonWithImg("All")}
-
-                {Accessibility()}
+            <div style={{ 
+                margin: 10,
+                width: "25%",
+                borderRight: "2px solid #000",
+                paddingRight: "10px"
+            }}>
+                <DisplayBasket />
             </div>
 
             <div
@@ -207,14 +208,28 @@ const CashierView = ({ menuItems }) => {
                     margin: 10
                 }}
             >
-                {AssociatedMenuItems()}
+                <AssociatedMenuItems />
             </div>
 
-            <div style={{ 
-                    margin: 10,
-                    width: "25%"
-                }}>
-                {DisplayBasket()}
+            <div
+                style={{
+                    borderRight: "2px solid #000",
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "15%",
+                    position: 'relative'
+                }}
+            >
+                {generateButtons("Burgers")}
+                {generateButtons("Baskets")}
+                {generateButtons("Sandwiches")}
+                {generateButtons("Drinks")}
+                {generateButtons("Desserts")}
+                {generateButtons("Sides")}
+                {generateButtons("Sauces")}
+                {generateButtons("All")}
+
+                {Accessibility()}
             </div>
         </div>
     );
