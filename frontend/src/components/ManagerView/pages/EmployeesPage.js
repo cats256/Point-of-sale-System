@@ -2,6 +2,7 @@
 // tiles with name, id, orders completed
 // gravatar images?..
 import { getEmployees } from "../../../network/api";
+// import { updateSalary } from "../../../network/api";
 
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
   employee image (either on same list as names in dictionary form or gathered from name),
@@ -16,6 +17,7 @@ const EmployeesPage = () => {
     // const employees = ["Laine", "Matthew", "Brinley", "Nhat", "Carolina", "Tatiana"];
     const [employeeNames, setEmployeeNames] = useState([]);
     const [employeeImages, setEmployeeImages] = useState([]);
+    const [employeeJob, setEmployeeJob] = useState("");
     const [employees, setEmployees] = useState([]);
 
     const fetchData = async () => {
@@ -48,9 +50,24 @@ const EmployeesPage = () => {
     const handleEmployeeClick = (employee, num) => {
         setSelectedEmployee(employee);
         setSelectedEmployeeNum(num);
+        if (employees[num]["manager"]){
+            setEmployeeJob("Manager");
+        }
+        else{
+            setEmployeeJob("Employee");
+        }
     };
 
     const handleUpdateSalary = (employee) => {
+        // const newSalary = prompt("Enter the new salary:");
+        // if (newSalary !== null) {
+        //     const parsedNewSalary = parseInt(newSalary);
+        //     if (!isNaN(parsedNewSalary)) {
+        //         updateSalary(parsedNewSalary);
+        //     } else {
+        //         alert("Please enter a valid number for the salary.");
+        //     }
+        // }
         console.log("update " + employee + " salary");
     }
 
@@ -114,7 +131,7 @@ const EmployeesPage = () => {
                                 <span style={{ fontWeight: "bold" }}>Total Orders Made:</span> {employees[selectedEmployeeNum]["sales"]}
                             </div>
                             <div>
-                                <span style={{ fontWeight: "bold" }}>Manager:</span> {employees[selectedEmployeeNum]["manager"].toString()}
+                                <span style={{ fontWeight: "bold" }}>Position: </span> {employeeJob}
                             </div>
                         </div>
                     </div>

@@ -37,7 +37,6 @@ const InventoryPage = () => {
     }
   };
   
-
   const handleIngredientClick = (ingredient) => {
     setFormData({
       name: ingredient.name,
@@ -51,29 +50,57 @@ const InventoryPage = () => {
     e.preventDefault();
     submitRestockOrder(formData)
     .then(data => {
-      alert("success")
+      getIngredients()
+      .then(ingredientsData => setIngredients(ingredientsData));
+      alert("Success! Your " + formData.name + " restock order cost $" + formData.price + ".")
     })
     .catch(error => {
       console.error('Error:', error);
     });
+    setFormData({
+      name: "",
+      quantity: "",
+      price: "",
+      ingredient_id: ""
+    });
+    getIngredients();
   };
-  
 
   return (
     <div>
       <h1>Inventory Page</h1>
-      {ingredients.map(ingredient => (
-          <button key={ingredient.id} onClick={() => handleIngredientClick(ingredient)}>
-          {ingredient.name}
-        </button>
-        ))}
+      <h2>Ingredient Restock</h2>
       <form onSubmit={handleSubmit} method='POST'>
-        <input id='name' placeholder='name' value={formData.name} readOnly></input>
-        <input id='quantity' placeholder='quantity' value={formData.quantity} onChange={handleChange}></input>
-        <input id='price' placeholder='price' value={formData.price} readOnly></input>
-        <input id='ingredient_id' placeholder='ingredient_id' value={formData.ingredient_id} readOnly></input>
+        <input id='name' placeholder="ingredient" value={formData.name} readOnly></input>
+        <input id='quantity' placeholder="quantity to order" value={formData.quantity} onChange={handleChange}></input>
+        <input id='price' value={"$" + formData.price} readOnly></input>
+        <input id='ingredient_id' value={"ingredient id: " + formData.ingredient_id} readOnly></input>
         <button id='submit_restock'>Submit</button>
       </form>
+      <h2>Ingredients Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ingredient Name</th>
+            <th>Quantity</th>
+            <th>Restock</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ingredients.map((ingredient) => (
+            <tr key={ingredient.id}>
+              <td>{ingredient.name}</td>
+              <td>{ingredient.quantity}</td>
+              <td>
+                <button onClick={() => handleIngredientClick(ingredient)}
+                style={{ backgroundColor: ingredient.quantity < 1005 ? 'red' : '' }}>
+                  Restock
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

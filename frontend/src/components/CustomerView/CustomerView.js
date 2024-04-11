@@ -34,6 +34,8 @@ const CustomerView = ({ menuItems }) => {
                 backgroundColor: currType === text ? "#C2A061" : '',
                 color: currType === text ? "white" : '',
                 marginRight: 8,
+                borderRadius: 20,
+                margin: 4
             }}
         >
             {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
@@ -51,9 +53,7 @@ const CustomerView = ({ menuItems }) => {
                 height: "100%",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                zIndex: 1000,
+                alignItems: "center"
             }}
         >
             <div
@@ -80,13 +80,22 @@ const CustomerView = ({ menuItems }) => {
                     {formatItemName(item)}
                 </div>
 
+                {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
+                    <button
+                        onClick={() => addItemToBasket(item)}
+                    >
+                        Make it a Combo
+                    </button>
+                )}
+
                 {/* Close and Add to Order buttons */}
                 <div
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
                         width: "100%",
-                        gap: 10
+                        gap: 10,
+                        marginTop: 10
                     }}
                 >
                     <button onClick={onClose}>Close</button>
@@ -96,12 +105,13 @@ const CustomerView = ({ menuItems }) => {
                     >
                         Add to Basket
                     </button>
+
                 </div>
             </div>
         </div>
     );
 
-    const AssociatedMenuItems = () => {
+    const PopulateMenuItems = () => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
 
         const handleItemClick = (itemContent) => {
@@ -110,18 +120,38 @@ const CustomerView = ({ menuItems }) => {
         };
 
         return (
-            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap", backgroundColor: 'red'}}>
+            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap",  backgroundColor: 'red'}}>
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
 
                     return (
-                        <div key={index}>
+                        <div 
+                            key={index}
+                            style={{ 
+                                display: "flex", 
+                                flexDirection: "column", 
+                                alignItems: "center", 
+                                backgroundColor: "#F0F0F0", 
+                                borderRadius: "15px", 
+                                border: "2px solid #000", 
+                                padding: "10px", 
+                                margin: "10px", 
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                            }}
+                        >
                             <button
+                                style={{ 
+                                    height: "2%",
+                                    width: "100%",
+                                    alignItems: "center",
+                                    border: "none",  
+                                    
+                                }}
                                 variant="outlined"
                                 onClick={() => handleItemClick(item)}
                             >
-                                <img src={require('../../img/temp_burger.jpeg')} alt={itemName} style={{ marginRight: 8, width:180, height:100 }} />
-                                <div style = {{ fontWeight: "bold" }}>
+                                <img src={require('../../img/temp_burger.jpeg')} alt={itemName} style={{ marginRight: 8, width:"180px", height:"100", borderRadius: "15px" }} />
+                                <div style = {{ fontWeight: "bold", width: "180px", display: "flex", flexDirection: "column", padding: "7px" }}>
                                     {itemName} 
                                 </div>
                                 ${item.price}
@@ -129,9 +159,6 @@ const CustomerView = ({ menuItems }) => {
                         </div>
                     );
                 })}
-                {["Burgers", "Baskets", "Sandwiches"].includes(panel) && (
-                    <div>Make it a combo</div>
-                )}
                 {showItemInfoPopup && (
                     <Popup
                         item={popupContent}
@@ -161,7 +188,7 @@ const CustomerView = ({ menuItems }) => {
                             ${parseFloat(item.price * item.quantity).toFixed(2)}
                             
                             {/* Quantity modification buttons */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: 5 }}>
                                 <button 
                                     onClick={() => decreaseItemQuantity(item.name)}
                                     aria-label="Decrease item">
@@ -179,7 +206,7 @@ const CustomerView = ({ menuItems }) => {
 
                         {/* Delete button */}
                         <button 
-                            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                            style={{ display: 'flex', alignItems: 'center', marginLeft: 5 }}
                             aria-label="Delete"
                             onClick={() => {removeItemFromBasket(item.name)}}>
                             <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
@@ -238,17 +265,15 @@ const CustomerView = ({ menuItems }) => {
         <div
             style={{
                 display: "flex",
-                justifyContent: "space-between",
                 minHeight: "100vh",
             }}
         >
             <div
                 style={{
-                    borderRight: "2px solid #000",
                     display: "flex",
                     flexDirection: "column",
-                    width: "15%",
-                    position: 'relative'
+                    width: "20%",
+                    margin: 8
                 }}
             >
                 {buttonWithImg("Burgers")}
@@ -265,15 +290,13 @@ const CustomerView = ({ menuItems }) => {
 
             <div
                 style={{
+                    borderLeft: "2px solid #000",
                     borderRight: "2px solid #000",
-                    flexGrow: 10,
-                    display: "flex",
-                    flexDirection: "column",
-                    borderBottom: "2px solid #000", 
-                    margin: 10
+                    flexGrow: 1, 
+                    padding: 10
                 }}
             >
-                {AssociatedMenuItems()}
+                {PopulateMenuItems()}
             </div>
 
             <div style={{ 
