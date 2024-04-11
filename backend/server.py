@@ -185,6 +185,29 @@ def submit_order():
         }
     )
 
+#API endpoint to fetch 10 most sold menu items
+@app.route("/top_ten", methods=["GET"])
+def top_ten():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    top_ten = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(top_ten)
+
+# API endpoint to get name of menu item given id
+@app.route("/menu_item_name", methods=["GET"])
+def menu_item_name():
+    item_id = request.args.get("id")
+
+    cur = conn.cursor()
+    query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
+    cur.execute(query, (item_id,))
+    item_name= cur.fetchone()[0] 
+    cur.close()
+    return jsonify({"item_name": item_name})
 
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])
