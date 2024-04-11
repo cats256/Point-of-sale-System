@@ -6,9 +6,10 @@ import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 
-const CashierView = ({ menuItems }) => {
+const CashierView = ({ menuItems, toggleItemAvailability }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
+    const [isUnavailableMode, setIsUnavailableMode] = useState(false);
 
     const { basket, 
             addItemToBasket, 
@@ -56,6 +57,12 @@ const CashierView = ({ menuItems }) => {
         filteredItems.sort(customSort);
 
         const handleItemClick = (item) => {
+            if (isUnavailableMode) {
+                toggleItemAvailability(item.id);
+                setIsUnavailableMode(false);
+                return;
+            }
+
             addItemToBasket(item);
         };
 
@@ -76,7 +83,8 @@ const CashierView = ({ menuItems }) => {
                                     margin: "8px",
                                     fontSize: "16px",
                                     borderRadius: 5,
-                                    backgroundColor: itemName.startsWith("Beef") ? "#efdcfc" : 
+                                    backgroundColor: item.isAvailable ? "#ecebed" :
+                                        itemName.startsWith("Beef") ? "#efdcfc" : 
                                         itemName.startsWith("Bean") ? "#fffdd4" :
                                         itemName.includes("Tender") ? "#fff2c9" :
                                         itemName.includes("Steak Finger") ? "#efdcfc" : 
@@ -256,7 +264,7 @@ const CashierView = ({ menuItems }) => {
                     marginBottom: "20px",
                 }}     
             >
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }}>Item Availability</Button>
+                <Button variant="outlined" onClick={() => setIsUnavailableMode(!isUnavailableMode)} style={{ backgroundColor: isUnavailableMode ? "#f44336" : "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }}>Item Availability</Button>
                 <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Copy Item</Button> 
                 <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Make a Combo</Button>
             </div>
