@@ -6,10 +6,13 @@ import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 
-const CashierView = ({ menuItems, toggleItemAvailability }) => {
+const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
-    const [isUnavailableMode, setIsUnavailableMode] = useState(false);
+    const [itemOpacity, setItemOpacity] = useState({});
+    const [itemUnavailable, setItemUnavailable] = useState(false);
+    const [itemClicked, setItemClicked] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     const { basket, 
             addItemToBasket, 
@@ -57,13 +60,24 @@ const CashierView = ({ menuItems, toggleItemAvailability }) => {
         filteredItems.sort(customSort);
 
         const handleItemClick = (item) => {
-            if (isUnavailableMode) {
-                toggleItemAvailability(item.id);
-                setIsUnavailableMode(false);
-                return;
+            {/* TODO: Fix functionality */}
+            const updatedOpacity = { ...itemOpacity };
+                
+            if (itemUnavailable && !itemClicked) {
+                updatedOpacity[formatItemName(item)] = 0.5;
+                setItemOpacity(updatedOpacity);
+                setItemClicked(true);
+                setButtonDisabled(true);
             }
 
-            addItemToBasket(item);
+            if (!itemUnavailable) {
+                addItemToBasket(item);
+            }
+            
+            if (itemUnavailable && itemClicked) {
+                setItemClicked(false);
+                setButtonDisabled(false);
+            }
         };
 
         return (
@@ -83,7 +97,7 @@ const CashierView = ({ menuItems, toggleItemAvailability }) => {
                                     margin: "8px",
                                     fontSize: "16px",
                                     borderRadius: 5,
-                                    backgroundColor: item.isAvailable ? "#ecebed" :
+                                    backgroundColor:
                                         itemName.startsWith("Beef") ? "#efdcfc" : 
                                         itemName.startsWith("Bean") ? "#fffdd4" :
                                         itemName.includes("Tender") ? "#fff2c9" :
@@ -104,6 +118,7 @@ const CashierView = ({ menuItems, toggleItemAvailability }) => {
                                         itemName.includes("Mustard") ? "#fff2c9" :
                                         itemName.includes("Ranch") ? "#e8ffff" :
                                         "inherit",
+                                    opacity: itemOpacity[itemName] || 1
                                 }}
                             >
                                 <div style = {{ paddingBottom: "15px" }}>
@@ -116,6 +131,14 @@ const CashierView = ({ menuItems, toggleItemAvailability }) => {
                 })}
             </div>
         );
+    };
+
+    const handleItemAvailability = () => {
+        setItemUnavailable(true);
+
+        if (setItemUnavailable(true)) {
+            setItemUnavailable(false);
+        }
     };
 
     const DisplayBasket = () => {
@@ -264,7 +287,7 @@ const CashierView = ({ menuItems, toggleItemAvailability }) => {
                     marginBottom: "20px",
                 }}     
             >
-                <Button variant="outlined" onClick={() => setIsUnavailableMode(!isUnavailableMode)} style={{ backgroundColor: isUnavailableMode ? "#f44336" : "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }}>Item Availability</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }} onClick={handleItemAvailability}>Item Availability</Button>
                 <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Copy Item</Button> 
                 <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Make a Combo</Button>
             </div>
