@@ -6,6 +6,39 @@ export const BasketContext = createContext();
 export const BasketProvider = ({ children }) => {
     const [basket, setBasket] = useState([]);
     const [showItemInfoPopup, setShowItemInfoPopup] = useState(false);
+    const [isCombo, setIsCombo] = useState(false);
+
+    const handleMakeCombo = () => {
+        setIsCombo(true);
+    };
+    
+    const addItemToBasketWithCombo = (item) => {
+        addItemToBasket(item);
+    
+        if (isCombo) {
+            // Define the combo details
+            const comboDetails = {
+                Burgers: { name: "Combo with Fries", price: 1.69 },
+                Baskets: { name: "Combo with Fries", price: 1.1 },
+                // Add other types as needed
+            };
+    
+            const combo = comboDetails[item.type];
+            if (combo) {
+                const comboItem = {
+                    name: item.name + " " + combo.name, // This will be used for display
+                    price: combo.price,
+                    isComboItem: true, // A flag to indicate this is a combo addition
+                    parentId: item.id, // Assuming each item has a unique ID
+                };
+                // Add the combo as a separate item in the basket
+                addItemToBasket(comboItem);
+            }
+    
+            setIsCombo(false); // Reset the combo flag
+        }
+    };
+    
 
     const addItemToBasket = (itemToAdd) => {
         setBasket((currentBasket) => {
@@ -118,7 +151,7 @@ export const BasketProvider = ({ children }) => {
     }, 0);
 
     return (
-        <BasketContext.Provider value={{ basket, addItemToBasket, increaseItemQuantity, decreaseItemQuantity, removeItemFromBasket, emptyBasket, placeOrder, totalCost, setShowItemInfoPopup, showItemInfoPopup }}>
+        <BasketContext.Provider value={{ basket, addItemToBasket, increaseItemQuantity, decreaseItemQuantity, removeItemFromBasket, emptyBasket, placeOrder, totalCost, setShowItemInfoPopup, showItemInfoPopup, setIsCombo, handleMakeCombo, addItemToBasketWithCombo }}>
             {children}
         </BasketContext.Provider>
     );

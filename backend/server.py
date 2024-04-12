@@ -173,7 +173,7 @@ def submit_order():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
-    
+    print(name, price)
     orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(orders_query, (name, price, date, assigned_employee))
 
