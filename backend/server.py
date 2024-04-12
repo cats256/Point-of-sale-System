@@ -173,7 +173,7 @@ def submit_order():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
-    
+    print(name, price)
     orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(orders_query, (name, price, date, assigned_employee))
 
@@ -214,26 +214,17 @@ def menu_item_name():
 def update_salary(id):
     data = request.json
 
-    print('end')
-    new_salary = data.get("name")
+    id = data.get("id")
+    salary = data.get("salary")
 
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
-        )
-        cur = conn.cursor()
-
-    quantity_query = sql.SQL("UPDATE employees SET salary = %s WHERE id = %s;")
-    cur.execute(quantity_query, (new_salary, id))
-
+    cur = conn.cursor()
+    query = sql.SQL("UPDATE employees SET salary = %s WHERE id = %s;")
+    cur.execute(query, (id, salary))
     conn.commit()
     cur.close()
-
     return jsonify(
         {
-            "message": "Salary changed successfully",
+            "message": "Salary successfully updated",
         }
     )
 

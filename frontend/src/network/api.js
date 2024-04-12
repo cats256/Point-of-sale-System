@@ -82,7 +82,7 @@ export async function translate(text, targetLanguage) {
 }
 
 export async function updateSalary(formData) {
-    return request("/update_salary", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+    return request("/salary", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
 
 export async function submitOrder(formData) {
@@ -114,6 +114,5 @@ export async function getItemName(menuItemID) {
     const response = await request(`/menu_item_name?id=${encodeURIComponent(menuItemID)}`, { method: "GET" });
     return response; 
 }
-
 
 

@@ -8,7 +8,6 @@ import { useBasket } from "../CustomerView/BasketContext";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
-    // const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
     const [currType, setCurrType] = useState(null);
     const { basket, 
             addItemToBasket, 
@@ -19,7 +18,9 @@ const CustomerView = ({ menuItems }) => {
             placeOrder, 
             totalCost,
             setShowItemInfoPopup, 
-            showItemInfoPopup
+            showItemInfoPopup,  
+            handleMakeCombo,
+            addItemToBasketWithCombo
         } = useBasket();
     const [popupContent, setPopupContent] = useState("");
 
@@ -80,9 +81,10 @@ const CustomerView = ({ menuItems }) => {
                     {formatItemName(item)}
                 </div>
 
+                { /* Combo button */}
                 {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
                     <button
-                        onClick={() => addItemToBasket(item)}
+                        onClick={handleMakeCombo}
                     >
                         Make it a Combo
                     </button>
@@ -100,7 +102,7 @@ const CustomerView = ({ menuItems }) => {
                 >
                     <button onClick={onClose}>Close</button>
                     <button
-                        onClick={() => addItemToBasket(item)}
+                        onClick={() => addItemToBasketWithCombo(item)}
                         style={{ backgroundColor: "#C2A061", color: "white" }}
                     >
                         Add to Basket
@@ -120,7 +122,7 @@ const CustomerView = ({ menuItems }) => {
         };
 
         return (
-            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap",  backgroundColor: 'red'}}>
+            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap", width: '60vw', justifyContent: 'center'}}>
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
 
@@ -177,7 +179,8 @@ const CustomerView = ({ menuItems }) => {
                 {/* Clear Cart button */}
                 <button 
                     style={{ marginBottom: "20px", marginTop: "20px", display: 'flex', justifyContent: 'center' }}
-                    onClick={() => {emptyBasket()}}>
+                    onClick={() => {emptyBasket()}}
+                    disabled={basket.length === 0}>
                     Clear Basket
                 </button>
 
@@ -272,7 +275,7 @@ const CustomerView = ({ menuItems }) => {
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    width: "20%",
+                    width: "15vw",
                     margin: 8
                 }}
             >
@@ -293,7 +296,9 @@ const CustomerView = ({ menuItems }) => {
                     borderLeft: "2px solid #000",
                     borderRight: "2px solid #000",
                     flexGrow: 1, 
-                    padding: 10
+                    flexDirection: "column",
+                    padding: 10,
+                    width: "auto"
                 }}
             >
                 {PopulateMenuItems()}
@@ -301,7 +306,7 @@ const CustomerView = ({ menuItems }) => {
 
             <div style={{ 
                     margin: 10,
-                    width: "25%"
+                    width: "25vw"
                 }}>
                 {DisplayBasket()}
             </div>

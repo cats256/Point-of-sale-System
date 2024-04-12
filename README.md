@@ -1,3 +1,6 @@
+# Database
+1. psql -h csce-315-db.engr.tamu.edu -U csce315_902_03_user -d  csce315_902_03_db
+
 # Frontend
 1. cd frontend
 2. npm install to install all required packages
