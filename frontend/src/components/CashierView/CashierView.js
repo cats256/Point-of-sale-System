@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,10 +9,7 @@ import { useBasket } from "../CustomerView/BasketContext";
 const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
-    const [itemOpacity, setItemOpacity] = useState({});
-    const [itemUnavailable, setItemUnavailable] = useState(false);
-    const [itemClicked, setItemClicked] = useState(false);
-    const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
     const { basket, 
             addItemToBasket, 
@@ -59,25 +56,8 @@ const CashierView = ({ menuItems }) => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
         filteredItems.sort(customSort);
 
-        const handleItemClick = (item) => {
-            {/* TODO: Fix functionality */}
-            const updatedOpacity = { ...itemOpacity };
-                
-            if (itemUnavailable && !itemClicked) {
-                updatedOpacity[formatItemName(item)] = 0.5;
-                setItemOpacity(updatedOpacity);
-                setItemClicked(true);
-                setButtonDisabled(true);
-            }
-
-            if (!itemUnavailable) {
-                addItemToBasket(item);
-            }
-            
-            if (itemUnavailable && itemClicked) {
-                setItemClicked(false);
-                setButtonDisabled(false);
-            }
+        const handleItemClick = (item) => {   
+            addItemToBasket(item);
         };
 
         return (
@@ -118,7 +98,6 @@ const CashierView = ({ menuItems }) => {
                                         itemName.includes("Mustard") ? "#fff2c9" :
                                         itemName.includes("Ranch") ? "#e8ffff" :
                                         "inherit",
-                                    opacity: itemOpacity[itemName] || 1
                                 }}
                             >
                                 <div style = {{ paddingBottom: "15px" }}>
@@ -133,11 +112,37 @@ const CashierView = ({ menuItems }) => {
         );
     };
 
-    const handleItemAvailability = () => {
-        setItemUnavailable(true);
+    const handleComboDialog = () => {
+        setOpenDialog(true);
+    };
 
-        if (setItemUnavailable(true)) {
-            setItemUnavailable(false);
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const handleMakeCombo = (choice) => {
+        setOpenDialog(false);
+
+        if (choice === 'kettleChips') {
+            const kettleChipsItem = menuItems.find(item => item.name.toLowerCase().includes('kettle'));
+            const smallDrinkItem = menuItems.find(item => item.name.toLowerCase().includes('drink'));
+
+            const modifiedChipsItem = kettleChipsItem ? { ...kettleChipsItem, price: 1.00 } : null;
+            const modifiedDrinkItem = smallDrinkItem ? { ...smallDrinkItem, price: 0.99 } : null;
+
+            addItemToBasket(modifiedChipsItem);
+            addItemToBasket(modifiedDrinkItem);
+        }
+        
+        else if (choice === 'frenchFries') {
+            const frenchFriesItem = menuItems.find(item => item.name.toLowerCase().startsWith('fries'));
+            const smallDrinkItem = menuItems.find(item => item.name.toLowerCase().includes('drink'));
+
+            const modifiedFriesItem = frenchFriesItem ? { ...frenchFriesItem, price: 1.00 } : null;
+            const modifiedDrinkItem = smallDrinkItem ? { ...smallDrinkItem, price: 0.99 } : null;
+
+            addItemToBasket(modifiedFriesItem);
+            addItemToBasket(modifiedDrinkItem);
         }
     };
 
@@ -150,7 +155,7 @@ const CashierView = ({ menuItems }) => {
 
         return (
             <div>
-                <h1>Order #232323</h1> {/* This is where I want it to display the current order # */}
+                <h1>Checkout</h1>
 
                 {/* Clear Cart button */}
                 <button 
@@ -287,9 +292,21 @@ const CashierView = ({ menuItems }) => {
                     marginBottom: "20px",
                 }}     
             >
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }} onClick={handleItemAvailability}>Item Availability</Button>
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Copy Item</Button> 
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Make a Combo</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px", width: "95px" }}>Order</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Tender</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }} onClick={handleComboDialog}>Make a Combo</Button>
+
+                {/* Dialog for combo choice */}
+                <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Combos</DialogTitle>
+                    <DialogContent>
+                        <Button onClick={() => handleMakeCombo('kettleChips')}>Kettle Chips</Button>
+                        <Button onClick={() => handleMakeCombo('frenchFries')}>Fries</Button>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
             
                 <AssociatedMenuItems />
