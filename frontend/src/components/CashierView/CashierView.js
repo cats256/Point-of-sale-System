@@ -1,7 +1,13 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
-import CloseIcon from '@mui/icons-material/Close';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Button,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
@@ -11,16 +17,17 @@ const CashierView = ({ menuItems }) => {
     const [currType, setCurrType] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
 
-    const { basket, 
-            addItemToBasket, 
-            increaseItemQuantity, 
-            decreaseItemQuantity, 
-            removeItemFromBasket, 
-            emptyBasket, 
-            placeOrder, 
-        } = useBasket();
+    const {
+        basket,
+        addItemToBasket,
+        increaseItemQuantity,
+        decreaseItemQuantity,
+        removeItemFromBasket,
+        emptyBasket,
+        placeOrder,
+    } = useBasket();
 
-    const generateButtons = (text, panel = '', img = '', alt = '') => (
+    const generateButtons = (text, panel = "", img = "", alt = "") => (
         // menu item category buttons
         <Button
             variant="outlined"
@@ -29,10 +36,10 @@ const CashierView = ({ menuItems }) => {
                 setCurrType(text);
             }}
             style={{
-                borderColor: 'black',
+                borderColor: "black",
                 padding: "10px",
-                backgroundColor: currType === text ? "#C2A061" : '#ecebed',
-                color: currType === text ? "white" : 'black',
+                backgroundColor: currType === text ? "#C2A061" : "#ecebed",
+                color: currType === text ? "white" : "black",
                 marginRight: 8,
                 width: "175px",
                 height: "50px",
@@ -56,12 +63,19 @@ const CashierView = ({ menuItems }) => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
         filteredItems.sort(customSort);
 
-        const handleItemClick = (item) => {   
+        const handleItemClick = (item) => {
             addItemToBasket(item);
         };
 
         return (
-            <div style = {{ display: "flex", flexDirection: "row", flexWrap: "wrap", backgroundColor: 'white'}}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    backgroundColor: "white",
+                }}
+            >
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
 
@@ -77,31 +91,75 @@ const CashierView = ({ menuItems }) => {
                                     margin: "8px",
                                     fontSize: "16px",
                                     borderRadius: 5,
-                                    backgroundColor:
-                                        itemName.startsWith("Beef") ? "#efdcfc" : 
-                                        itemName.startsWith("Bean") ? "#fffdd4" :
-                                        itemName.includes("Tender") ? "#fff2c9" :
-                                        itemName.includes("Steak Finger") ? "#efdcfc" : 
-                                        itemName.includes("Sandwich") ? "#e8fce8" : 
-                                        itemName.includes("Grilled Cheese") ? "#fff5e3" :
-                                        itemName.includes("Coffee") ? "#d4c0b8" :
-                                        itemName.includes("Fountain Drink") ? "#e3f8ff" :
-                                        itemName.includes("Scoop") ? "#fffef0" :
-                                        itemName.includes("Cookie") ? "#d4c0b8" :
-                                        itemName.includes("Brownie") ? "#d4c0b8" :
-                                        itemName.includes("Shake") ? "#ffdef3" :
-                                        itemName.includes("Fries") ? "#fff2c9" :
-                                        itemName.includes("Tots") ? "#fff2c9" :
-                                        itemName.includes("Rings") ? "#fff2c9" :
-                                        itemName.includes("Chips") ? "#fff2c9" :
-                                        itemName.includes("Sauce") ? "#deb0a9" :
-                                        itemName.includes("Mustard") ? "#fff2c9" :
-                                        itemName.includes("Ranch") ? "#e8ffff" :
-                                        "inherit",
+                                    backgroundColor: itemName.startsWith("Beef")
+                                        ? "#efdcfc"
+                                        : itemName.startsWith("Bean")
+                                          ? "#fffdd4"
+                                          : itemName.includes("Tender")
+                                            ? "#fff2c9"
+                                            : itemName.includes("Steak Finger")
+                                              ? "#efdcfc"
+                                              : itemName.includes("Sandwich")
+                                                ? "#e8fce8"
+                                                : itemName.includes(
+                                                        "Grilled Cheese"
+                                                    )
+                                                  ? "#fff5e3"
+                                                  : itemName.includes("Coffee")
+                                                    ? "#d4c0b8"
+                                                    : itemName.includes(
+                                                            "Fountain Drink"
+                                                        )
+                                                      ? "#e3f8ff"
+                                                      : itemName.includes(
+                                                              "Scoop"
+                                                          )
+                                                        ? "#fffef0"
+                                                        : itemName.includes(
+                                                                "Cookie"
+                                                            )
+                                                          ? "#d4c0b8"
+                                                          : itemName.includes(
+                                                                  "Brownie"
+                                                              )
+                                                            ? "#d4c0b8"
+                                                            : itemName.includes(
+                                                                    "Shake"
+                                                                )
+                                                              ? "#ffdef3"
+                                                              : itemName.includes(
+                                                                      "Fries"
+                                                                  )
+                                                                ? "#fff2c9"
+                                                                : itemName.includes(
+                                                                        "Tots"
+                                                                    )
+                                                                  ? "#fff2c9"
+                                                                  : itemName.includes(
+                                                                          "Rings"
+                                                                      )
+                                                                    ? "#fff2c9"
+                                                                    : itemName.includes(
+                                                                            "Chips"
+                                                                        )
+                                                                      ? "#fff2c9"
+                                                                      : itemName.includes(
+                                                                              "Sauce"
+                                                                          )
+                                                                        ? "#deb0a9"
+                                                                        : itemName.includes(
+                                                                                "Mustard"
+                                                                            )
+                                                                          ? "#fff2c9"
+                                                                          : itemName.includes(
+                                                                                  "Ranch"
+                                                                              )
+                                                                            ? "#e8ffff"
+                                                                            : "inherit",
                                 }}
                             >
-                                <div style = {{ paddingBottom: "15px" }}>
-                                    {itemName} 
+                                <div style={{ paddingBottom: "15px" }}>
+                                    {itemName}
                                 </div>
                                 ${item.price}
                             </button>
@@ -123,23 +181,37 @@ const CashierView = ({ menuItems }) => {
     const handleMakeCombo = (choice) => {
         setOpenDialog(false);
 
-        if (choice === 'kettleChips') {
-            const kettleChipsItem = menuItems.find(item => item.name.toLowerCase().includes('kettle'));
-            const smallDrinkItem = menuItems.find(item => item.name.toLowerCase().includes('drink'));
+        if (choice === "kettleChips") {
+            const kettleChipsItem = menuItems.find((item) =>
+                item.name.toLowerCase().includes("kettle")
+            );
+            const smallDrinkItem = menuItems.find((item) =>
+                item.name.toLowerCase().includes("drink")
+            );
 
-            const modifiedChipsItem = kettleChipsItem ? { ...kettleChipsItem, price: 1.00 } : null;
-            const modifiedDrinkItem = smallDrinkItem ? { ...smallDrinkItem, price: 0.99 } : null;
+            const modifiedChipsItem = kettleChipsItem
+                ? { ...kettleChipsItem, price: 1.0 }
+                : null;
+            const modifiedDrinkItem = smallDrinkItem
+                ? { ...smallDrinkItem, price: 0.99 }
+                : null;
 
             addItemToBasket(modifiedChipsItem);
             addItemToBasket(modifiedDrinkItem);
-        }
-        
-        else if (choice === 'frenchFries') {
-            const frenchFriesItem = menuItems.find(item => item.name.toLowerCase().startsWith('fries'));
-            const smallDrinkItem = menuItems.find(item => item.name.toLowerCase().includes('drink'));
+        } else if (choice === "frenchFries") {
+            const frenchFriesItem = menuItems.find((item) =>
+                item.name.toLowerCase().startsWith("fries")
+            );
+            const smallDrinkItem = menuItems.find((item) =>
+                item.name.toLowerCase().includes("drink")
+            );
 
-            const modifiedFriesItem = frenchFriesItem ? { ...frenchFriesItem, price: 1.00 } : null;
-            const modifiedDrinkItem = smallDrinkItem ? { ...smallDrinkItem, price: 0.99 } : null;
+            const modifiedFriesItem = frenchFriesItem
+                ? { ...frenchFriesItem, price: 1.0 }
+                : null;
+            const modifiedDrinkItem = smallDrinkItem
+                ? { ...smallDrinkItem, price: 0.99 }
+                : null;
 
             addItemToBasket(modifiedFriesItem);
             addItemToBasket(modifiedDrinkItem);
@@ -148,7 +220,10 @@ const CashierView = ({ menuItems }) => {
 
     const DisplayBasket = () => {
         // Subtotal, tax, & total
-        const subtotal = basket.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        const subtotal = basket.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+        );
         const rate = 0.08;
         const tax = subtotal * rate;
         const total = subtotal + tax;
@@ -158,96 +233,154 @@ const CashierView = ({ menuItems }) => {
                 <h1>Checkout</h1>
 
                 {/* Clear Cart button */}
-                <button 
-                    style={{ marginBottom: "20px", marginTop: "20px", display: 'flex', justifyContent: 'center' }}
-                    onClick={() => {emptyBasket()}}>
+                <button
+                    style={{
+                        marginBottom: "20px",
+                        marginTop: "20px",
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                    onClick={() => {
+                        emptyBasket();
+                    }}
+                >
                     Clear Basket
                 </button>
 
                 {basket.map((item, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: "25px"}}>
+                    <div
+                        key={index}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            marginBottom: "25px",
+                        }}
+                    >
                         <div style={{ flexGrow: 1 }}>
-                            <span style={{ fontWeight: 'bold' }}>{formatItemName(item)} </span>
+                            <span style={{ fontWeight: "bold" }}>
+                                {formatItemName(item)}{" "}
+                            </span>
                             ${parseFloat(item.price * item.quantity).toFixed(2)}
-                            
                             {/* Quantity modification buttons */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                }}
+                            >
                                 <button
-                                    onClick={() => decreaseItemQuantity(item.name)}
-                                    aria-label="Decrease item">
+                                    onClick={() =>
+                                        decreaseItemQuantity(item.name)
+                                    }
+                                    aria-label="Decrease item"
+                                >
                                     -
                                 </button>
                                 {item.quantity}
                                 <button
-                                    style={{ marginRight: '20px' }}
-                                    onClick={() => increaseItemQuantity(item.name)}
-                                    aria-label="Increase item">
+                                    style={{ marginRight: "20px" }}
+                                    onClick={() =>
+                                        increaseItemQuantity(item.name)
+                                    }
+                                    aria-label="Increase item"
+                                >
                                     +
                                 </button>
                             </div>
                         </div>
 
                         {/* Delete button */}
-                        <button 
-                            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                        <button
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                            }}
                             aria-label="Delete"
-                            onClick={() => {removeItemFromBasket(item.name)}}>
-                            <DeleteIcon style={{ fontSize: '1.25rem' }} /> 
+                            onClick={() => {
+                                removeItemFromBasket(item.name);
+                            }}
+                        >
+                            <DeleteIcon style={{ fontSize: "1.25rem" }} />
                         </button>
                     </div>
                 ))}
 
                 {/* Display subtotal, tax, and total */}
-                <div style={{ position: 'fixed', display: 'flex', flexDirection: 'column', bottom: 10, marginTop: "20px", fontWeight: "bold" }}>
-                    <div>
-                        Subtotal: ${subtotal.toFixed(2)}
-                    </div>
+                <div
+                    style={{
+                        position: "fixed",
+                        display: "flex",
+                        flexDirection: "column",
+                        bottom: 10,
+                        marginTop: "20px",
+                        fontWeight: "bold",
+                    }}
+                >
+                    <div>Subtotal: ${subtotal.toFixed(2)}</div>
                     <div style={{ marginBottom: "10px" }}>
                         Tax (8%): ${tax.toFixed(2)}
                     </div>
                     <div style={{ marginBottom: "20px" }}>
                         Total: ${total.toFixed(2)}
                     </div>
-                    <button onClick={() => placeOrder()} disabled={basket.length === 0}>Place Order</button>
+                    <button
+                        onClick={() => placeOrder()}
+                        disabled={basket.length === 0}
+                    >
+                        Place Order
+                    </button>
                 </div>
             </div>
         );
     };
 
     const Accessibility = () => {
-        const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+        const [showAccessibilityPanel, setShowAccessibilityPanel] =
+            useState(false);
 
         return (
             <>
-                <button 
-                    style={{ 
-                        position: 'absolute',  
-                        bottom: 10, 
-                        left: '50%', 
-                        transform: 'translateX(-50%)', 
-                        justifyContent: 'center' 
+                <button
+                    style={{
+                        position: "absolute",
+                        bottom: 10,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        justifyContent: "center",
                     }}
                     aria-label="accessibility options"
-                    onClick={() => setShowAccessibilityPanel(prevState => !prevState)} // Adjusted to call the toggle function
+                    onClick={() =>
+                        setShowAccessibilityPanel((prevState) => !prevState)
+                    } // Adjusted to call the toggle function
                 >
                     <SettingsAccessibilityIcon />
                 </button>
                 {showAccessibilityPanel && (
-                    <div style={{
-                        position: 'fixed', 
-                        bottom: '50px', 
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        background: 'white',
-                        padding: '20px',
-                        borderRadius: '8px', 
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                    }}>
-                        <button onClick={() => setShowAccessibilityPanel(prevState => !prevState)}>
-                            <CloseIcon/>
+                    <div
+                        style={{
+                            position: "fixed",
+                            bottom: "50px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            background: "white",
+                            padding: "20px",
+                            borderRadius: "8px",
+                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                        }}
+                    >
+                        <button
+                            onClick={() =>
+                                setShowAccessibilityPanel(
+                                    (prevState) => !prevState
+                                )
+                            }
+                        >
+                            <CloseIcon />
                         </button>
                         <span> Accessibility Options </span>
-                        
                     </div>
                 )}
             </>
@@ -262,12 +395,14 @@ const CashierView = ({ menuItems }) => {
                 minHeight: "100vh",
             }}
         >
-            <div style={{ 
-                margin: 10,
-                width: "25%",
-                borderRight: "2px solid #000",
-                paddingRight: "10px"
-            }}>
+            <div
+                style={{
+                    margin: 10,
+                    width: "25%",
+                    borderRight: "2px solid #000",
+                    paddingRight: "10px",
+                }}
+            >
                 <DisplayBasket />
             </div>
 
@@ -281,34 +416,75 @@ const CashierView = ({ menuItems }) => {
                     padding: "10px",
                     paddingTop: "25px",
                     paddingLeft: "9px",
-                    margin: 10
+                    margin: 10,
                 }}
             >
-            
-            <div 
-                style={{ 
-                    display: "flex",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                }}     
-            >
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px", width: "95px" }}>Order</Button>
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Tender</Button>
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }} onClick={handleComboDialog}>Make a Combo</Button>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginBottom: "20px",
+                    }}
+                >
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            marginTop: "auto",
+                            marginRight: "10px",
+                            padding: "10px",
+                            width: "95px",
+                        }}
+                    >
+                        Order
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            marginRight: "10px",
+                        }}
+                    >
+                        Tender
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            marginRight: "10px",
+                        }}
+                        onClick={handleComboDialog}
+                    >
+                        Make a Combo
+                    </Button>
 
-                {/* Dialog for combo choice */}
-                <Dialog open={openDialog} onClose={handleCloseDialog}>
-                    <DialogTitle>Combos</DialogTitle>
-                    <DialogContent>
-                        <Button onClick={() => handleMakeCombo('kettleChips')}>Kettle Chips</Button>
-                        <Button onClick={() => handleMakeCombo('frenchFries')}>Fries</Button>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseDialog}>Cancel</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            
+                    {/* Dialog for combo choice */}
+                    <Dialog open={openDialog} onClose={handleCloseDialog}>
+                        <DialogTitle>Combos</DialogTitle>
+                        <DialogContent>
+                            <Button
+                                onClick={() => handleMakeCombo("kettleChips")}
+                            >
+                                Kettle Chips
+                            </Button>
+                            <Button
+                                onClick={() => handleMakeCombo("frenchFries")}
+                            >
+                                Fries
+                            </Button>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog}>Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+
                 <AssociatedMenuItems />
             </div>
 
@@ -318,7 +494,7 @@ const CashierView = ({ menuItems }) => {
                     display: "flex",
                     flexDirection: "column",
                     width: "15%",
-                    position: 'relative',
+                    position: "relative",
                     marginTop: "10px",
                 }}
             >
