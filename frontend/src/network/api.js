@@ -106,4 +106,13 @@ export async function attachMenuItem(formData) {
     return request("/attach_menu_items", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
 }
 
+export async function getTopTen() {
+    return request("/top_ten", { method: "GET" });
+}
+
+export async function getItemName(menuItemID) {
+    const response = await request(`/menu_item_name?id=${encodeURIComponent(menuItemID)}`, { method: "GET" });
+    return response; 
+}
+
 
