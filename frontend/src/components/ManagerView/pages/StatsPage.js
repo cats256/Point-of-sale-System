@@ -8,6 +8,7 @@ import React, { useState } from "react";
 // import Chart from "chart.js/auto";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import dayjs from "dayjs";
+import { Bar } from "react-chartjs-2";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -24,6 +25,30 @@ const StatsPage = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [smoothingOption, setSmoothingOption] = useState("None");
     const smoothingOptions = ["None", "Savitzky-Golay Filter", "LOWESS"];
+    const data = {
+        labels: ["Item A", "Item B", "Item C", "Item D", "Item E"],
+        datasets: [
+            {
+                label: "Number of Orders",
+                data: [12, 19, 3, 5, 2], // Dummy data, replace with real data
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
 
     return (
         <div>
@@ -79,25 +104,14 @@ const StatsPage = () => {
                     smoothingOption={smoothingOption}
                 />
             </div>
+            
+            <div>
+                <h2>Menu Item Orders Histogram</h2>
+                <Bar data={data} />
+            </div>
         </div>
     );
 };
 
+
 export default StatsPage;
-
-// {/* Total Orders Over Time */}
-// <div>
-// <h2>Total Orders Over Time from {comparisonDate.toDateString()} to {currentDate.toDateString()}</h2>
-// <TotalOrdersGraph currentdate={currentDate} comparisondate= {comparisonDate} />
-// </div>
-// {/* Most Popular Products Histogram */}
-// <div>
-//   <h2>Most Popular Products for {currentDay.toDateString()}</h2>
-//   <PopularProductsHistogram date={currentDay} />
-// </div>
-
-// {/* Average Order Price Chart */}
-// <div>
-//   <h2>Average Order Price Chart for {currentDay.toDateString()}</h2>
-//   <AverageOrderPriceChart date={currentDay} />
-// </div>

@@ -1,7 +1,7 @@
 // EmployeesPage.js
 // tiles with name, id, orders completed
 // gravatar images?..
-import { getEmployees } from "../../../network/api";
+import { getEmployees, updateSalary } from "../../../network/api";
 // import { updateSalary } from "../../../network/api";
 
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
@@ -58,17 +58,29 @@ const EmployeesPage = () => {
         }
     };
 
-    const handleUpdateSalary = (employee) => {
-        // const newSalary = prompt("Enter the new salary:");
-        // if (newSalary !== null) {
-        //     const parsedNewSalary = parseInt(newSalary);
-        //     if (!isNaN(parsedNewSalary)) {
-        //         updateSalary(parsedNewSalary);
-        //     } else {
-        //         alert("Please enter a valid number for the salary.");
-        //     }
-        // }
-        console.log("update " + employee + " salary");
+    const handleUpdateSalary = (employeeId) => {
+        const newSalary = prompt("Enter the new salary:");
+        if (newSalary !== null) {
+            const parsedNewSalary = parseInt(newSalary);
+            if (!isNaN(parsedNewSalary)) {
+                // Construct employee data
+                const employeeData = {
+                    id: employeeId,
+                    salary: parsedNewSalary,
+                };
+                // Update salary
+                updateSalary(employeeData)
+                    .then(() => {
+                        // Optionally update UI or handle success
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error if needed
+                    });
+            } else {
+                alert("Please enter a valid number for the salary.");
+            }
+        }
     }
 
     fetchData();
@@ -125,7 +137,8 @@ const EmployeesPage = () => {
                         <div style={{ marginTop: "10px" }}>
                             <div style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
                                 <span style={{ fontWeight: "bold" }}>Salary:</span> {employees[selectedEmployeeNum]["salary"]}
-                                <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button>
+                                {/* <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button> */}
+                                <button style={{ marginLeft: "10px" }} onClick={() => handleUpdateSalary(employees[selectedEmployeeNum]["id"])}>Update</button>
                             </div>
                             <div style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
                                 <span style={{ fontWeight: "bold" }}>Total Orders Made:</span> {employees[selectedEmployeeNum]["sales"]}
