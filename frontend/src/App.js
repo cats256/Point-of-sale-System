@@ -72,8 +72,8 @@ function App() {
         <Routes>
             <Route path="/manager" element={<ManagerView />} />
             <Route
-                path="/cashier" 
-                element={<CashierView menuItems={menuItems} />} 
+                path="/cashier"
+                element={<CashierView menuItems={menuItems} />}
             />
             <Route
                 path="/customer"

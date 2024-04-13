@@ -37,7 +37,7 @@ const StatsPage = () => {
 
             for (let i = 0; i < 10; i++) {
                 // _itemLabels.push(await getItemName(topten[i]["menu_item_id"].toString()));
-                _itemLabels.push("item "+i);
+                _itemLabels.push("item " + i);
                 _itemData.push(topten[i]["category_count"]);
             }
 
@@ -53,7 +53,7 @@ const StatsPage = () => {
         datasets: [
             {
                 label: "Number of Orders",
-                data: item_data, 
+                data: item_data,
                 backgroundColor: [
                     "rgba(255, 99, 132, 0.2)",
                     "rgba(54, 162, 235, 0.2)",
@@ -137,7 +137,7 @@ const StatsPage = () => {
                     smoothingOption={smoothingOption}
                 />
             </div>
-            
+
             <div>
                 <h2>Top Ten Menu Item Orders Histogram</h2>
                 <Bar data={data} />
@@ -145,6 +145,5 @@ const StatsPage = () => {
         </div>
     );
 };
-
 
 export default StatsPage;
