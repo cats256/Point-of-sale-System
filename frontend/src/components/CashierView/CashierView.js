@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,6 +9,7 @@ import { useBasket } from "../CustomerView/BasketContext";
 const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
 
     const { basket, 
             addItemToBasket, 
@@ -55,7 +56,7 @@ const CashierView = ({ menuItems }) => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
         filteredItems.sort(customSort);
 
-        const handleItemClick = (item) => {
+        const handleItemClick = (item) => {   
             addItemToBasket(item);
         };
 
@@ -76,7 +77,8 @@ const CashierView = ({ menuItems }) => {
                                     margin: "8px",
                                     fontSize: "16px",
                                     borderRadius: 5,
-                                    backgroundColor: itemName.startsWith("Beef") ? "#efdcfc" : 
+                                    backgroundColor:
+                                        itemName.startsWith("Beef") ? "#efdcfc" : 
                                         itemName.startsWith("Bean") ? "#fffdd4" :
                                         itemName.includes("Tender") ? "#fff2c9" :
                                         itemName.includes("Steak Finger") ? "#efdcfc" : 
@@ -110,6 +112,40 @@ const CashierView = ({ menuItems }) => {
         );
     };
 
+    const handleComboDialog = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const handleMakeCombo = (choice) => {
+        setOpenDialog(false);
+
+        if (choice === 'kettleChips') {
+            const kettleChipsItem = menuItems.find(item => item.name.toLowerCase().includes('kettle'));
+            const smallDrinkItem = menuItems.find(item => item.name.toLowerCase().includes('drink'));
+
+            const modifiedChipsItem = kettleChipsItem ? { ...kettleChipsItem, price: 1.00 } : null;
+            const modifiedDrinkItem = smallDrinkItem ? { ...smallDrinkItem, price: 0.99 } : null;
+
+            addItemToBasket(modifiedChipsItem);
+            addItemToBasket(modifiedDrinkItem);
+        }
+        
+        else if (choice === 'frenchFries') {
+            const frenchFriesItem = menuItems.find(item => item.name.toLowerCase().startsWith('fries'));
+            const smallDrinkItem = menuItems.find(item => item.name.toLowerCase().includes('drink'));
+
+            const modifiedFriesItem = frenchFriesItem ? { ...frenchFriesItem, price: 1.00 } : null;
+            const modifiedDrinkItem = smallDrinkItem ? { ...smallDrinkItem, price: 0.99 } : null;
+
+            addItemToBasket(modifiedFriesItem);
+            addItemToBasket(modifiedDrinkItem);
+        }
+    };
+
     const DisplayBasket = () => {
         // Subtotal, tax, & total
         const subtotal = basket.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -119,7 +155,7 @@ const CashierView = ({ menuItems }) => {
 
         return (
             <div>
-                <h1>Order #232323</h1> {/* This is where I want it to display the current order # */}
+                <h1>Checkout</h1>
 
                 {/* Clear Cart button */}
                 <button 
@@ -256,9 +292,21 @@ const CashierView = ({ menuItems }) => {
                     marginBottom: "20px",
                 }}     
             >
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px" }}>Item Availability</Button>
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Copy Item</Button> 
-                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Make a Combo</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: "black", borderColor: "black", marginTop: 'auto', marginRight: "10px", padding: "10px", width: "95px" }}>Order</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }}>Tender</Button>
+                <Button variant="outlined" style={{ backgroundColor: "#ecebed", color: 'black', borderColor: 'black', marginRight: "10px" }} onClick={handleComboDialog}>Make a Combo</Button>
+
+                {/* Dialog for combo choice */}
+                <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Combos</DialogTitle>
+                    <DialogContent>
+                        <Button onClick={() => handleMakeCombo('kettleChips')}>Kettle Chips</Button>
+                        <Button onClick={() => handleMakeCombo('frenchFries')}>Fries</Button>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
             
                 <AssociatedMenuItems />
