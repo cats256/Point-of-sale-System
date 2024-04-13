@@ -22,17 +22,37 @@ https://docs.google.com/spreadsheets/d/1HpwlY0PQyUtm4bFJ6zUTv4BfW8pZNC4KwQ7-rJAE
 Install prettier, copy absolute path, to .prettierc, add that to prettier extension setting configuration path
 
 # Scrum meeting times
-- Planning meeting
-- - 3/20 12:00 - 12:15
 
-- Scrum 1
-- - 3/22 12:00 - 12:15
+- Sprint 1
 
-- Scrum 2
-- - 3/25 12:00 - 12:15
+- - Planning meeting
+- - - 3/20 12:00 - 12:15
 
-- Scrum 3
-- - 3/29 12:00 - 12:15
+- - Scrum 1
+- - - 3/22 12:00 - 12:15
 
-- Retrospective
-- - 4/1 12:00 - 12:30
+- - Scrum 2
+- - - 3/25 12:00 - 12:15
+
+- - Scrum 3
+- - - 3/29 12:00 - 12:15
+
+- - Retrospective
+- - - 4/1 12:00 - 12:30
+
+- Sprint 2
+
+- - Planning meeting
+- - - 4/3 12:00 - 12:15
+
+- - Scrum 1
+- - - 4/5 12:00 - 12:15
+
+- - Scrum 2
+- - - 4/9 12:00 - 12:15
+
+- - Scrum 3
+- - - 4/11 12:00 - 12:15
+
+- - Retrospective
+- - - 4/14 12:00 - 12:30
