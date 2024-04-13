@@ -29,7 +29,7 @@ const EmployeesPage = () => {
         employees_.forEach((employee) => {
             employee_names.push(employee["name"]);
             const imagelink = "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
-            console.log(imagelink);
+            // console.log(imagelink);
             employee_images.push(imagelink);
             //console.log(employee["name"]);
         });

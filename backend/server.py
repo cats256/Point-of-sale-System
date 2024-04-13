@@ -173,7 +173,7 @@ def submit_order():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
-    print(name, price)
+    
     orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(orders_query, (name, price, date, assigned_employee))
 
@@ -197,21 +197,10 @@ def top_ten():
     cur.close()
     return jsonify(top_ten)
 
-# API endpoint to get name of menu item given id
-@app.route("/menu_item_name", methods=["GET"])
-def menu_item_name():
-    item_id = request.args.get("id")
 
-    cur = conn.cursor()
-    query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
-    cur.execute(query, (item_id,))
-    item_name= cur.fetchone()[0] 
-    cur.close()
-    return jsonify({"item_name": item_name})
-
-# API endpoint to submit a restock order
-@app.route("/update_salary", methods=["POST"])
-def update_salary(id):
+#API endpoint to update an employee's salary 
+@app.route("/salary", methods=["POST"])
+def salary():
     data = request.json
 
     id = data.get("id")

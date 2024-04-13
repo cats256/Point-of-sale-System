@@ -3,7 +3,7 @@
 
 // can use this to display dates: {currentDate.toDateString()} and {comparisonDate.toDateString()}
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // import Chart from "chart.js/auto";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -17,6 +17,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 // import { CategoryScale } from "chart.js";
 
 import TotalOrdersGraph from "./StatsDisplays/TotalOrdersGraph"; // Assuming you have components for graphs
+import { getTopTen, getItemName } from "../../../network/api";
 // import PopularProductsHistogram from './StatsDisplays/PopularProductsHistogram'; // Assuming you have components for graphs
 // import AverageOrderPriceChart from './StatsDisplays/AverageOrderPriceChart'; // Assuming you have components for graphs
 
@@ -25,13 +26,40 @@ const StatsPage = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [smoothingOption, setSmoothingOption] = useState("None");
     const smoothingOptions = ["None", "Savitzky-Golay Filter", "LOWESS"];
+    const [item_labels, setLabels] = useState([]);
+    const [item_data, setData] = useState({});
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const topten = await getTopTen();
+            const _itemLabels = [];
+            const _itemData = [];
+
+            for (let i = 0; i < 10; i++) {
+                // _itemLabels.push(await getItemName(topten[i]["menu_item_id"].toString()));
+                _itemLabels.push("item "+i);
+                _itemData.push(topten[i]["category_count"]);
+            }
+
+            setLabels(_itemLabels);
+            setData(_itemData);
+        };
+
+        fetchData();
+    }, []);
+
     const data = {
-        labels: ["Item A", "Item B", "Item C", "Item D", "Item E"],
+        labels: item_labels,
         datasets: [
             {
                 label: "Number of Orders",
-                data: [12, 19, 3, 5, 2], // Dummy data, replace with real data
+                data: item_data, 
                 backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
                     "rgba(255, 99, 132, 0.2)",
                     "rgba(54, 162, 235, 0.2)",
                     "rgba(255, 206, 86, 0.2)",
@@ -39,6 +67,11 @@ const StatsPage = () => {
                     "rgba(153, 102, 255, 0.2)",
                 ],
                 borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
                     "rgba(255, 99, 132, 1)",
                     "rgba(54, 162, 235, 1)",
                     "rgba(255, 206, 86, 1)",
@@ -106,7 +139,7 @@ const StatsPage = () => {
             </div>
             
             <div>
-                <h2>Menu Item Orders Histogram</h2>
+                <h2>Top Ten Menu Item Orders Histogram</h2>
                 <Bar data={data} />
             </div>
         </div>
