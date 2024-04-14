@@ -5,6 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
+import "./CustomerView.css";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
@@ -25,6 +26,17 @@ const CustomerView = ({ menuItems }) => {
     } = useBasket();
     const [popupContent, setPopupContent] = useState("");
 
+    const categories = [
+        "Burgers",
+        "Baskets",
+        "Sandwiches",
+        "Drinks",
+        "Desserts",
+        "Sides",
+        "Sauces",
+        "All",
+    ];
+
     const buttonWithImg = (text, panel = "", img = "", alt = "") => (
         <Button
             variant="outlined"
@@ -35,9 +47,11 @@ const CustomerView = ({ menuItems }) => {
             style={{
                 backgroundColor: currType === text ? "#C2A061" : "",
                 color: currType === text ? "white" : "",
-                marginRight: 8,
-                borderRadius: 20,
-                margin: 4,
+                flexGrow: 1,
+                borderRadius: 0,
+                borderWidth: 0,
+                color: "black",
+                borderBottom: "2px solid black",
             }}
         >
             {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
@@ -118,67 +132,28 @@ const CustomerView = ({ menuItems }) => {
         };
 
         return (
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    width: "60vw",
-                    justifyContent: "center",
-                }}
-            >
+            <>
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
 
                     return (
-                        <div
-                            key={index}
+                        <Button
+                            variant="outlined"
                             style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                backgroundColor: "#F0F0F0",
-                                borderRadius: "15px",
-                                border: "2px solid #000",
-                                padding: "10px",
-                                margin: "10px",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                                flexGrow: 1,
+                                borderRadius: 0,
+                                color: "black",
                             }}
+                            onClick={() => handleItemClick(item)}
+                            className="menu-item"
                         >
-                            <button
-                                style={{
-                                    height: "2%",
-                                    width: "100%",
-                                    alignItems: "center",
-                                    border: "none",
-                                }}
-                                variant="outlined"
-                                onClick={() => handleItemClick(item)}
-                            >
-                                <img
-                                    src={require("../../img/temp_burger.jpeg")}
-                                    alt={itemName}
-                                    style={{
-                                        marginRight: 8,
-                                        width: "180px",
-                                        height: "100",
-                                        borderRadius: "15px",
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        fontWeight: "bold",
-                                        width: "180px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        padding: "7px",
-                                    }}
-                                >
-                                    {itemName}
-                                </div>
-                                ${item.price}
-                            </button>
-                        </div>
+                            <img
+                                src={require("../../img/temp_burger.jpeg")}
+                                alt={itemName}
+                            />
+                            <div>{itemName}</div>
+                            <div>${item.price}</div>
+                        </Button>
                     );
                 })}
                 {showItemInfoPopup && (
@@ -187,7 +162,7 @@ const CustomerView = ({ menuItems }) => {
                         onClose={() => setShowItemInfoPopup(false)}
                     />
                 )}
-            </div>
+            </>
         );
     };
 
@@ -296,103 +271,65 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
-    const Accessibility = () => {
-        const [showAccessibilityPanel, setShowAccessibilityPanel] =
-            useState(false);
-        return (
-            <>
-                <button
-                    style={{
-                        position: "absolute",
-                        bottom: 10,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        justifyContent: "center",
-                    }}
-                    aria-label="accessibility options"
-                    onClick={() =>
-                        setShowAccessibilityPanel((prevState) => !prevState)
-                    } // Adjusted to call the toggle function
-                >
-                    <SettingsAccessibilityIcon />
-                </button>
-                {showAccessibilityPanel && (
-                    <div
-                        style={{
-                            position: "fixed",
-                            bottom: "50px",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            background: "white",
-                            padding: "20px",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                        }}
-                    >
-                        <button
-                            onClick={() =>
-                                setShowAccessibilityPanel(
-                                    (prevState) => !prevState
-                                )
-                            }
-                        >
-                            <CloseIcon />
-                        </button>
-                        <span> Accessibility Options </span>
-                    </div>
-                )}
-            </>
-        );
-    };
+    // const Accessibility = () => {
+    //     const [showAccessibilityPanel, setShowAccessibilityPanel] =
+    //         useState(false);
+    //     return (
+    //         <>
+    //             <button
+    //                 style={{
+    //                     position: "absolute",
+    //                     bottom: 10,
+    //                     left: "50%",
+    //                     transform: "translateX(-50%)",
+    //                     justifyContent: "center",
+    //                 }}
+    //                 aria-label="accessibility options"
+    //                 onClick={() =>
+    //                     setShowAccessibilityPanel((prevState) => !prevState)
+    //                 } // Adjusted to call the toggle function
+    //             >
+    //                 <SettingsAccessibilityIcon />
+    //             </button>
+    //             {showAccessibilityPanel && (
+    //                 <div
+    //                     style={{
+    //                         position: "fixed",
+    //                         bottom: "50px",
+    //                         left: "50%",
+    //                         transform: "translateX(-50%)",
+    //                         background: "white",
+    //                         padding: "20px",
+    //                         borderRadius: "8px",
+    //                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    //                     }}
+    //                 >
+    //                     <button
+    //                         onClick={() =>
+    //                             setShowAccessibilityPanel(
+    //                                 (prevState) => !prevState
+    //                             )
+    //                         }
+    //                     >
+    //                         <CloseIcon />
+    //                     </button>
+    //                     <span> Accessibility Options </span>
+    //                 </div>
+    //             )}
+    //         </>
+    //     );
+    // };
 
     return (
-        <div
-            style={{
-                display: "flex",
-                minHeight: "100vh",
-            }}
-        >
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "15vw",
-                    margin: 8,
-                }}
-            >
-                {buttonWithImg("Burgers")}
-                {buttonWithImg("Baskets")}
-                {buttonWithImg("Sandwiches")}
-                {buttonWithImg("Drinks")}
-                {buttonWithImg("Desserts")}
-                {buttonWithImg("Sides")}
-                {buttonWithImg("Sauces")}
-                {buttonWithImg("All")}
-
-                {Accessibility()}
+        <div className="customer-view">
+            <div className="left-panel">
+                {categories.map((category) => buttonWithImg(category))}
             </div>
-
-            <div
-                style={{
-                    borderLeft: "2px solid #000",
-                    borderRight: "2px solid #000",
-                    flexGrow: 1,
-                    flexDirection: "column",
-                    padding: 10,
-                    width: "auto",
-                }}
-            >
+            <div className="center-panel">
+                {/* {Accessibility()} */}
                 {PopulateMenuItems()}
             </div>
-
-            <div
-                style={{
-                    margin: 10,
-                    width: "25vw",
-                }}
-            >
-                {DisplayBasket()}
-            </div>
+            <div className="right-panel">{DisplayBasket()}</div>
         </div>
     );
 };
