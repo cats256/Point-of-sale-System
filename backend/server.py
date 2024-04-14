@@ -53,6 +53,7 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+
 # API endpoint to fetch menu items
 @app.route("/restock_info", methods=["GET"])
 def get_restock_info():
@@ -64,6 +65,7 @@ def get_restock_info():
     restock_info = [dict(zip(columns, row)) for row in rows]
     cur.close()
     return jsonify(restock_info)
+
 
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
@@ -87,13 +89,15 @@ def get_employee_info():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
+
     query = sql.SQL("SELECT * FROM employees")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
-    menu_info = [dict(zip(columns, row)) for row in rows]
+    employees_info = [dict(zip(columns, row)) for row in rows]
     cur.close()
-    return jsonify(menu_info)
+
+    return jsonify(employees_info)
 
 
 # API endpoint to fetch orders
@@ -118,15 +122,17 @@ def get_orders_info():
 
     return orders_info
 
+
 # API endpoint to return order id
 @app.route("/order_id", methods=["GET"])
 def order_id():
     cur = conn.cursor()
     query = sql.SQL("SELECT id FROM orders WHERE id=(SELECT max(id) FROM orders);")
     cur.execute(query)
-    order_id = cur.fetchone()[0] 
+    order_id = cur.fetchone()[0]
     cur.close()
     return jsonify({"order_id": order_id})
+
 
 @app.route("/menu_item_id", methods=["GET"])
 def menu_item_id():
@@ -135,9 +141,10 @@ def menu_item_id():
     cur = conn.cursor()
     query = sql.SQL("SELECT id FROM menu_items WHERE name=%s;")
     cur.execute(query, (item_name,))
-    item_id = cur.fetchone()[0] 
+    item_id = cur.fetchone()[0]
     cur.close()
     return jsonify({"item_id": item_id})
+
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
@@ -157,6 +164,7 @@ def attach_menu_items():
         }
     )
 
+
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["POST"])
 def submit_order():
@@ -173,7 +181,7 @@ def submit_order():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
-    
+
     orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(orders_query, (name, price, date, assigned_employee))
 
@@ -185,11 +193,14 @@ def submit_order():
         }
     )
 
-#API endpoint to fetch 10 most sold menu items
+
+# API endpoint to fetch 10 most sold menu items
 @app.route("/top_ten", methods=["GET"])
 def top_ten():
     cur = conn.cursor()
-    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10")
+    query = sql.SQL(
+        "SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10"
+    )
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
@@ -198,7 +209,7 @@ def top_ten():
     return jsonify(top_ten)
 
 
-#API endpoint to update an employee's salary 
+# API endpoint to update an employee's salary
 @app.route("/salary", methods=["POST"])
 def salary():
     data = request.json
@@ -208,7 +219,7 @@ def salary():
 
     cur = conn.cursor()
     query = sql.SQL("UPDATE employees SET salary = %s WHERE id = %s;")
-    cur.execute(query, (id, salary))
+    cur.execute(query, (salary, id))
     conn.commit()
     cur.close()
     return jsonify(
@@ -217,12 +228,13 @@ def salary():
         }
     )
 
+
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])
 def restock_order():
     data = request.json
 
-    print('end')
+    print("end")
     name = data.get("name")
     price = data.get("price")
     quantity = data.get("quantity")

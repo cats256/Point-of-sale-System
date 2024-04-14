@@ -1,6 +1,5 @@
-// Manager.js
 import React, { useState } from "react";
-import "./Manager.css"; // Assuming you have CSS for styling
+import "./Manager.css";
 
 import Sidebar from "./Sidebar";
 import EmployeesPage from "./pages/EmployeesPage";
@@ -9,10 +8,10 @@ import StatsPage from "./pages/StatsPage";
 // Use named export export { component_name } instead of export default, makes it easier when changing component's name
 
 const ManagerView = () => {
-    const [page, setPage] = useState("employees"); // Default page is employees
+    const [page, setPage] = useState("employees");
 
     return (
-        <div className="app">
+        <div className="manager-view">
             <Sidebar setPage={setPage} />
             <div className="content">
                 {page === "employees" && <EmployeesPage />}

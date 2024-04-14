@@ -2,7 +2,7 @@
 // tiles with name, id, orders completed
 // gravatar images?..
 import { getEmployees, updateSalary } from "../../../network/api";
-// import { updateSalary } from "../../../network/api";
+import { useEffect } from "react";
 
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
   employee image (either on same list as names in dictionary form or gathered from name),
@@ -19,26 +19,6 @@ const EmployeesPage = () => {
     const [employeeImages, setEmployeeImages] = useState([]);
     const [employeeJob, setEmployeeJob] = useState("");
     const [employees, setEmployees] = useState([]);
-
-    const fetchData = async () => {
-        const employees_ = await getEmployees();
-        //console.log(employees);
-        const employee_names = [];
-        const employee_images = [];
-
-        employees_.forEach((employee) => {
-            employee_names.push(employee["name"]);
-            const imagelink =
-                "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
-            // console.log(imagelink);
-            employee_images.push(imagelink);
-            //console.log(employee["name"]);
-        });
-
-        setEmployeeNames(employee_names);
-        setEmployeeImages(employee_images);
-        setEmployees(employees_);
-    };
 
     // const CryptoJS = require('crypto-js');
 
@@ -83,7 +63,30 @@ const EmployeesPage = () => {
         }
     };
 
-    fetchData();
+    useEffect(() => {
+        const fetchData = async () => {
+            const employees_ = await getEmployees();
+            //console.log(employees);
+            const employee_names = [];
+            const employee_images = [];
+
+            employees_.forEach((employee) => {
+                employee_names.push(employee["name"]);
+                const imagelink =
+                    "https://gravatar.com/avatar/" +
+                    hashEmail(employee["email"]);
+                // console.log(imagelink);
+                employee_images.push(imagelink);
+                //console.log(employee["name"]);
+            });
+
+            setEmployeeNames(employee_names);
+            setEmployeeImages(employee_images);
+            setEmployees(employees_);
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <div style={{ display: "flex" }}>

@@ -1,16 +1,43 @@
 // Sidebar.js
+import { Button } from "@mui/material";
 import React from "react";
 
 const Sidebar = ({ setPage }) => {
     return (
         <div className="sidebar">
-            <button onClick={() => setPage("employees")}>
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                }}
+                onClick={() => setPage("employees")}
+            >
                 Employee Information
-            </button>
-            <button onClick={() => setPage("inventory")}>
+            </Button>
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                }}
+                onClick={() => setPage("inventory")}
+            >
                 Inventory Display
-            </button>
-            <button onClick={() => setPage("stats")}>POS Information</button>
+            </Button>
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                }}
+                onClick={() => setPage("stats")}
+            >
+                POS Information
+            </Button>
         </div>
     );
 };

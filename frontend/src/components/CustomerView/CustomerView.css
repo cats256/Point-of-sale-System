@@ -6,12 +6,11 @@
 .left-panel {
     display: flex;
     flex-direction: column;
-    width: 20vw;
+    width: 15vw;
     justify-content: space-between;
 }
 
 .center-panel {
-    flex-grow: 1;
     flex-direction: column;
     width: auto;
     border-left: 1px solid black;
@@ -21,7 +20,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    width: 100%;
+    width: 65vw;
     overflow: auto;
     grid-auto-flow: row;
 }
