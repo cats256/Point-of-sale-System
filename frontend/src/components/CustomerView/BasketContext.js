@@ -1,5 +1,10 @@
-import { createContext, useState, useContext } from 'react';
-import { submitOrder, getOrderId, getItemId, attachMenuItem } from "../../network/api";
+import { createContext, useState, useContext } from "react";
+import {
+    submitOrder,
+    getOrderId,
+    getItemId,
+    attachMenuItem,
+} from "../../network/api";
 
 export const BasketContext = createContext();
 
@@ -11,10 +16,10 @@ export const BasketProvider = ({ children }) => {
     const handleMakeCombo = () => {
         setIsCombo(true);
     };
-    
+
     const addItemToBasketWithCombo = (item) => {
         addItemToBasket(item);
-    
+
         if (isCombo) {
             // Define the combo details
             const comboDetails = {
@@ -22,7 +27,7 @@ export const BasketProvider = ({ children }) => {
                 Baskets: { name: "Combo with Fries", price: 1.1 },
                 // Add other types as needed
             };
-    
+
             const combo = comboDetails[item.type];
             if (combo) {
                 const comboItem = {
@@ -34,11 +39,10 @@ export const BasketProvider = ({ children }) => {
                 // Add the combo as a separate item in the basket
                 addItemToBasket(comboItem);
             }
-    
+
             setIsCombo(false); // Reset the combo flag
         }
     };
-    
 
     const addItemToBasket = (itemToAdd) => {
         setBasket((currentBasket) => {
@@ -58,7 +62,7 @@ export const BasketProvider = ({ children }) => {
 
         setTimeout(() => {
             setShowItemInfoPopup(false);
-        }, 700); 
+        }, 700);
     };
 
     const increaseItemQuantity = (itemName) => {
@@ -101,12 +105,14 @@ export const BasketProvider = ({ children }) => {
     };
 
     const removeItemFromBasket = (itemName) => {
-        setBasket(currentBasket => currentBasket.filter(item => item.name !== itemName));
-    }
+        setBasket((currentBasket) =>
+            currentBasket.filter((item) => item.name !== itemName)
+        );
+    };
 
     const emptyBasket = () => {
         setBasket([]);
-    }
+    };
 
     const placeOrder = async () => {
         const orderData = {
@@ -115,7 +121,7 @@ export const BasketProvider = ({ children }) => {
             date: new Date().toISOString(),
             assigned_employee: "7", // 7 is kiosk employee
         };
-        submitOrder(orderData)
+        submitOrder(orderData);
         const orderIDResponse = await getOrderId();
         for (const item of basket) {
             try {
@@ -137,13 +143,13 @@ export const BasketProvider = ({ children }) => {
                 console.error("Error placing order:", error);
             }
         }
-                const orderID = orderIDResponse.order_id;
-                if (orderID) {
-                    alert("Success! Your order number is " + orderID);
-                    emptyBasket();
-                } else {
-                    throw new Error("Failed to retrieve order ID");
-                }
+        const orderID = orderIDResponse.order_id;
+        if (orderID) {
+            alert("Success! Your order number is " + orderID);
+            emptyBasket();
+        } else {
+            throw new Error("Failed to retrieve order ID");
+        }
     };
 
     const totalCost = basket.reduce((total, item) => {
@@ -151,7 +157,23 @@ export const BasketProvider = ({ children }) => {
     }, 0);
 
     return (
-        <BasketContext.Provider value={{ basket, addItemToBasket, increaseItemQuantity, decreaseItemQuantity, removeItemFromBasket, emptyBasket, placeOrder, totalCost, setShowItemInfoPopup, showItemInfoPopup, setIsCombo, handleMakeCombo, addItemToBasketWithCombo }}>
+        <BasketContext.Provider
+            value={{
+                basket,
+                addItemToBasket,
+                increaseItemQuantity,
+                decreaseItemQuantity,
+                removeItemFromBasket,
+                emptyBasket,
+                placeOrder,
+                totalCost,
+                setShowItemInfoPopup,
+                showItemInfoPopup,
+                setIsCombo,
+                handleMakeCombo,
+                addItemToBasketWithCombo,
+            }}
+        >
             {children}
         </BasketContext.Provider>
     );

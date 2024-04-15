@@ -4,8 +4,7 @@ export const formatItemName = (item) => {
         .replace(/[0-9]/g, "")
         .split(" ")
         .map(
-            (word) =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
         )
         .join(" ")
         .replace(".", "");

@@ -82,15 +82,27 @@ export async function translate(text, targetLanguage) {
 }
 
 export async function updateSalary(formData) {
-    return request("/update_salary", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+    return request("/salary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
 }
 
 export async function submitOrder(formData) {
-    return request("/submit_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+    return request("/submit_order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
 }
 
 export async function submitRestockOrder(formData) {
-    return request("/restock_order", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+    return request("/restock_order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
 }
 
 export async function getOrderId() {
@@ -98,13 +110,29 @@ export async function getOrderId() {
 }
 
 export async function getItemId(menuItemName) {
-    const response = await request(`/menu_item_id?name=${encodeURIComponent(menuItemName)}`, { method: "GET" });
+    const response = await request(
+        `/menu_item_id?name=${encodeURIComponent(menuItemName)}`,
+        { method: "GET" }
+    );
     return response; // Return the entire response object
 }
 
 export async function attachMenuItem(formData) {
-    return request("/attach_menu_items", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(formData) });
+    return request("/attach_menu_items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
 }
 
+export async function getTopTen() {
+    return request("/top_ten", { method: "GET" });
+}
 
-
+export async function getItemName(menuItemID) {
+    const response = await request(
+        `/menu_item_name?id=${encodeURIComponent(menuItemID)}`,
+        { method: "GET" }
+    );
+    return response;
+}

@@ -1,7 +1,7 @@
 // EmployeesPage.js
 // tiles with name, id, orders completed
 // gravatar images?..
-import { getEmployees } from "../../../network/api";
+import { getEmployees, updateSalary } from "../../../network/api";
 // import { updateSalary } from "../../../network/api";
 
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
@@ -28,8 +28,9 @@ const EmployeesPage = () => {
 
         employees_.forEach((employee) => {
             employee_names.push(employee["name"]);
-            const imagelink = "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
-            console.log(imagelink);
+            const imagelink =
+                "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
+            // console.log(imagelink);
             employee_images.push(imagelink);
             //console.log(employee["name"]);
         });
@@ -45,31 +46,45 @@ const EmployeesPage = () => {
         const trimmedEmail = email.trim().toLowerCase();
         const hashedEmail = sha256(trimmedEmail).toString(); //CryptoJS.SHA256(trimmedEmail).toString(CryptoJS.enc.Hex);
         return hashedEmail;
-    }
+    };
 
     const handleEmployeeClick = (employee, num) => {
         setSelectedEmployee(employee);
         setSelectedEmployeeNum(num);
-        if (employees[num]["manager"]){
+        if (employees[num]["manager"]) {
             setEmployeeJob("Manager");
-        }
-        else{
+        } else {
             setEmployeeJob("Employee");
         }
     };
 
-    const handleUpdateSalary = (employee) => {
-        // const newSalary = prompt("Enter the new salary:");
-        // if (newSalary !== null) {
-        //     const parsedNewSalary = parseInt(newSalary);
-        //     if (!isNaN(parsedNewSalary)) {
-        //         updateSalary(parsedNewSalary);
-        //     } else {
-        //         alert("Please enter a valid number for the salary.");
-        //     }
-        // }
-        console.log("update " + employee + " salary");
-    }
+    const handleUpdateSalary = (employeeId) => {
+        const newSalary = prompt("Enter the new salary:");
+        if (newSalary !== null) {
+            const parsedNewSalary = parseInt(newSalary);
+            if (!isNaN(parsedNewSalary)) {
+                // Construct employee data
+                const employeeData = {
+                    id: employeeId,
+                    salary: parsedNewSalary,
+                };
+                // Update salary
+                console.log(employeeData);
+                updateSalary(employeeData)
+                    .then(() => {
+                        // Optionally update UI or handle success
+                        // fetchData();
+                        // alert("called API");
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        // Handle error if needed
+                    });
+            } else {
+                alert("Please enter a valid number for the salary.");
+            }
+        }
+    };
 
     fetchData();
 
@@ -108,7 +123,16 @@ const EmployeesPage = () => {
             <div style={{ flex: "1", marginLeft: "20px" }}>
                 <h2>Employee Information</h2>
                 {selectedEmployee && (
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", border: "1px solid #ccc", borderRadius: "10px", padding: "10px" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            border: "1px solid #ccc",
+                            borderRadius: "10px",
+                            padding: "10px",
+                        }}
+                    >
                         <div style={{ display: "flex", alignItems: "left" }}>
                             <img
                                 src={employeeImages[selectedEmployeeNum]}
@@ -120,18 +144,51 @@ const EmployeesPage = () => {
                                     marginRight: "20px",
                                 }}
                             />
-                            <h3 style={{ margin: 0, textAlign: "center" }}>{selectedEmployee}</h3>
+                            <h3 style={{ margin: 0, textAlign: "center" }}>
+                                {selectedEmployee}
+                            </h3>
                         </div>
                         <div style={{ marginTop: "10px" }}>
-                            <div style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
-                                <span style={{ fontWeight: "bold" }}>Salary:</span> {employees[selectedEmployeeNum]["salary"]}
-                                <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button>
+                            <div
+                                style={{
+                                    marginBottom: "10px",
+                                    borderBottom: "1px solid #ccc",
+                                    paddingBottom: "5px",
+                                }}
+                            >
+                                <span style={{ fontWeight: "bold" }}>
+                                    Salary:
+                                </span>{" "}
+                                {employees[selectedEmployeeNum]["salary"]}
+                                {/* <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button> */}
+                                <button
+                                    style={{ marginLeft: "10px" }}
+                                    onClick={() =>
+                                        handleUpdateSalary(
+                                            employees[selectedEmployeeNum]["id"]
+                                        )
+                                    }
+                                >
+                                    Update
+                                </button>
                             </div>
-                            <div style={{ marginBottom: "10px", borderBottom: "1px solid #ccc", paddingBottom: "5px" }}>
-                                <span style={{ fontWeight: "bold" }}>Total Orders Made:</span> {employees[selectedEmployeeNum]["sales"]}
+                            <div
+                                style={{
+                                    marginBottom: "10px",
+                                    borderBottom: "1px solid #ccc",
+                                    paddingBottom: "5px",
+                                }}
+                            >
+                                <span style={{ fontWeight: "bold" }}>
+                                    Email:
+                                </span>{" "}
+                                {employees[selectedEmployeeNum]["email"]}
                             </div>
                             <div>
-                                <span style={{ fontWeight: "bold" }}>Position: </span> {employeeJob}
+                                <span style={{ fontWeight: "bold" }}>
+                                    Position:{" "}
+                                </span>{" "}
+                                {employeeJob}
                             </div>
                         </div>
                     </div>

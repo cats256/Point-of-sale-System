@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const NavigationBar = ({ categories, handleCategoryClick }) => {
     return (
@@ -6,7 +6,12 @@ const NavigationBar = ({ categories, handleCategoryClick }) => {
             <h2>Categories</h2>
             <div>
                 {categories.map((category, index) => (
-                    <button key={index} onClick={() => handleCategoryClick(category)}>{category}</button>
+                    <button
+                        key={index}
+                        onClick={() => handleCategoryClick(category)}
+                    >
+                        {category}
+                    </button>
                 ))}
             </div>
         </div>

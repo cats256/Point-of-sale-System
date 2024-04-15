@@ -71,7 +71,10 @@ function App() {
     return (
         <Routes>
             <Route path="/manager" element={<ManagerView />} />
-            <Route path="/cashier" element={<CashierView />} />
+            <Route
+                path="/cashier"
+                element={<CashierView menuItems={menuItems} />}
+            />
             <Route
                 path="/customer"
                 element={<CustomerView menuItems={menuItems} />}
