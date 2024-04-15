@@ -1,16 +1,27 @@
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import RemoveIcon from "@mui/icons-material/Remove";
+import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
 import {
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    Button,
+    IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
-import CloseIcon from "@mui/icons-material/Close";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import { Box } from "@mui/system";
 import { useState } from "react";
+import { categories } from "../../utils/const";
 import { formatItemName } from "../../utils/formatItemName";
+import { getItemNameColor } from "../../utils/getItemNameColor";
 import { useBasket } from "../CustomerView/BasketContext";
+import { CategoryButton } from "../common/CategoryButton";
+import "./CashierView.css";
 
 const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
@@ -22,35 +33,12 @@ const CashierView = ({ menuItems }) => {
         addItemToBasket,
         increaseItemQuantity,
         decreaseItemQuantity,
-        removeItemFromBasket,
         emptyBasket,
         placeOrder,
+        RemoveItemConfirmationDialog,
     } = useBasket();
 
-    const generateButtons = (text, panel = "", img = "", alt = "") => (
-        // menu item category buttons
-        <Button
-            variant="outlined"
-            onClick={() => {
-                setPanel(panel || text);
-                setCurrType(text);
-            }}
-            style={{
-                borderColor: "black",
-                padding: "10px",
-                backgroundColor: currType === text ? "#C2A061" : "#ecebed",
-                color: currType === text ? "white" : "black",
-                marginRight: 8,
-                width: "175px",
-                height: "50px",
-            }}
-        >
-            {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
-            {text}
-        </Button>
-    );
-
-    const AssociatedMenuItems = () => {
+    const PopulateMenuItems = () => {
         // sorting the beef & bean burgers to group by type
         const customSort = (a, b) => {
             if (a.name.includes("beef") && !b.name.includes("beef")) return -1;
@@ -68,106 +56,73 @@ const CashierView = ({ menuItems }) => {
         };
 
         return (
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    backgroundColor: "white",
-                }}
-            >
+            <>
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
 
                     return (
-                        <div key={index}>
-                            {/* menu item buttons */}
-                            <button
-                                variant="outlined"
-                                onClick={() => handleItemClick(item)}
-                                style={{
-                                    width: "135px",
-                                    height: "135px",
-                                    margin: "8px",
-                                    fontSize: "16px",
-                                    borderRadius: 5,
-                                    backgroundColor: itemName.startsWith("Beef")
-                                        ? "#efdcfc"
-                                        : itemName.startsWith("Bean")
-                                          ? "#fffdd4"
-                                          : itemName.includes("Tender")
-                                            ? "#fff2c9"
-                                            : itemName.includes("Steak Finger")
-                                              ? "#efdcfc"
-                                              : itemName.includes("Sandwich")
-                                                ? "#e8fce8"
-                                                : itemName.includes(
-                                                        "Grilled Cheese"
-                                                    )
-                                                  ? "#fff5e3"
-                                                  : itemName.includes("Coffee")
-                                                    ? "#d4c0b8"
-                                                    : itemName.includes(
-                                                            "Fountain Drink"
-                                                        )
-                                                      ? "#e3f8ff"
-                                                      : itemName.includes(
-                                                              "Scoop"
-                                                          )
-                                                        ? "#fffef0"
-                                                        : itemName.includes(
-                                                                "Cookie"
-                                                            )
-                                                          ? "#d4c0b8"
-                                                          : itemName.includes(
-                                                                  "Brownie"
-                                                              )
-                                                            ? "#d4c0b8"
-                                                            : itemName.includes(
-                                                                    "Shake"
-                                                                )
-                                                              ? "#ffdef3"
-                                                              : itemName.includes(
-                                                                      "Fries"
-                                                                  )
-                                                                ? "#fff2c9"
-                                                                : itemName.includes(
-                                                                        "Tots"
-                                                                    )
-                                                                  ? "#fff2c9"
-                                                                  : itemName.includes(
-                                                                          "Rings"
-                                                                      )
-                                                                    ? "#fff2c9"
-                                                                    : itemName.includes(
-                                                                            "Chips"
-                                                                        )
-                                                                      ? "#fff2c9"
-                                                                      : itemName.includes(
-                                                                              "Sauce"
-                                                                          )
-                                                                        ? "#deb0a9"
-                                                                        : itemName.includes(
-                                                                                "Mustard"
-                                                                            )
-                                                                          ? "#fff2c9"
-                                                                          : itemName.includes(
-                                                                                  "Ranch"
-                                                                              )
-                                                                            ? "#e8ffff"
-                                                                            : "inherit",
-                                }}
-                            >
-                                <div style={{ paddingBottom: "15px" }}>
-                                    {itemName}
-                                </div>
-                                ${item.price}
-                            </button>
-                        </div>
+                        <Button
+                            key={index}
+                            variant="outlined"
+                            style={{
+                                flexGrow: 1,
+                                borderRadius: 0,
+                                color: "black",
+                                backgroundColor: getItemNameColor(itemName),
+                                border: "1px solid black",
+                                borderLeftWidth: 0,
+                                borderTopWidth: 0,
+                                borderRightWidth: index % 3 === 2 ? 0 : "1px",
+                            }}
+                            onClick={() => handleItemClick(item)}
+                            className="menu-item"
+                        >
+                            <img
+                                src={require("../../img/temp_burger.jpeg")}
+                                alt={itemName}
+                            />
+                            <div>{itemName}</div>
+                            <div>${parseFloat(item.price).toFixed(2)}</div>
+                        </Button>
                     );
                 })}
-            </div>
+            </>
         );
+        // <div
+        //     style={{
+        //         display: "flex",
+        //         flexDirection: "row",
+        //         flexWrap: "wrap",
+        //         backgroundColor: "white",
+        //     }}
+        // >
+        //     {filteredItems.map((item, index) => {
+        //         let itemName = formatItemName(item);
+
+        //         return (
+        //             <div key={index}>
+        //                 {/* menu item buttons */}
+        //                 <button
+        //                     variant="outlined"
+        //                     onClick={() => handleItemClick(item)}
+        //                     style={{
+        //                         width: "135px",
+        //                         height: "135px",
+        //                         margin: "8px",
+        //                         fontSize: "16px",
+        //                         borderRadius: 5,
+        //                         backgroundColor: getItemNameColor(itemName),
+        //                     }}
+        //                 >
+        //                     <div style={{ paddingBottom: "15px" }}>
+        //                         {itemName}
+        //                     </div>
+        //                     ${item.price}
+        //                 </button>
+        //             </div>
+        //         );
+        //     })}
+        // </div>
     };
 
     const handleComboDialog = () => {
@@ -229,110 +184,161 @@ const CashierView = ({ menuItems }) => {
         const total = subtotal + tax;
 
         return (
-            <div>
-                <h1>Checkout</h1>
-
-                {/* Clear Cart button */}
-                <button
-                    style={{
-                        marginBottom: "20px",
-                        marginTop: "20px",
-                        display: "flex",
-                        justifyContent: "center",
-                    }}
-                    onClick={() => {
-                        emptyBasket();
-                    }}
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: "100%",
+                    overflow: "auto",
+                }}
+            >
+                <Card
+                    variant="outlined"
+                    sx={{ mb: 2, flex: 1, overflow: "auto" }}
                 >
-                    Clear Basket
-                </button>
-
-                {basket.map((item, index) => (
-                    <div
-                        key={index}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginBottom: "25px",
-                        }}
-                    >
-                        <div style={{ flexGrow: 1 }}>
-                            <span style={{ fontWeight: "bold" }}>
-                                {formatItemName(item)}{" "}
-                            </span>
-                            ${parseFloat(item.price * item.quantity).toFixed(2)}
-                            {/* Quantity modification buttons */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "10px",
-                                }}
-                            >
-                                <button
-                                    onClick={() =>
-                                        decreaseItemQuantity(item.name)
-                                    }
-                                    aria-label="Decrease item"
-                                >
-                                    -
-                                </button>
-                                {item.quantity}
-                                <button
-                                    style={{ marginRight: "20px" }}
-                                    onClick={() =>
-                                        increaseItemQuantity(item.name)
-                                    }
-                                    aria-label="Increase item"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Delete button */}
-                        <button
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "10px",
-                            }}
-                            aria-label="Delete"
-                            onClick={() => {
-                                removeItemFromBasket(item.name);
-                            }}
-                        >
-                            <DeleteIcon style={{ fontSize: "1.25rem" }} />
-                        </button>
-                    </div>
-                ))}
+                    <CardContent>
+                        <Grid container alignItems="center" spacing={2}>
+                            <Grid item xs={12}>
+                                <Typography variant="h6" gutterBottom>
+                                    Order
+                                </Typography>
+                            </Grid>
+                            {basket.map((item, index) => (
+                                <Grid key={item} item xs={12} spacing={2}>
+                                    <Card>
+                                        <CardContent>
+                                            <Grid item xs={12}>
+                                                <Typography variant="subtitle1">
+                                                    {formatItemName(item)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Grid
+                                                    container
+                                                    alignItems="center"
+                                                    justifyContent="flex-start"
+                                                    spacing={1}
+                                                >
+                                                    <Grid item>
+                                                        <IconButton size="small">
+                                                            <RemoveIcon
+                                                                onClick={() =>
+                                                                    decreaseItemQuantity(
+                                                                        item.name
+                                                                    )
+                                                                }
+                                                                aria-label="Decrease item"
+                                                            />
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <Typography>
+                                                            {item.quantity}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <IconButton size="small">
+                                                            <AddIcon
+                                                                onClick={() =>
+                                                                    increaseItemQuantity(
+                                                                        item.name
+                                                                    )
+                                                                }
+                                                                aria-label="Increase item"
+                                                            />
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        xs
+                                                        style={{
+                                                            textAlign: "right",
+                                                        }}
+                                                    >
+                                                        <Typography variant="subtitle1">
+                                                            $
+                                                            {parseFloat(
+                                                                item.price *
+                                                                    item.quantity
+                                                            ).toFixed(2)}
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </CardContent>
+                </Card>
 
                 {/* Display subtotal, tax, and total */}
-                <div
-                    style={{
-                        position: "fixed",
-                        display: "flex",
-                        flexDirection: "column",
-                        bottom: 10,
-                        marginTop: "20px",
-                        fontWeight: "bold",
-                    }}
-                >
-                    <div>Subtotal: ${subtotal.toFixed(2)}</div>
-                    <div style={{ marginBottom: "10px" }}>
-                        Tax (8%): ${tax.toFixed(2)}
-                    </div>
-                    <div style={{ marginBottom: "20px" }}>
-                        Total: ${total.toFixed(2)}
-                    </div>
-                    <button
-                        onClick={() => placeOrder()}
-                        disabled={basket.length === 0}
+                <Card variant="outlined">
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                            Order Summary
+                        </Typography>
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Typography color="textSecondary">
+                                    Subtotal
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: "right" }}>
+                                <Typography color="textSecondary">
+                                    ${subtotal.toFixed(2)}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography color="textSecondary">
+                                    Tax (8%)
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: "right" }}>
+                                <Typography color="textSecondary">
+                                    ${tax.toFixed(2)}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography variant="subtitle1">
+                                    Total
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: "right" }}>
+                                <Typography variant="subtitle1">
+                                    ${total.toFixed(2)}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            p: 2,
+                        }}
                     >
-                        Place Order
-                    </button>
-                </div>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            size="small"
+                            onClick={emptyBasket}
+                        >
+                            Clear Order
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={placeOrder}
+                            disabled={basket.length === 0}
+                        >
+                            Place Order
+                        </Button>
+                    </Box>
+                </Card>
             </div>
         );
     };
@@ -345,11 +351,8 @@ const CashierView = ({ menuItems }) => {
             <>
                 <button
                     style={{
-                        position: "absolute",
-                        bottom: 10,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        justifyContent: "center",
+                        gridRow: 8,
+                        gridColumn: 2,
                     }}
                     aria-label="accessibility options"
                     onClick={() =>
@@ -362,13 +365,16 @@ const CashierView = ({ menuItems }) => {
                     <div
                         style={{
                             position: "fixed",
-                            bottom: "50px",
+                            bottom: "50%",
                             left: "50%",
                             transform: "translateX(-50%)",
                             background: "white",
                             padding: "20px",
                             borderRadius: "8px",
                             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "16px",
                         }}
                     >
                         <button
@@ -380,7 +386,7 @@ const CashierView = ({ menuItems }) => {
                         >
                             <CloseIcon />
                         </button>
-                        <span> Accessibility Options </span>
+                        <span>Accessibility Options</span>
                     </div>
                 )}
             </>
@@ -388,139 +394,62 @@ const CashierView = ({ menuItems }) => {
     };
 
     return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "space-between",
-                minHeight: "100vh",
-            }}
-        >
-            <div
-                style={{
-                    margin: 10,
-                    width: "25%",
-                    borderRight: "2px solid #000",
-                    paddingRight: "10px",
-                }}
-            >
-                <DisplayBasket />
-            </div>
-
-            <div
-                style={{
-                    borderRight: "2px solid black",
-                    flexGrow: 10,
-                    display: "flex",
-                    flexDirection: "column",
-                    borderTop: "2px solid #000",
-                    padding: "10px",
-                    paddingTop: "25px",
-                    paddingLeft: "9px",
-                    margin: 10,
-                }}
-            >
-                <div
+        <div className="view">
+            <div className="right-panel">{DisplayBasket()}</div>
+            <div className="center-panel">
+                {PopulateMenuItems()}
+                {Accessibility()}
+                <Button
+                    variant="outlined"
                     style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "20px",
+                        backgroundColor: "#ecebed",
+                        color: "black",
+                        borderColor: "black",
+                        gridColumn: 1,
+                        gridRow: 8,
                     }}
                 >
-                    <Button
-                        variant="outlined"
-                        style={{
-                            backgroundColor: "#ecebed",
-                            color: "black",
-                            borderColor: "black",
-                            marginTop: "auto",
-                            marginRight: "10px",
-                            padding: "10px",
-                            width: "95px",
-                        }}
-                    >
-                        Order
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        style={{
-                            backgroundColor: "#ecebed",
-                            color: "black",
-                            borderColor: "black",
-                            marginRight: "10px",
-                        }}
-                    >
-                        Tender
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        style={{
-                            backgroundColor: "#ecebed",
-                            color: "black",
-                            borderColor: "black",
-                            marginRight: "10px",
-                        }}
-                        onClick={handleComboDialog}
-                    >
-                        Make a Combo
-                    </Button>
-
-                    {/* Dialog for combo choice */}
-                    <Dialog open={openDialog} onClose={handleCloseDialog}>
-                        <DialogTitle>Combos</DialogTitle>
-                        <DialogContent>
-                            <Button
-                                onClick={() => handleMakeCombo("kettleChips")}
-                            >
-                                Kettle Chips
-                            </Button>
-                            <Button
-                                onClick={() => handleMakeCombo("frenchFries")}
-                            >
-                                Fries
-                            </Button>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleCloseDialog}>Cancel</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-
-                <AssociatedMenuItems />
+                    Order
+                </Button>
+                <Button
+                    variant="outlined"
+                    style={{
+                        backgroundColor: "#ecebed",
+                        color: "black",
+                        borderColor: "black",
+                        gridColumn: 3,
+                        gridRow: 8,
+                    }}
+                    onClick={handleComboDialog}
+                >
+                    Make a Combo
+                </Button>
+                <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Combos</DialogTitle>
+                    <DialogContent>
+                        <Button onClick={() => handleMakeCombo("kettleChips")}>
+                            Kettle Chips
+                        </Button>
+                        <Button onClick={() => handleMakeCombo("frenchFries")}>
+                            Fries
+                        </Button>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
+                <RemoveItemConfirmationDialog />
             </div>
-
-            <div
-                style={{
-                    borderRight: "2px solid #000",
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "15%",
-                    position: "relative",
-                    marginTop: "10px",
-                }}
-            >
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Burgers")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Baskets")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Sandwiches")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Drinks")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Desserts")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Sides")}
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    {generateButtons("Sauces")}
-                </div>
-
-                {Accessibility()}
+            <div className="left-panel">
+                {categories.map((category) => (
+                    <CategoryButton
+                        text={category}
+                        panel={category}
+                        setPanel={setPanel}
+                        setCurrType={setCurrType}
+                        currType={currType}
+                    />
+                ))}
             </div>
         </div>
     );
