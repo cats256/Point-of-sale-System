@@ -69,9 +69,12 @@ const EmployeesPage = () => {
                     salary: parsedNewSalary,
                 };
                 // Update salary
+                console.log(employeeData);
                 updateSalary(employeeData)
                     .then(() => {
                         // Optionally update UI or handle success
+                        // fetchData();
+                        // alert("called API");
                     })
                     .catch((error) => {
                         console.error("Error:", error);
@@ -177,9 +180,9 @@ const EmployeesPage = () => {
                                 }}
                             >
                                 <span style={{ fontWeight: "bold" }}>
-                                    Total Orders Made:
+                                    Email:
                                 </span>{" "}
-                                {employees[selectedEmployeeNum]["sales"]}
+                                {employees[selectedEmployeeNum]["email"]}
                             </div>
                             <div>
                                 <span style={{ fontWeight: "bold" }}>
