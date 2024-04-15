@@ -208,7 +208,7 @@ def salary():
 
     cur = conn.cursor()
     query = sql.SQL("UPDATE employees SET salary = %s WHERE id = %s;")
-    cur.execute(query, (id, salary))
+    cur.execute(query, (salary, id))
     conn.commit()
     cur.close()
     return jsonify(
