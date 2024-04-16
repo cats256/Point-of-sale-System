@@ -1,10 +1,12 @@
-import { createContext, useState, useContext } from "react";
+import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
+import { createContext, useContext, useState } from "react";
 import {
-    submitOrder,
-    getOrderId,
-    getItemId,
     attachMenuItem,
+    getItemId,
+    getOrderId,
+    submitOrder,
 } from "../../network/api";
+import { formatItemName } from "../../utils/formatItemName";
 
 export const BasketContext = createContext();
 
@@ -12,6 +14,43 @@ export const BasketProvider = ({ children }) => {
     const [basket, setBasket] = useState([]);
     const [showItemInfoPopup, setShowItemInfoPopup] = useState(false);
     const [isCombo, setIsCombo] = useState(false);
+    const [itemToRemove, setItemToRemove] = useState(null);
+
+    // makeshift code. not very clean but it works
+    const RemoveItemConfirmationDialog = () => (
+        <Dialog open={!!itemToRemove} onClose={() => setItemToRemove(null)}>
+            <DialogTitle>
+                Remove{" "}
+                {itemToRemove === null ? "" : formatItemName(itemToRemove)}?
+            </DialogTitle>
+            <DialogActions style={{ justifyContent: "space-between" }}>
+                <Button
+                    onClick={() => {
+                        setItemToRemove(null);
+                    }}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    onClick={() => {
+                        setBasket((currentBasket) => {
+                            const itemIndex = currentBasket.findIndex(
+                                (item) => item.name === itemToRemove.name
+                            );
+
+                            if (itemIndex === -1) return currentBasket;
+                            setItemToRemove(null);
+                            return currentBasket.filter(
+                                (_, index) => index !== itemIndex
+                            );
+                        });
+                    }}
+                >
+                    Confirm
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 
     const handleMakeCombo = () => {
         setIsCombo(true);
@@ -91,14 +130,7 @@ export const BasketProvider = ({ children }) => {
                     ...currentBasket.slice(itemIndex + 1),
                 ];
             } else {
-                const confirmRemoval = window.confirm(
-                    "Do you want to remove this item from your basket?"
-                );
-                if (confirmRemoval) {
-                    return currentBasket.filter(
-                        (_, index) => index !== itemIndex
-                    );
-                }
+                setItemToRemove(newItem);
                 return currentBasket;
             }
         });
@@ -172,6 +204,7 @@ export const BasketProvider = ({ children }) => {
                 setIsCombo,
                 handleMakeCombo,
                 addItemToBasketWithCombo,
+                RemoveItemConfirmationDialog,
             }}
         >
             {children}
