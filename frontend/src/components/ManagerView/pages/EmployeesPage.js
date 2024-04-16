@@ -69,7 +69,7 @@ const EmployeesPage = () => {
                     salary: parsedNewSalary,
                 };
                 // Update salary
-                console.log(employeeData);
+                // console.log(employeeData);
                 updateSalary(employeeData)
                     .then(() => {
                         // Optionally update UI or handle success
@@ -120,7 +120,7 @@ const EmployeesPage = () => {
                     ))}
                 </div>
             </div>
-            <div style={{ flex: "1", marginLeft: "20px" }}>
+            <div style={{ flex: "1", marginLeft: "20px", position: "relative" }}>
                 <h2>Employee Information</h2>
                 {selectedEmployee && (
                     <div
