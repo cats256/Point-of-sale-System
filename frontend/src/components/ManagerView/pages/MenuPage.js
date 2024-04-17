@@ -1,23 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography } from "@mui/material";
+import { getMenuItems } from "../../../network/api";
 
 const MenuPage = () => {
-  // Hardcoded menu items for demonstration
-  const initialMenuItems = Array.from({ length: 100 }, (_, index) => ({
-    name: `Item ${index + 1}`,
-    price: Math.floor(Math.random() * 100) + 1, // Random price between 1 and 100
-  }));
-
-  const [menuItems, setMenuItems] = useState(initialMenuItems);
+  const [menuItems, setMenuItems] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+  const [editId, setEditId] = useState("");
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
+  const [newItemId, setNewItemId] = useState("");
   const [newItemName, setNewItemName] = useState("");
   const [newItemPrice, setNewItemPrice] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+  useEffect(() => {
+    // Fetch menu items from API
+    async function fetchMenuItems() {
+      try {
+        const items = await getMenuItems();
+        setMenuItems(items);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+      }
+    }
+
+    fetchMenuItems();
+  }, []);
+
   const handleMenuItemClick = (index) => {
     setSelectedMenuItem(index);
+    setEditId(menuItems[index].id);
     setEditName(menuItems[index].name);
     setEditPrice(menuItems[index].price);
   };
@@ -26,6 +38,7 @@ const MenuPage = () => {
     if (selectedMenuItem !== null) {
       const updatedMenuItems = [...menuItems];
       updatedMenuItems[selectedMenuItem] = {
+        id: editId,
         name: editName,
         price: editPrice,
       };
@@ -35,6 +48,7 @@ const MenuPage = () => {
 
   const handleAddMenuItem = () => {
     const newItem = {
+      id: newItemId || 0,
       name: newItemName || "New Item",
       price: newItemPrice || 0,
     };
@@ -42,6 +56,7 @@ const MenuPage = () => {
     setSelectedMenuItem(menuItems.length);
     setEditName("");
     setEditPrice("");
+    setNewItemId("");
     setNewItemName("");
     setNewItemPrice("");
   };
@@ -75,7 +90,7 @@ const MenuPage = () => {
                 backgroundColor:
                   index === selectedMenuItem ? "#f0f0f0" : "transparent",
               }}
-              onClick={() => handleMenuItemClick(index)}
+              onClick={() => handleMenuItemClick(item.id)}
             >
               {item.name} - ${item.price}
             </div>
@@ -146,4 +161,3 @@ const MenuPage = () => {
 };
 
 export default MenuPage;
-

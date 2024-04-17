@@ -45,7 +45,7 @@ def get_menu_item_info():
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
         )
         cur = conn.cursor()
-    query = sql.SQL("SELECT * FROM menu_items")
+    query = sql.SQL("SELECT * FROM menu_items ORDER BY id ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
