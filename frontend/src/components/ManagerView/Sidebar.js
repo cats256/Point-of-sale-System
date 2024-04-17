@@ -3,7 +3,7 @@ import React from "react";
 
 const Sidebar = ({ setPage }) => {
     return (
-        <div className="sidebar">
+        <div className="sidebar" >
             <button onClick={() => setPage("employees")}>
                 Employee Information
             </button>
