@@ -11,6 +11,7 @@ const Sidebar = ({ setPage }) => {
                 Inventory Display
             </button>
             <button onClick={() => setPage("stats")}>POS Information</button>
+            <button onClick={() => setPage("menu")}>Menu</button>
         </div>
     );
 };

@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import EmployeesPage from "./pages/EmployeesPage";
 import InventoryPage from "./pages/InventoryPage";
 import StatsPage from "./pages/StatsPage";
+import MenuPage from "./pages/MenuPage";
 // Use named export export { component_name } instead of export default, makes it easier when changing component's name
 
 const ManagerView = () => {
@@ -18,6 +19,7 @@ const ManagerView = () => {
                 {page === "employees" && <EmployeesPage />}
                 {page === "inventory" && <InventoryPage />}
                 {page === "stats" && <StatsPage />}
+                {page === "menu" && <MenuPage />}
             </div>
         </div>
     );
