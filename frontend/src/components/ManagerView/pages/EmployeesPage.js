@@ -19,6 +19,7 @@ const EmployeesPage = () => {
     const [employeeImages, setEmployeeImages] = useState([]);
     const [employeeJob, setEmployeeJob] = useState("");
     const [employees, setEmployees] = useState([]);
+    const [newSalary, setNewSalary] = useState();
 
     const fetchData = async () => {
         const employees_ = await getEmployees();
@@ -58,10 +59,11 @@ const EmployeesPage = () => {
         }
     };
 
-    const handleUpdateSalary = (employeeId) => {
-        const newSalary = prompt("Enter the new salary:");
+    const handleUpdateSalary = (employeeId, newSalary) => {
+        // const newSalary = prompt("Enter the new salary:");
         if (newSalary !== null) {
             const parsedNewSalary = parseInt(newSalary);
+            setNewSalary("");
             if (!isNaN(parsedNewSalary)) {
                 // Construct employee data
                 const employeeData = {
@@ -72,9 +74,7 @@ const EmployeesPage = () => {
                 // console.log(employeeData);
                 updateSalary(employeeData)
                     .then(() => {
-                        // Optionally update UI or handle success
-                        // fetchData();
-                        // alert("called API");
+                        setNewSalary("");
                     })
                     .catch((error) => {
                         console.error("Error:", error);
@@ -83,6 +83,9 @@ const EmployeesPage = () => {
             } else {
                 alert("Please enter a valid number for the salary.");
             }
+        }
+        else{
+            alert("Please enter a new salary.");
         }
     };
 
@@ -161,16 +164,33 @@ const EmployeesPage = () => {
                                 </span>{" "}
                                 {employees[selectedEmployeeNum]["salary"]}
                                 {/* <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button> */}
-                                <button
-                                    style={{ marginLeft: "10px" }}
-                                    onClick={() =>
-                                        handleUpdateSalary(
-                                            employees[selectedEmployeeNum]["id"]
-                                        )
-                                    }
-                                >
-                                    Update
-                                </button>
+                                <div style={{ marginBottom: "10px" }}>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter new salary"
+                                        value={newSalary}
+                                        onChange={(e) => setNewSalary(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                handleUpdateSalary(
+                                                    employees[selectedEmployeeNum]["id"],
+                                                    newSalary
+                                                );
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        style={{ marginLeft: "10px" }}
+                                        onClick={() =>
+                                            handleUpdateSalary(
+                                                employees[selectedEmployeeNum]["id"],
+                                                newSalary
+                                            )
+                                        }
+                                    >
+                                        Update
+                                    </button>
+                                </div>
                             </div>
                             <div
                                 style={{
