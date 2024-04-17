@@ -22,8 +22,11 @@ import { getTopTen, getItemName } from "../../../network/api";
 // import AverageOrderPriceChart from './StatsDisplays/AverageOrderPriceChart'; // Assuming you have components for graphs
 
 const StatsPage = () => {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const defaultStartDate = new Date(2024, 0, 1);
+    const defaultEndDate = new Date(2024, 3, 15);
+
+    const [startDate, setStartDate] = useState(defaultStartDate);
+    const [endDate, setEndDate] = useState(defaultEndDate);
     const [smoothingOption, setSmoothingOption] = useState("None");
     const smoothingOptions = ["None", "Savitzky-Golay Filter", "LOWESS"];
     const [item_labels, setLabels] = useState([]);
