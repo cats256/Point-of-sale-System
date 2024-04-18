@@ -5,10 +5,15 @@ import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
+import { Login } from "./components/Authentication/login";
+import { Logout } from "./components/Authentication/logout";
 import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { useVisualCrossing } from "react-open-weather";
 import { useLocation } from "react-router-dom";
+import { gapi } from "gapi-script";
+
+const clientID = "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
 
 function App() {
     const [menuItems, setMenuItems] = useState([]);
@@ -28,6 +33,14 @@ function App() {
     useEffect(() => {
         getMenuItems().then((data) => setMenuItems(data));
         getLanguages().then((data) => setLanguages(data));
+        function start() {
+            gapi.client.init({
+                clientID: clientID,
+                scope: ""
+            })
+        };
+
+        gapi.load("client:auth2", start);
     }, []);
 
     const handleChange = (event) => {
@@ -64,6 +77,8 @@ function App() {
                         ))}
                     </Select>
                 </FormControl>
+                <Login />
+                <Logout />
             </div>
         );
     }
