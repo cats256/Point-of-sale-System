@@ -54,6 +54,24 @@ def get_menu_item_info():
     return jsonify(menu_info)
 
 # API endpoint to fetch menu items
+@app.route("/menu_item_types", methods=["GET"])
+def get_menu_item_types():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+    query = sql.SQL("SELECT DISTINCT type FROM menu_items")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    menu_item_types = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(menu_item_types)
+
+# API endpoint to fetch menu items
 @app.route("/restock_info", methods=["GET"])
 def get_restock_info():
     cur = conn.cursor()
@@ -197,11 +215,41 @@ def menu_item_edit():
     cur = conn.cursor()
     query = sql.SQL("UPDATE menu_items SET price = %s WHERE id = %s;")
     cur.execute(query, (price, id))
+    query2 = sql.SQL("UPDATE menu_items SET name = %s WHERE id = %s;")
+    cur.execute(query2, (name, id))
     conn.commit()
     cur.close()
     return jsonify(
         {
             "message": "menu item successfully updated",
+        }
+    )
+
+#API endpoint to add a menu item information
+@app.route("/menu_item_add", methods=["POST"])
+def menu_item_add():
+    data = request.json
+
+    name = data.get("name")
+    price = data.get("price")
+    type = data.get("type")
+    
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+    
+    orders_query = sql.SQL("INSERT INTO menu_items (name, price, type) VALUES (%s, %s, %s);")
+    cur.execute(orders_query, (name, price, type))
+
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Menu Item added successfully",
         }
     )
 

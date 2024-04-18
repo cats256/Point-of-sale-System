@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Typography } from "@mui/material";
-import { editMenuItems, getMenuItems } from "../../../network/api";
+import { TextField, Button, Typography, MenuItem } from "@mui/material";
+import { editMenuItems, getMenuItems, addMenuItem, getMenuItemTypes  } from "../../../network/api";
+
+// const types = ["Burger", "Sandwich", "Dessert"]; // List of types
 
 const MenuPage = () => {
   const [menuItems, setMenuItems] = useState([]);
+  const [menuItemTypes, setMenuItemTypes] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
-  const [newItemId, setNewItemId] = useState("");
+//   const [newItemId, setNewItemId] = useState("");
   const [newItemName, setNewItemName] = useState("");
   const [newItemPrice, setNewItemPrice] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [newItemType, setNewItemType] = useState("");
 
   useEffect(() => {
     // Fetch menu items from API
@@ -22,8 +26,25 @@ const MenuPage = () => {
         console.error("Error fetching menu items:", error);
       }
     }
-
     fetchMenuItems();
+
+    async function fetchMenuItemTypes() {
+        try {
+          const types = await getMenuItemTypes();
+          const types_list = [];
+          for (let i = 0; i < types.length; i++){
+            types_list.push(types[i]["type"]);
+          }
+          setMenuItemTypes(types_list);
+          if (types_list.length > 0) {
+            setNewItemType(types_list[0]); // Set initial value for newItemType
+          }
+          console.log(types);
+        } catch (error) {
+          console.error("Error fetching menu item types:", error);
+        }
+    }
+    fetchMenuItemTypes();    
   }, []);
 
   const handleMenuItemClick = (index) => {
@@ -59,17 +80,20 @@ const MenuPage = () => {
 
   const handleAddMenuItem = () => {
     const newItem = {
-      id: newItemId || 0,
+      id: menuItems.length,
       name: newItemName || "New Item",
       price: newItemPrice || 0,
+      type: newItemType || 0,
     };
     setMenuItems([...menuItems, newItem]);
     setSelectedMenuItem(menuItems.length);
     setEditName("");
     setEditPrice("");
-    setNewItemId("");
+    console.log(newItemType);
+    // setNewItemId("");
     setNewItemName("");
     setNewItemPrice("");
+    addMenuItem(newItem);
   };
 
   const handleSearch = (e) => {
@@ -135,6 +159,20 @@ const MenuPage = () => {
           fullWidth
           style={{ marginBottom: "20px" }}
         />
+        <TextField
+            select
+            label="Type"
+            value={newItemType}
+            onChange={(e) => setNewItemType(e.target.value)}
+            fullWidth
+            style={{ marginBottom: "20px" }}
+        >
+            {menuItemTypes.map((type) => (
+            <MenuItem key={type} value={type}>
+                {type}
+            </MenuItem>
+            ))}
+        </TextField>
         <Button
           variant="contained"
           onClick={handleAddMenuItem}
