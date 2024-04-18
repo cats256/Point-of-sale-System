@@ -185,6 +185,26 @@ def submit_order():
         }
     )
 
+#API endpoint to update menu item information
+@app.route("/menu_item_edit", methods=["POST"])
+def menu_item_edit():
+    data = request.json
+
+    id = data.get("id")
+    name = data.get("name")
+    price = data.get("price")
+
+    cur = conn.cursor()
+    query = sql.SQL("UPDATE menu_items SET price = %s WHERE id = %s;")
+    cur.execute(query, (price, id))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "menu item successfully updated",
+        }
+    )
+
 #API endpoint to fetch 10 most sold menu items
 @app.route("/top_ten", methods=["GET"])
 def top_ten():

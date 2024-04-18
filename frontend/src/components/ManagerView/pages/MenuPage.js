@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography } from "@mui/material";
-import { getMenuItems } from "../../../network/api";
+import { editMenuItems, getMenuItems } from "../../../network/api";
 
 const MenuPage = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
-  const [editId, setEditId] = useState("");
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
   const [newItemId, setNewItemId] = useState("");
@@ -29,20 +28,32 @@ const MenuPage = () => {
 
   const handleMenuItemClick = (index) => {
     setSelectedMenuItem(index);
-    setEditId(menuItems[index].id);
     setEditName(menuItems[index].name);
     setEditPrice(menuItems[index].price);
   };
 
   const handleEditMenuItem = () => {
     if (selectedMenuItem !== null) {
-      const updatedMenuItems = [...menuItems];
-      updatedMenuItems[selectedMenuItem] = {
-        id: editId,
-        name: editName,
-        price: editPrice,
-      };
-      setMenuItems(updatedMenuItems);
+        const editData = {
+            id: selectedMenuItem,
+            name: editName,
+            price: editPrice,
+        };
+        editMenuItems(editData)
+            .then(() => {
+                console.log("ran");
+                const updatedMenuItems = [...menuItems]; // Create a copy of menuItems array
+                updatedMenuItems[selectedMenuItem] = { // Update the selected menu item
+                ...updatedMenuItems[selectedMenuItem],
+                price: editPrice,
+                name: editName,
+                };
+                setMenuItems(updatedMenuItems); 
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                // Handle error if needed
+            });
     }
   };
 
