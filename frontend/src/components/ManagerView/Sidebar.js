@@ -3,7 +3,7 @@ import React from "react";
 
 const Sidebar = ({ setPage }) => {
     return (
-        <div className="sidebar" >
+        <div className="sidebar" style={{ position: "fixed", top: 0, left: 0, width: "15%", height: "100vh", padding: "10px"  }} >
             <button onClick={() => setPage("employees")}>
                 Employee Information
             </button>

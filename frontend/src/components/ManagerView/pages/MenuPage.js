@@ -105,7 +105,7 @@ const MenuPage = () => {
   );
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ marginLeft: "15%", display: "flex" }}>
       <div style={{ width: "50%", padding: "20px" }}>
         <Typography variant="h6">Menu Items</Typography>
         <TextField

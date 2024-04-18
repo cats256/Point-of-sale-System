@@ -75,7 +75,7 @@ const InventoryPage = () => {
     };
 
     return (
-        <div>
+        <div style={{ marginLeft: "15%" }}>
             <h1>Inventory Page</h1>
             <h2>Ingredient Restock</h2>
             <form onSubmit={handleSubmit} method="POST">
