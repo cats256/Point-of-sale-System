@@ -10,8 +10,12 @@ const Sidebar = ({ setPage }) => {
             <button onClick={() => setPage("inventory")}>
                 Inventory Display
             </button>
-            <button onClick={() => setPage("stats")}>POS Information</button>
-            <button onClick={() => setPage("menu")}>Menu</button>
+            <button onClick={() => setPage("stats")}>
+                POS Information
+            </button>
+            <button onClick={() => setPage("menu")}>
+                Menu
+            </button>
         </div>
     );
 };
