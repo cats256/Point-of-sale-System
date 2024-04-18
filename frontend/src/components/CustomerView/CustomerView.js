@@ -5,6 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
+// import { ReactComponent as reveille_logo } from '../../img/reveille_logo.svg';
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
@@ -312,7 +313,7 @@ const CustomerView = ({ menuItems }) => {
                     aria-label="accessibility options"
                     onClick={() =>
                         setShowAccessibilityPanel((prevState) => !prevState)
-                    } // Adjusted to call the toggle function
+                    }
                 >
                     <SettingsAccessibilityIcon />
                 </button>
@@ -345,53 +346,85 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
+    const navBar = () => {
+        return (
+            <>
+                <div
+                    style={{
+                        float: "left"
+                    }}>
+                    {Accessibility()}
+                </div>
+                <div
+                    style={{
+                        textAlign: "center",
+                        alignContent: "center",
+                    }}>
+                    <text style={{ color: "#C2A061", fontWeight: "bold", fontSize: "2rem" }}>
+                        Rev's American Grill
+                    </text>
+                    {/* <reveille_logo/> */}
+                </div>
+            </>
+        )
+    };
+
     return (
-        <div
-            style={{
-                display: "flex",
-                minHeight: "100vh",
-            }}
-        >
+        <div>
+            <div
+                style={{
+                    width: "100%",
+                    backgroundColor: "#8B1D41",
+                    textAlign: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    minHeight: "6vh",
+                    display: "flex",
+                    flexDirection: "row"
+                }}>
+                {navBar()}
+            </div>
+
             <div
                 style={{
                     display: "flex",
-                    flexDirection: "column",
-                    width: "15vw",
-                    margin: 8,
-                }}
-            >
-                {buttonWithImg("Burgers")}
-                {buttonWithImg("Baskets")}
-                {buttonWithImg("Sandwiches")}
-                {buttonWithImg("Drinks")}
-                {buttonWithImg("Desserts")}
-                {buttonWithImg("Sides")}
-                {buttonWithImg("Sauces")}
-                {buttonWithImg("All")}
+                    minHeight: "100vh",
+                }}>   
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "15vw",
+                        margin: 8
+                    }}>
+                    {buttonWithImg("Burgers")}
+                    {buttonWithImg("Baskets")}
+                    {buttonWithImg("Sandwiches")}
+                    {buttonWithImg("Drinks")}
+                    {buttonWithImg("Desserts")}
+                    {buttonWithImg("Sides")}
+                    {buttonWithImg("Sauces")}
+                    {buttonWithImg("All")}
+                </div>
 
-                {Accessibility()}
-            </div>
-
-            <div
-                style={{
-                    borderLeft: "2px solid #000",
-                    borderRight: "2px solid #000",
-                    flexGrow: 1,
-                    flexDirection: "column",
-                    padding: 10,
-                    width: "auto",
-                }}
-            >
-                {PopulateMenuItems()}
-            </div>
-
-            <div
-                style={{
-                    margin: 10,
-                    width: "25vw",
-                }}
-            >
-                {DisplayBasket()}
+                <div
+                    style={{
+                        borderLeft: "2px solid #000",
+                        borderRight: "2px solid #000",
+                        flexGrow: 1, 
+                        flexDirection: "column",
+                        padding: 10,
+                        width: "auto"
+                    }}>
+                    {PopulateMenuItems()}
+                </div>
+                <div
+                    style={{
+                        margin: 10,
+                        width: "25vw",
+                    }}>
+                    {DisplayBasket()}
+                </div>
             </div>
         </div>
     );
