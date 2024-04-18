@@ -48,6 +48,10 @@ export async function getMenuItems() {
     return request("/menu_item_info", { method: "GET" });
 }
 
+export async function getMenuItemTypes() {
+    return request("/menu_item_types", { method: "GET" });
+}
+
 export async function getIngredients() {
     return request("/ingredients_info", { method: "GET" });
 }
@@ -83,6 +87,22 @@ export async function translate(text, targetLanguage) {
 
 export async function updateSalary(formData) {
     return request("/salary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function editMenuItems(formData) {
+    return request("/menu_item_edit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function addMenuItem(formData) {
+    return request("/menu_item_add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
