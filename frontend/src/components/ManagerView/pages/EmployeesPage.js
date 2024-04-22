@@ -92,7 +92,7 @@ const EmployeesPage = () => {
     fetchData();
 
     return (
-        <div style={{ display: "flex" }}>
+        <div style={{ marginLeft: "15%", display: "flex" }}>
             <div style={{ flex: "1" }}>
                 <h1>Employees Page</h1>
                 <div className="employee-tiles">
@@ -101,11 +101,11 @@ const EmployeesPage = () => {
                             key={index}
                             className="employee-tile"
                             style={{
-                                width: "50%",
+                                width: "40%",
                                 marginBottom: "20px",
                                 cursor: "pointer",
                                 border: "1px solid #ccc",
-                                padding: "10px",
+                                padding: "1%",
                             }}
                             onClick={() => handleEmployeeClick(employee, index)}
                         >
@@ -113,8 +113,8 @@ const EmployeesPage = () => {
                                 src={employeeImages[index]}
                                 alt="Employee"
                                 style={{
-                                    width: "100px",
-                                    height: "100px",
+                                    width: "20%",
+                                    height: "20%",
                                     marginBottom: "10px",
                                 }}
                             />
@@ -123,7 +123,12 @@ const EmployeesPage = () => {
                     ))}
                 </div>
             </div>
-            <div style={{ flex: "1", marginLeft: "20px", position: "relative" }}>
+            <div style={{ flex: "1", 
+                        marginLeft: "10%",
+                        position: "fixed",
+                        top: "10%",
+                        width: "30%",
+                        right: "10%",}}>
                 <h2>Employee Information</h2>
                 {selectedEmployee && (
                     <div
@@ -133,7 +138,7 @@ const EmployeesPage = () => {
                             alignItems: "center",
                             border: "1px solid #ccc",
                             borderRadius: "10px",
-                            padding: "10px",
+                            padding: "5%",
                         }}
                     >
                         <div style={{ display: "flex", alignItems: "left" }}>

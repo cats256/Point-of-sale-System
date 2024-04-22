@@ -87,7 +87,7 @@ const StatsPage = () => {
     };
 
     return (
-        <div>
+        <div style={{ marginLeft: "15%" }}>
             {/* <h2 style={{ marginBottom: "32px" }}>Charts</h2> */}
             <div
                 style={{
