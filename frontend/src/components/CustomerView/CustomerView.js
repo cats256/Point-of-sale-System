@@ -21,6 +21,7 @@ const CustomerView = ({ menuItems }) => {
         totalCost,
         setShowItemInfoPopup,
         showItemInfoPopup,
+        isCombo,
         handleMakeCombo,
         addItemToBasketWithCombo,
     } = useBasket();
@@ -40,6 +41,7 @@ const CustomerView = ({ menuItems }) => {
                 borderRadius: 20,
                 margin: 4,
             }}
+            aria-pressed ={true}
         >
             {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
             {text}
@@ -47,272 +49,259 @@ const CustomerView = ({ menuItems }) => {
     );
 
     const Popup = ({ item, onClose }) => (
-        <div
+        <section
+            aria-label="Item details popup"
             style={{
                 position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
+                width: "20%",
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
+                padding: "20px",
+                background: "white",
+                border: "1px solid black",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                overflow: "auto"
             }}
         >
-            <div
+             <button 
+                    onClick={onClose} 
+                    aria-pressed={true}
+                    aria-label="Close"
+                    style={{scale: ".9", backgroundColor: "darkred", color: "white"}}
+                >
+                    <CloseIcon />
+                </button>
+            {/* Image of the menu item */}
+            <img
+                src={require("../../img/temp_burger.jpeg")}
+                alt={item.name}
+                style={{ maxWidth: "100%", marginBottom: "10px" }}
+            />
+
+            {/* Name of the menu item */}
+            <div style={{ marginBottom: "10px" }}>
+                {formatItemName(item)}
+            </div>
+
+
+            {/* Close and Add to Order buttons */}
+            <footer
                 style={{
-                    padding: "20px",
-                    background: "white",
-                    border: "1px solid black",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    position: "relative",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    marginTop: 10,
                 }}
-            >
-                {/* Image of the menu item */}
-                <img
-                    src={item.img}
-                    alt={item.alt}
-                    style={{ maxWidth: "100%", marginBottom: "10px" }}
-                />
-
-                {/* Name of the menu item */}
-                <div style={{ marginBottom: "10px" }}>
-                    {formatItemName(item)}
-                </div>
-
+                >
                 {/* Combo button */}
                 {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
-                    <button onClick={handleMakeCombo}>Make it a Combo</button>
+                    <button 
+                        onClick={handleMakeCombo}
+                        style={{
+                            backgroundColor: isCombo ? "blue" : "white",
+                            color: isCombo ? "white" : ""
+                        }}
+                        aria-pressed={isCombo}
+                    >
+                        {isCombo ? "Combo Selected" : "Make it a Combo"}
+                    </button>
                 )}
 
-                {/* Close and Add to Order buttons */}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: "100%",
-                        gap: 10,
-                        marginTop: 10,
-                    }}
+                <button
+                    onClick={() => addItemToBasketWithCombo(item)}
+                    style={{ backgroundColor: "#C2A061", color: "white" }}
+                    aria-pressed={true}
                 >
-                    <button onClick={onClose}>Close</button>
-                    <button
-                        onClick={() => addItemToBasketWithCombo(item)}
-                        style={{ backgroundColor: "#C2A061", color: "white" }}
-                    >
-                        Add to Basket
-                    </button>
-                </div>
-            </div>
-        </div>
+                    Add to Basket
+                </button>
+            </footer>
+        </section>
     );
 
     const PopulateMenuItems = () => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
 
-        const handleItemClick = (itemContent) => {
-            setShowItemInfoPopup(true);
-            setPopupContent(itemContent);
-        };
-
         return (
-            <div
+            <section
                 style={{
                     display: "flex",
                     flexDirection: "row",
                     flexWrap: "wrap",
                     width: "60vw",
                     justifyContent: "center",
+                    alignItems: "center"
                 }}
             >
-                {filteredItems.map((item, index) => {
-                    let itemName = formatItemName(item);
-
-                    return (
-                        <div
-                            key={index}
+                {filteredItems.map((item, index) => (
+                    <article
+                        key={index}
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            backgroundColor: "#F0F0F0",
+                            borderRadius: "15px",
+                            border: "2px solid #000",
+                            padding: "10px",
+                            margin: "10px",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                        }}
+                    >
+                        <button
                             style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                backgroundColor: "#F0F0F0",
-                                borderRadius: "15px",
-                                border: "2px solid #000",
-                                padding: "10px",
-                                margin: "10px",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                                border: "none",
+                            }}
+                            onClick={() => {
+                                setShowItemInfoPopup(true);
+                                setPopupContent(item);
                             }}
                         >
-                            <button
+                            <img
+                                src={require("../../img/temp_burger.jpeg")}
+                                alt={formatItemName(item)}
                                 style={{
-                                    height: "2%",
-                                    width: "100%",
-                                    alignItems: "center",
-                                    border: "none",
+                                    marginRight: 8,
+                                    width: "25vh",
+                                    height: "100",
+                                    borderRadius: "15px",
+                                    margin: "2px"
                                 }}
-                                variant="outlined"
-                                onClick={() => handleItemClick(item)}
+                            />
+                            <div
+                                style={{
+                                    fontWeight: "bold",
+                                    width: "25vh",
+                                    padding: "7px",
+                                }}
                             >
-                                <img
-                                    src={require("../../img/temp_burger.jpeg")}
-                                    alt={itemName}
-                                    style={{
-                                        marginRight: 8,
-                                        width: "180px",
-                                        height: "100",
-                                        borderRadius: "15px",
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        fontWeight: "bold",
-                                        width: "180px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        padding: "7px",
-                                    }}
-                                >
-                                    {itemName}
-                                </div>
+                                {formatItemName(item)}
+                            </div>
+                            <div>
                                 ${item.price}
-                            </button>
-                        </div>
-                    );
-                })}
+                            </div>
+                        </button>
+                    </article>
+                    
+                ))}
                 {showItemInfoPopup && (
                     <Popup
                         item={popupContent}
                         onClose={() => setShowItemInfoPopup(false)}
                     />
                 )}
-            </div>
+            </section>
         );
     };
 
-    const DisplayBasket = () => {
-        return (
-            <div>
-                <h1>My Basket</h1>
+    const DisplayBasket = () => (
+        <aside>
+            <h1>My Basket</h1>
 
-                {/* Clear Cart button */}
-                <button
+            {/* Clear Cart button */}
+            <button
+                style={{
+                    marginBottom: "20px",
+                    marginTop: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+                onClick={() => {
+                    emptyBasket();
+                }}
+                disabled={basket.length === 0}
+            >
+                Clear Basket
+            </button>
+
+            {basket.map((item, index) => (
+                <div
+                    key={index}
                     style={{
-                        marginBottom: "20px",
-                        marginTop: "20px",
                         display: "flex",
-                        justifyContent: "center",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "25px",
                     }}
-                    onClick={() => {
-                        emptyBasket();
-                    }}
-                    disabled={basket.length === 0}
                 >
-                    Clear Basket
-                </button>
-
-                {basket.map((item, index) => (
-                    <div
-                        key={index}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginBottom: "25px",
-                        }}
-                    >
-                        <div style={{ flexGrow: 1 }}>
-                            <span style={{ fontWeight: "bold" }}>
-                                {formatItemName(item)}{" "}
-                            </span>
-                            ${parseFloat(item.price * item.quantity).toFixed(2)}
-                            {/* Quantity modification buttons */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "10px",
-                                    marginTop: 5,
-                                }}
-                            >
-                                <button
-                                    onClick={() =>
-                                        decreaseItemQuantity(item.name)
-                                    }
-                                    aria-label="Decrease item"
-                                >
-                                    -
-                                </button>
-                                {item.quantity}
-                                <button
-                                    style={{ marginRight: "20px" }}
-                                    onClick={() =>
-                                        increaseItemQuantity(item.name)
-                                    }
-                                    aria-label="Increase item"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Delete button */}
-                        <button
+                    <div>
+                        <span style={{ fontWeight: "bold" }}>
+                            {formatItemName(item)}{" "}
+                        </span>
+                        ${parseFloat(item.price * item.quantity).toFixed(2)}
+                        
+                        {/* Quantity modification buttons */}
+                        <div
                             style={{
                                 display: "flex",
                                 alignItems: "center",
-                                marginLeft: 5,
-                            }}
-                            aria-label="Delete"
-                            onClick={() => {
-                                removeItemFromBasket(item.name);
+                                gap: "10px",
+                                marginTop: 5,
                             }}
                         >
-                            <DeleteIcon style={{ fontSize: "1.25rem" }} />
-                        </button>
+                            <button
+                                onClick={() =>
+                                    decreaseItemQuantity(item.name)
+                                }
+                                aria-label="Decrease item"
+                            >
+                                -
+                            </button>
+                            {item.quantity}
+                            <button
+                                style={{ marginRight: "20px" }}
+                                onClick={() =>
+                                    increaseItemQuantity(item.name)
+                                }
+                                aria-label="Increase item"
+                            >
+                                +
+                            </button>
+                        </div>
                     </div>
-                ))}
 
-                <div
-                    style={{
-                        position: "fixed",
-                        display: "flex",
-                        gap: 20,
-                        bottom: 10,
-                        marginTop: "20px",
-                        fontWeight: "bold",
-                    }}
-                >
-                    Total: ${totalCost.toFixed(2)}
+                    {/* Delete button */}
                     <button
-                        onClick={() => placeOrder()}
-                        disabled={basket.length === 0}
+                        aria-label="Delete"
+                        onClick={() => {
+                            removeItemFromBasket(item.name);
+                        }}
                     >
-                        Place Order
+                        <DeleteIcon />
                     </button>
                 </div>
-            </div>
-        );
-    };
+            ))}
+
+            <footer
+                style={{
+                    position: "fixed",
+                    display: "flex",
+                    gap: 20,
+                    bottom: 10,
+                    marginTop: "20px",
+                    fontWeight: "bold",
+                }}
+            >
+                Total: ${totalCost.toFixed(2)}
+                <button
+                    onClick={() => placeOrder()}
+                    disabled={basket.length === 0}
+                >
+                    Place Order
+                </button>
+            </footer>
+        </aside>
+    );
 
     const Accessibility = () => {
-        const [showAccessibilityPanel, setShowAccessibilityPanel] =
-            useState(false);
+        const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
         return (
             <>
                 <button
-                    style={{
-                        position: "absolute",
-                        bottom: 10,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        justifyContent: "center",
-                    }}
                     aria-label="accessibility options"
                     onClick={() =>
-                        setShowAccessibilityPanel((prevState) => !prevState)
+                        setShowAccessibilityPanel(!showAccessibilityPanel)
                     }
                 >
                     <SettingsAccessibilityIcon />
@@ -321,9 +310,6 @@ const CustomerView = ({ menuItems }) => {
                     <div
                         style={{
                             position: "fixed",
-                            bottom: "50px",
-                            left: "50%",
-                            transform: "translateX(-50%)",
                             background: "white",
                             padding: "20px",
                             borderRadius: "8px",
@@ -331,15 +317,16 @@ const CustomerView = ({ menuItems }) => {
                         }}
                     >
                         <button
-                            onClick={() =>
-                                setShowAccessibilityPanel(
-                                    (prevState) => !prevState
-                                )
-                            }
+                            onClick={() => setShowAccessibilityPanel(showAccessibilityPanel)}
+                            style={{scale: ".9", backgroundColor: "darkred", color: "white"}}
                         >
                             <CloseIcon />
                         </button>
-                        <span> Accessibility Options </span>
+                        <span
+                            style={{padding: "10px"}}
+                        >
+                            Accessibility Options
+                        </span>
                     </div>
                 )}
             </>
@@ -348,30 +335,7 @@ const CustomerView = ({ menuItems }) => {
 
     const navBar = () => {
         return (
-            <>
-                <div
-                    style={{
-                        float: "left"
-                    }}>
-                    {Accessibility()}
-                </div>
-                <div
-                    style={{
-                        textAlign: "center",
-                        alignContent: "center",
-                    }}>
-                    <text style={{ color: "#C2A061", fontWeight: "bold", fontSize: "2rem" }}>
-                        Rev's American Grill
-                    </text>
-                    {/* <reveille_logo/> */}
-                </div>
-            </>
-        )
-    };
-
-    return (
-        <div>
-            <div
+            <nav
                 style={{
                     width: "100%",
                     backgroundColor: "#8B1D41",
@@ -381,16 +345,38 @@ const CustomerView = ({ menuItems }) => {
                     minHeight: "6vh",
                     display: "flex",
                     flexDirection: "row"
-                }}>
-                {navBar()}
-            </div>
+            }}>
+                <div
+                    style={{
+                        position: "left"
+                    }}>
+                    {Accessibility()}
+                </div>
+                
+                <header
+                    style={{
+                        textAlign: "center",
+                        alignContent: "center",
+                    }}>
+                    <h1 style={{ color: "#C2A061", fontWeight: "bold", fontSize: "2rem" }}>
+                        Rev's American Grill
+                    </h1>
+                    <reveille_logo/>
+                </header>
+            </nav>
+        )
+    };
 
-            <div
+    return (
+        <main>
+            {navBar()}
+
+            <body
                 style={{
                     display: "flex",
                     minHeight: "100vh",
                 }}>   
-                <div
+                <aside
                     style={{
                         display: "flex",
                         flexDirection: "column",
@@ -405,9 +391,9 @@ const CustomerView = ({ menuItems }) => {
                     {buttonWithImg("Sides")}
                     {buttonWithImg("Sauces")}
                     {buttonWithImg("All")}
-                </div>
+                </aside>
 
-                <div
+                <article
                     style={{
                         borderLeft: "2px solid #000",
                         borderRight: "2px solid #000",
@@ -417,16 +403,16 @@ const CustomerView = ({ menuItems }) => {
                         width: "auto"
                     }}>
                     {PopulateMenuItems()}
-                </div>
-                <div
+                </article>
+                <article
                     style={{
                         margin: 10,
                         width: "25vw",
                     }}>
                     {DisplayBasket()}
-                </div>
-            </div>
-        </div>
+                </article>
+            </body>
+        </main>
     );
 };
 

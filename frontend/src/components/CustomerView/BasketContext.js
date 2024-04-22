@@ -53,7 +53,9 @@ export const BasketProvider = ({ children }) => {
     );
 
     const handleMakeCombo = () => {
-        setIsCombo(true);
+        console.log(isCombo)
+        setIsCombo(!isCombo);
+        console.log(isCombo)
     };
 
     const addItemToBasketWithCombo = (item) => {
@@ -201,6 +203,7 @@ export const BasketProvider = ({ children }) => {
                 totalCost,
                 setShowItemInfoPopup,
                 showItemInfoPopup,
+                isCombo,
                 setIsCombo,
                 handleMakeCombo,
                 addItemToBasketWithCombo,
