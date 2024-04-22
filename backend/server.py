@@ -8,11 +8,17 @@ import psycopg2
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from psycopg2 import sql
+from dotenv import load_dotenv
+
+load_dotenv()
+database_password = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
 CORS(app)
 
-conn = psycopg2.connect(host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432)
+conn = psycopg2.connect(
+    host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+)
 
 
 # not standard practice to add info add the end, just have the name of the resource requested aka "/ingredients"
@@ -23,7 +29,7 @@ def get_ingredients_info():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
     query = sql.SQL("SELECT * FROM ingredients ORDER BY name ASC")
@@ -42,7 +48,7 @@ def get_menu_item_info():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
     query = sql.SQL("SELECT * FROM menu_items ORDER BY id ASC")
@@ -53,6 +59,7 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+
 # API endpoint to fetch menu items
 @app.route("/menu_item_types", methods=["GET"])
 def get_menu_item_types():
@@ -60,7 +67,7 @@ def get_menu_item_types():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
     query = sql.SQL("SELECT DISTINCT type FROM menu_items")
@@ -70,6 +77,7 @@ def get_menu_item_types():
     menu_item_types = [dict(zip(columns, row)) for row in rows]
     cur.close()
     return jsonify(menu_item_types)
+
 
 # API endpoint to fetch menu items
 @app.route("/restock_info", methods=["GET"])
@@ -82,6 +90,7 @@ def get_restock_info():
     restock_info = [dict(zip(columns, row)) for row in rows]
     cur.close()
     return jsonify(restock_info)
+
 
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
@@ -102,7 +111,7 @@ def get_employee_info():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
     query = sql.SQL("SELECT * FROM employees ORDER BY name ASC")
@@ -122,7 +131,7 @@ def get_orders_info():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
 
@@ -136,15 +145,17 @@ def get_orders_info():
 
     return orders_info
 
+
 # API endpoint to return order id
 @app.route("/order_id", methods=["GET"])
 def order_id():
     cur = conn.cursor()
     query = sql.SQL("SELECT id FROM orders WHERE id=(SELECT max(id) FROM orders);")
     cur.execute(query)
-    order_id = cur.fetchone()[0] 
+    order_id = cur.fetchone()[0]
     cur.close()
     return jsonify({"order_id": order_id})
+
 
 @app.route("/menu_item_id", methods=["GET"])
 def menu_item_id():
@@ -153,9 +164,10 @@ def menu_item_id():
     cur = conn.cursor()
     query = sql.SQL("SELECT id FROM menu_items WHERE name=%s;")
     cur.execute(query, (item_name,))
-    item_id = cur.fetchone()[0] 
+    item_id = cur.fetchone()[0]
     cur.close()
     return jsonify({"item_id": item_id})
+
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
@@ -175,6 +187,7 @@ def attach_menu_items():
         }
     )
 
+
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["POST"])
 def submit_order():
@@ -188,10 +201,10 @@ def submit_order():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
-    
+
     orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(orders_query, (name, price, date, assigned_employee))
 
@@ -203,7 +216,8 @@ def submit_order():
         }
     )
 
-#API endpoint to update menu item information
+
+# API endpoint to update menu item information
 @app.route("/menu_item_edit", methods=["POST"])
 def menu_item_edit():
     data = request.json
@@ -225,7 +239,8 @@ def menu_item_edit():
         }
     )
 
-#API endpoint to add a menu item information
+
+# API endpoint to add a menu item information
 @app.route("/menu_item_add", methods=["POST"])
 def menu_item_add():
     data = request.json
@@ -233,15 +248,15 @@ def menu_item_add():
     name = data.get("name")
     price = data.get("price")
     type = data.get("type")
-    
+
     try:
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
-    
+
     orders_query = sql.SQL("INSERT INTO menu_items (name, price, type) VALUES (%s, %s, %s);")
     cur.execute(orders_query, (name, price, type))
 
@@ -253,11 +268,14 @@ def menu_item_add():
         }
     )
 
-#API endpoint to fetch 10 most sold menu items
+
+# API endpoint to fetch 10 most sold menu items
 @app.route("/top_ten", methods=["GET"])
 def top_ten():
     cur = conn.cursor()
-    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10")
+    query = sql.SQL(
+        "SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10"
+    )
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
@@ -266,7 +284,7 @@ def top_ten():
     return jsonify(top_ten)
 
 
-#API endpoint to update an employee's salary 
+# API endpoint to update an employee's salary
 @app.route("/salary", methods=["POST"])
 def salary():
     data = request.json
@@ -285,12 +303,13 @@ def salary():
         }
     )
 
+
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])
 def restock_order():
     data = request.json
 
-    print('end')
+    print("end")
     name = data.get("name")
     price = data.get("price")
     quantity = data.get("quantity")
@@ -300,7 +319,7 @@ def restock_order():
         cur = conn.cursor()
     except:
         conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
 
