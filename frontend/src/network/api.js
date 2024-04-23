@@ -170,6 +170,17 @@ export async function getItemName(menuItemId) {
     return response; // Return the entire response object
 }
 
+export async function getIngredientUsage(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/ingredient_usage`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
 export async function attachMenuItem(formData) {
     return request("/attach_menu_items", {
         method: "POST",

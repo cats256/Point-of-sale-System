@@ -12,7 +12,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TotalOrdersGraph from "./StatsDisplays/TotalOrdersGraph";
-import TopTenHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
+import MenuItemOrdersHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
+import IngredientUsageTable from "./StatsDisplays/IngredientUsageTable";
 
 const StatsPage = () => {
     const defaultStartDate = new Date(2024, 0, 1);
@@ -38,6 +39,12 @@ const StatsPage = () => {
                     onClick={() => setDisplayGraph("Histogram")}
                 >
                     Menu Item Orders Histogram
+                </Button>
+                <Button
+                    variant={displayGraph === "IngredientUsageTable" ? "contained" : "outlined"}
+                    onClick={() => setDisplayGraph("IngredientUsageTable")}
+                >
+                    Ingredient Usage Table
                 </Button>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -78,10 +85,15 @@ const StatsPage = () => {
                     end_date={endDate}
                     smoothingOption={smoothingOption}
                 />
-            ) : (
-                <TopTenHistogram 
+            ) : displayGraph === "Histogram" ? (
+                <MenuItemOrdersHistogram 
                     // start_date={startDate}
                     // end_date={endDate}
+                />
+            ) : (
+                <IngredientUsageTable 
+                    start_date={startDate}
+                    end_date={endDate}
                 />
             )}
         </div>

@@ -226,7 +226,45 @@ def menu_item_name():
     cur.close()
     return jsonify({"item_id": item_name})
 
+# API endpoint for ingredient usage report
+@app.route("/ingredient_usage", methods=["GET"])
+def ingredient_usage():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
 
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL("""
+        SELECT
+            i.id AS ingredient_id,
+            i.name AS ingredient_name,
+            COUNT(mii.ingredient_id) AS total_ingredient_count,
+            i.quantity AS ingredient_quantity
+        FROM
+            orders o
+            JOIN order_menu_items omi ON o.id = omi.order_id
+            JOIN menu_items mi ON omi.menu_item_id = mi.id
+            JOIN menu_item_ingredients mii ON mi.id = mii.menu_item_id
+            JOIN ingredients i ON mii.ingredient_id = i.id
+        WHERE
+            o.date >= %s
+            AND o.date <= %s
+        GROUP BY
+            i.id
+        ORDER BY
+            total_ingredient_count DESC
+                """)
+    cur.execute(query, (start_date, end_date))
+    ingredients_info = cur.fetchall()
+    cur.close()
+
+    return ingredients_info
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
