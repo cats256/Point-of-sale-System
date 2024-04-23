@@ -48,16 +48,16 @@ export async function getMenuItems() {
     return request("/menu_item_info", { method: "GET" });
 }
 
-export async function getOrderMenuItems(start_id, finish_id) {
-    // return request("/order_menu_item_info", { method: "GET" });
-    const response = await axios.get(`${API_BASE}/order_menu_item_info`, {
-        params: {
-            start_id,
-            finish_id,
-        },
-    });
+export async function getOrderMenuItems() {
+    return request("/order_menu_item", { method: "GET" });
+    // const response = await axios.get(`${API_BASE}/order_menu_item_info`, {
+    //     params: {
+    //         start_id,
+    //         finish_id,
+    //     },
+    // });
 
-    return response.data;
+    // return response.data;
     
 }
 

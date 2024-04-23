@@ -80,8 +80,8 @@ const StatsPage = () => {
                 />
             ) : (
                 <TopTenHistogram 
-                    start_date={startDate}
-                    end_date={endDate}
+                    // start_date={startDate}
+                    // end_date={endDate}
                 />
             )}
         </div>
