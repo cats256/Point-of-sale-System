@@ -59,8 +59,6 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
-<<<<<<< Updated upstream
-=======
 # API endpoint to fetch ordered menu items
 @app.route("/order_menu_item_info", methods=["GET"])
 def get_order_menu_item_info():
@@ -87,7 +85,7 @@ def get_order_menu_item_info():
     menu_info = [dict(zip(columns, row)) for row in rows]
     cur.close()
     return jsonify(menu_info)
->>>>>>> Stashed changes
+
 
 # API endpoint to fetch menu items
 @app.route("/menu_item_types", methods=["GET"])
@@ -124,7 +122,7 @@ def get_restock_info():
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
     cur = conn.cursor()
-    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id")
+    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY menu_item_id ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
@@ -217,8 +215,6 @@ def menu_item_id():
     cur.close()
     return jsonify({"item_id": item_id})
 
-<<<<<<< Updated upstream
-=======
 @app.route("/menu_item_name", methods=["GET"])
 def menu_item_name():
     item_id = request.args.get("id")
@@ -226,10 +222,11 @@ def menu_item_name():
     cur = conn.cursor()
     query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
     cur.execute(query, (item_id,))
-    item_name = cur.fetchone()[0] 
+    item_name = cur.fetchone()[0]
     cur.close()
-    return jsonify({"item_name": item_name})
->>>>>>> Stashed changes
+    return jsonify({"item_id": item_name})
+
+
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
