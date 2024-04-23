@@ -129,6 +129,10 @@ const CustomerView = ({ menuItems }) => {
             >
                 {filteredItems.map((item, index) => {
                     let itemName = formatItemName(item);
+                    // Adjust this line to concatenate the string and the variable
+                    let imgSrc = require(`../../img/${item.name}.png`);
+                    console.log(item.name);
+
 
                     return (
                         <div
@@ -156,12 +160,13 @@ const CustomerView = ({ menuItems }) => {
                                 onClick={() => handleItemClick(item)}
                             >
                                 <img
-                                    src={require("../../img/temp_burger.jpeg")}
+                                    src={imgSrc}
                                     alt={itemName}
                                     style={{
                                         marginRight: 8,
                                         width: "180px",
-                                        height: "100",
+                                        height: "150px",
+                                        objectFit: "cover", 
                                         borderRadius: "15px",
                                     }}
                                 />
