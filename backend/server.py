@@ -95,7 +95,7 @@ def get_restock_info():
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
     cur = conn.cursor()
-    query = sql.SQL("SELECT * FROM order_menu_items")
+    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
