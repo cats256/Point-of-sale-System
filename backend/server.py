@@ -59,6 +59,33 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+# API endpoint to fetch ordered menu items
+@app.route("/order_menu_item_info", methods=["GET"])
+def get_order_menu_item_info():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+    start_id = request.args.get("start_id")
+    finish_id = request.args.get("finsih_id")
+    query = sql.SQL("""
+        SELECT menu_item_id, COUNT(*) AS category_count 
+        FROM order_menu_items 
+        WHERE order_id BETWEEN %s AND %s 
+        GROUP BY menu_item_id 
+        ORDER BY menu_item_id ASC
+    """)
+
+    cur.execute(query, (start_id, finish_id))
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    menu_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(menu_info)
+
 
 # API endpoint to fetch menu items
 @app.route("/menu_item_types", methods=["GET"])
@@ -95,13 +122,33 @@ def get_restock_info():
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
     cur = conn.cursor()
-    query = sql.SQL("SELECT * FROM order_menu_items")
+    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY menu_item_id ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
     order_menu_items_info = [dict(zip(columns, row)) for row in rows]
     cur.close()
     return jsonify(order_menu_items_info)
+
+@app.route("/orders_ids", methods=["GET"])
+def get_orders_ids():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
+        )
+        cur = conn.cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL("SELECT id FROM orders o WHERE o.date >= %s AND o.date <= %s")
+    cur.execute(query, (start_date, end_date))
+    orders_info = cur.fetchall()
+    cur.close()
+
+    return orders_info
 
 
 # API endpoint to fetch employees
@@ -168,6 +215,56 @@ def menu_item_id():
     cur.close()
     return jsonify({"item_id": item_id})
 
+@app.route("/menu_item_name", methods=["GET"])
+def menu_item_name():
+    item_id = request.args.get("id")
+
+    cur = conn.cursor()
+    query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
+    cur.execute(query, (item_id,))
+    item_name = cur.fetchone()[0]
+    cur.close()
+    return jsonify({"item_id": item_name})
+
+# API endpoint for ingredient usage report
+@app.route("/ingredient_usage", methods=["GET"])
+def ingredient_usage():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL("""
+        SELECT
+            i.id AS ingredient_id,
+            i.name AS ingredient_name,
+            COUNT(mii.ingredient_id) AS total_ingredient_count,
+            i.quantity AS ingredient_quantity
+        FROM
+            orders o
+            JOIN order_menu_items omi ON o.id = omi.order_id
+            JOIN menu_items mi ON omi.menu_item_id = mi.id
+            JOIN menu_item_ingredients mii ON mi.id = mii.menu_item_id
+            JOIN ingredients i ON mii.ingredient_id = i.id
+        WHERE
+            o.date >= %s
+            AND o.date <= %s
+        GROUP BY
+            i.id
+        ORDER BY
+            total_ingredient_count DESC
+                """)
+    cur.execute(query, (start_date, end_date))
+    ingredients_info = cur.fetchall()
+    cur.close()
+
+    return ingredients_info
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
