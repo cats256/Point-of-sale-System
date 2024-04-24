@@ -4,7 +4,6 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
@@ -21,6 +20,7 @@ const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [combosAdded, setCombosAdded] = useState({});
 
     const {
         basket,
@@ -33,12 +33,17 @@ const CustomerView = ({ menuItems }) => {
         totalCost,
         setShowItemInfoPopup,
         showItemInfoPopup,
-        handleMakeCombo,
         addItemToBasketWithCombo,
     } = useBasket();
     const [popupContent, setPopupContent] = useState("");
 
-    const handleComboDialog = () => {
+    // Combo Dialog Handlers
+    const handleComboDialog = (itemType) => {
+        setCombosAdded(prev => ({
+            ...prev,
+            [itemType]: true
+        }));
+        
         setOpenDialog(true);
     };
 
@@ -46,7 +51,7 @@ const CustomerView = ({ menuItems }) => {
         setOpenDialog(false);
     };
 
-    // Gamified buttons
+    // Gamified Buttons
     const {isGamified } = useGamification();
     const buttonStyle = isGamified ? {
         animation: 'pulse 1s infinite ease-in-out',
@@ -56,6 +61,32 @@ const CustomerView = ({ menuItems }) => {
         backgroundColor: '#C2A061',
         color: 'white'
     };
+
+    // Make It A Combo Button & Mouse Effects
+    const comboButtonStyle = {
+        backgroundColor: "#C2A061",
+        color: "white",
+        border: "1px solid black",
+        borderRadius: "5px",
+        padding: "2px 5px",
+        fontSize: "0.7rem",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        cursor: "pointer",
+        transition: "background-color 0.3s, transform 0.2s",
+        margin: "5px",
+        marginLeft: "15px",
+        display: "flex",
+    };
+
+    /* const handleMouseEnter = (e) => {
+        e.target.style.backgroundColor = "#8B1D41";
+        e.target.style.transform = "scale(1.05)";
+    };
+
+    const handleMouseLeave = (e) => {
+        e.target.style.backgroundColor = "#C2A061";
+        e.target.style.transform = "scale(1.0)";
+    }; */
 
     const buttonWithImg = (text, panel = "", img = "", alt = "") => (
         <Button
@@ -116,35 +147,6 @@ const CustomerView = ({ menuItems }) => {
                 <div style={{ marginBottom: "10px" }}>
                     {formatItemName(item)}
                 </div>
-
-                {/* Combo button */}
-                <Button
-                    variant="outlined"
-                    style={{
-                        backgroundColor: "#ecebed",
-                        color: "black",
-                        borderColor: "black",
-                        gridColumn: 3,
-                        gridRow: 8,
-                    }}
-                    onClick={handleComboDialog}
-                >
-                    Make a Combo
-                </Button>
-                <Dialog open={openDialog} onClose={handleCloseDialog}>
-                    <DialogTitle>Combos</DialogTitle>
-                    <DialogContent>
-                        <Button onClick={() => handleMakeCombo("kettleChips", menuItems, addItemToBasket, setOpenDialog)}>
-                            Kettle Chips
-                        </Button>
-                        <Button onClick={() => handleMakeCombo("frenchFries", menuItems, addItemToBasket, setOpenDialog)}>
-                            Fries
-                        </Button>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseDialog}>Cancel</Button>
-                    </DialogActions>
-                </Dialog>
 
                 {/* Close and Add to Order buttons */}
                 <div
@@ -330,8 +332,38 @@ const CustomerView = ({ menuItems }) => {
                         >
                             <DeleteIcon style={{ fontSize: "1.25rem" }} />
                         </button>
+
+                        {/* Combo button */}
+                        {(item.type === 'Sandwiches' || item.type === 'Burgers') && (
+                            <Button
+                                style={comboButtonStyle}
+                                disabled={!!combosAdded[item.type]}
+                                // onMouseEnter={handleMouseEnter}
+                                // onMouseLeave={handleMouseLeave}
+                                onClick={() => handleComboDialog(item.type)}
+                            >
+                                Make It A Combo!
+                            </Button>
+                        )}
                     </div>
                 ))}
+
+                <div>
+                    <Dialog open={openDialog} onClose={handleCloseDialog}>
+                        <DialogTitle>Combos</DialogTitle>
+                            <DialogContent>
+                                <Button onClick={() => handleMakeCombo("kettleChips", menuItems, addItemToBasket, setOpenDialog, setCombosAdded)}>
+                                    Kettle Chips
+                                </Button>
+                                <Button onClick={() => handleMakeCombo("frenchFries", menuItems, addItemToBasket, setOpenDialog, setCombosAdded)}>
+                                    French Fries
+                                </Button>
+                            </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog}>Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
 
                 <div
                     style={{

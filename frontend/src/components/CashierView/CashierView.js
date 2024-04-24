@@ -23,7 +23,7 @@ import { useBasket } from "../CustomerView/BasketContext";
 import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 
-export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialog) => {
+export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialog, setCombosAdded = null) => {
     setOpenDialog(false);
 
     if (choice === "kettleChips") {
@@ -43,7 +43,9 @@ export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialo
 
         addItemToBasket(modifiedChipsItem);
         addItemToBasket(modifiedDrinkItem);
-    } else if (choice === "frenchFries") {
+    } 
+    
+    else if (choice === "frenchFries") {
         const frenchFriesItem = menuItems.find((item) =>
             item.name.toLowerCase().startsWith("fries")
         );
@@ -60,6 +62,10 @@ export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialo
 
         addItemToBasket(modifiedFriesItem);
         addItemToBasket(modifiedDrinkItem);
+    }
+
+    if (setCombosAdded) {
+        setCombosAdded(prev => ({ ...prev, [choice]: true }));
     }
 };
 
