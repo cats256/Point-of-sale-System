@@ -35,10 +35,10 @@ export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialo
         );
 
         const modifiedChipsItem = kettleChipsItem
-            ? { ...kettleChipsItem, price: 1.0 }
+            ? { ...kettleChipsItem, price: 1.0, isComboItem: true }
             : null;
         const modifiedDrinkItem = smallDrinkItem
-            ? { ...smallDrinkItem, price: 0.99 }
+            ? { ...smallDrinkItem, price: 0.99, isComboItem: true}
             : null;
 
         addItemToBasket(modifiedChipsItem);
@@ -54,10 +54,10 @@ export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialo
         );
 
         const modifiedFriesItem = frenchFriesItem
-            ? { ...frenchFriesItem, price: 1.0 }
+            ? { ...frenchFriesItem, price: 1.0, isComboItem: true }
             : null;
         const modifiedDrinkItem = smallDrinkItem
-            ? { ...smallDrinkItem, price: 0.99 }
+            ? { ...smallDrinkItem, price: 0.99, isComboItem: true }
             : null;
 
         addItemToBasket(modifiedFriesItem);
@@ -227,13 +227,9 @@ const CashierView = ({ menuItems }) => {
                                                     spacing={1}
                                                 >
                                                     <Grid item>
-                                                        <IconButton size="small">
+                                                        <IconButton size="small" disabled={item.isComboItem}>
                                                             <RemoveIcon
-                                                                onClick={() =>
-                                                                    decreaseItemQuantity(
-                                                                        item.name
-                                                                    )
-                                                                }
+                                                                onClick={() => !item.isComboItem && decreaseItemQuantity(item.name)}
                                                                 aria-label="Decrease item"
                                                             />
                                                         </IconButton>
@@ -244,13 +240,9 @@ const CashierView = ({ menuItems }) => {
                                                         </Typography>
                                                     </Grid>
                                                     <Grid item>
-                                                        <IconButton size="small">
+                                                        <IconButton size="small" disabled={item.isComboItem}>
                                                             <AddIcon
-                                                                onClick={() =>
-                                                                    increaseItemQuantity(
-                                                                        item.name
-                                                                    )
-                                                                }
+                                                                onClick={() => !item.isComboItem && increaseItemQuantity(item.name)}
                                                                 aria-label="Increase item"
                                                             />
                                                         </IconButton>

@@ -11,7 +11,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
-import { TextSizeControls } from "../CustomerView/TextEnlarger";
 import { useGamification } from "../CustomerView/GamificationContext";
 import { handleMakeCombo } from "../CashierView/CashierView";
 // import { ReactComponent as reveille_logo } from '../../img/reveille_logo.svg';
@@ -297,24 +296,30 @@ const CustomerView = ({ menuItems }) => {
                                     marginTop: 5,
                                 }}
                             >
-                                <button
-                                    onClick={() =>
-                                        decreaseItemQuantity(item.name)
-                                    }
-                                    aria-label="Decrease item"
-                                >
-                                    -
-                                </button>
-                                {item.quantity}
-                                <button
-                                    style={{ marginRight: "20px" }}
-                                    onClick={() =>
-                                        increaseItemQuantity(item.name)
-                                    }
-                                    aria-label="Increase item"
-                                >
-                                    +
-                                </button>
+                                {item.isComboItem ? (
+                                    <span>Combo Item - No modifications allowed</span>
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={() =>
+                                                decreaseItemQuantity(item.name)
+                                            }
+                                            aria-label="Decrease item"
+                                        >
+                                            -
+                                        </button>
+                                        {item.quantity}
+                                        <button
+                                            style={{ marginRight: "20px" }}
+                                            onClick={() =>
+                                                increaseItemQuantity(item.name)
+                                            }
+                                            aria-label="Increase item"
+                                        >
+                                            +
+                                    </button>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -433,7 +438,6 @@ const CustomerView = ({ menuItems }) => {
                         </button>
                         <div>
                             <span> Accessibility Options </span>
-                            <TextSizeControls />
                             <button 
                                 onClick={toggleGamification}
                                 aria-label={isGamified ? "Disable gamified mode" : "Enable gamified mode"}

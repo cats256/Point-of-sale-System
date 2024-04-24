@@ -9,6 +9,7 @@ import { getLanguages, getMenuItems } from "./network/api";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { useVisualCrossing } from "react-open-weather";
 import { useLocation } from "react-router-dom";
+import { GamificationProvider } from "./components/CustomerView/GamificationContext";
 
 function App() {
     const [menuItems, setMenuItems] = useState([]);
@@ -69,30 +70,37 @@ function App() {
     }
 
     return (
-        <Routes>
-            <Route path="/manager" element={<ManagerView />} />
-            <Route
-                path="/cashier"
-                element={<CashierView menuItems={menuItems} />}
-            />
-            <Route
-                path="/customer"
-                element={<CustomerView menuItems={menuItems} />}
-            />
-            <Route
-                path="/menu"
-                element={
-                    <MenuView
-                        languages={languages}
-                        language={currLanguage}
-                        menuItems={menuItems}
-                        weatherData={data}
-                        isWeatherLoading={isLoading}
-                        weatherErrorMessage={errorMessage}
-                    />
-                }
-            />
-        </Routes>
+        <div>
+            {/* Gamified interface */}
+            <GamificationProvider>
+                <div>
+                    <Routes>
+                        <Route path="/manager" element={<ManagerView />} />
+                        <Route
+                            path="/cashier"
+                            element={<CashierView menuItems={menuItems} />}
+                        />
+                        <Route
+                            path="/customer"
+                            element={<CustomerView menuItems={menuItems} />}
+                        />
+                        <Route
+                            path="/menu"
+                            element={
+                                <MenuView
+                                    languages={languages}
+                                    language={currLanguage}
+                                    menuItems={menuItems}
+                                    weatherData={data}
+                                    isWeatherLoading={isLoading}
+                                    weatherErrorMessage={errorMessage}
+                                />
+                            }
+                        />
+                    </Routes>
+                </div>
+            </GamificationProvider>
+        </div>
     );
 }
 
