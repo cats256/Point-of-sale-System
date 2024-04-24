@@ -2,15 +2,20 @@ import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 import "./CustomerView.css";
 import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
+import { useFontSize } from "../../FontSizeProvider";
+import classNames from 'classnames';
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
+    // const { setFontSizeMultiplier } = useFontSize();
+    const { setFontSizeMultiplier, fontSizeMultiplier } = useFontSize();
+    // const { fontSizeMultiplier, setLargeTxtEnabled, largeTxtEnabled } = useFontSize();
     const {
         basket,
         increaseItemQuantity,
@@ -34,7 +39,7 @@ const CustomerView = ({ menuItems }) => {
                 setPanel(panel || text);
                 setCurrType(text);
             }}
-            className={`typeBtn ${currType === text ? 'typeBtnActive' : 'typeBtn'}`}
+            className={`typeBtn ${currType === text ? 'typeBtnActive' : ''}`}
             aria-pressed ={true}
         >
             {text}
@@ -201,9 +206,13 @@ const CustomerView = ({ menuItems }) => {
     const Accessibility = () => {
         const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
         const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
-        const [largeTxtEnabled, setlargeTxtEnabled] = useState(false);
-        const [longPressBtnEnabled, setlongPressBtnEnabled] = useState(false);
-        const [highContrastEnabled, sethighContrastEnabled] = useState(false);
+        const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
+        const [highContrastEnabled, setHighContrastEnabled] = useState(false);
+
+        const toggleFontSize = () => {
+            setFontSizeMultiplier(fontSizeMultiplier === 1 ? 2 : 1);  // Toggle between 1 and 2
+        };
+        
         return (
             <>
                 <button
@@ -230,7 +239,7 @@ const CustomerView = ({ menuItems }) => {
 
                         <div className="accessibilityOptions">
                             <button
-                                className={screenReaderEnabled ? 'accessibilityOptionBtnActive' : 'accessibilityOptionBtn'}
+                                className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': screenReaderEnabled })}
                                 onClick={() =>setScreenReaderEnabled(!screenReaderEnabled)}
                                 variant="contained"
                             >
@@ -238,24 +247,26 @@ const CustomerView = ({ menuItems }) => {
                             </button>
 
                             <button
-                                className={largeTxtEnabled ? 'accessibilityOptionBtnActive' : 'accessibilityOptionBtn'}
-                                onClick={() =>setlargeTxtEnabled(!largeTxtEnabled)}
+                                className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': fontSizeMultiplier != 1 })}
+                                onClick={ () => (
+                                    toggleFontSize()
+                                )}
                                 variant="contained"
                             >
-                                {largeTxtEnabled ? 'Disable Large Text' : 'Enable Large Text'}
+                                {fontSizeMultiplier != 1 ? 'Disable Large Text' : 'Enable Large Text'}
                             </button>
 
                             <button
-                                className={longPressBtnEnabled ? 'accessibilityOptionBtnActive' : 'accessibilityOptionBtn'}
-                                onClick={() =>setlongPressBtnEnabled(!longPressBtnEnabled)}
+                                className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': longPressBtnEnabled })}
+                                onClick={() =>setLongPressBtnEnabled(!longPressBtnEnabled)}
                                 variant="contained"
                             >
                                 {longPressBtnEnabled ? 'Disable Long Press Buttons' : 'Enable Long Press Buttons'}
                             </button>
 
                             <button
-                                className={highContrastEnabled ? 'accessibilityOptionBtnActive' : 'accessibilityOptionBtn'}
-                                onClick={() =>sethighContrastEnabled(!highContrastEnabled)}
+                                className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': highContrastEnabled })}
+                                onClick={() =>setHighContrastEnabled(!highContrastEnabled)}
                                 variant="contained"
                             >
                                 {highContrastEnabled ? 'Disable High Contrast' : 'Enable High Contrast'}
@@ -286,8 +297,10 @@ const CustomerView = ({ menuItems }) => {
         <main>
             {navBar()}
 
-            <div className="typePanel">   
-                <aside className="sideMenu">
+            <div className="bodyPanel"
+                style={{ fontSize: `${fontSizeMultiplier}rem` }}
+            >   
+                <aside className="typeMenu">
                     {typeButton("Burgers")}
                     {typeButton("Baskets")}
                     {typeButton("Sandwiches")}

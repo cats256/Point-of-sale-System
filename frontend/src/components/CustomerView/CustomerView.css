@@ -9,10 +9,8 @@
     --white: white;
     --close: red;
     --open: green;
-    --center-font-size: 20px;
-    --type-font-size: 20px;
-    --basket-font-size: 18px;
     --border-radius-r: 15px;
+    --dynamic-font-size: 18px;
 }
 
 button {
@@ -37,7 +35,7 @@ button:disabled {
     background-color: var(--neutral-light);
     color: var(--neutral-dark);
     padding: 25px;
-    font-size: var(--type-font-size);
+    font-size: 20px;
     font-weight: 550;
     border: 2px solid var(--neutral-dark); 
 }
@@ -106,7 +104,7 @@ button:disabled {
     padding: 10px;
     margin: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    font-size: var(--center-font-size);
+    font-size: 20px;
 }
 
 .menuItemImg {
@@ -129,15 +127,12 @@ button:disabled {
     text-align: center;
 }
 
-.basket > * {
-    font-size: var(--basket-font-size);
-}
-
 .basketClearBtn {
     margin-bottom: .8vh;
     background-color: var(--close);
     color: var(--white);
     padding: 0.8vh;
+    font-size: inherit;
 }
 
 .basketItem {
@@ -145,6 +140,7 @@ button:disabled {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 25px;
+    font-size: inherit;
 }
 
 .basketItemQuantity {
@@ -156,6 +152,7 @@ button:disabled {
 
 .basketItemName {
     font-weight: bold;
+    font-size: inherit;
 }
 
 .basketFooter {
@@ -165,14 +162,18 @@ button:disabled {
     gap: 20px;
     font-weight: bold;
     align-items: center;
-    /* TODO: Make it centered */
+    font-size: inherit;
 }
 
 .basketPlaceOrderBtn {
     color: var(--white);
     background-color: var(--open);
     padding: 0.8vh;
-    font-size: var(--basket-font-size);
+    font-size: inherit;
+}
+
+.basket > * {
+    font-size: 20px;
 }
 
 .navBar {
@@ -219,6 +220,41 @@ button:disabled {
     left: 0;
 }
 
+.accessibilityCloseBtn {
+    scale: 0.9;
+    background-color: var(--close);
+    color: white;
+    float: left;
+}
+
+.accessibilityTitle {
+    padding: 10px;
+    font-weight: bold;
+    font-size: inherit;
+}
+
+.accessibilityOptions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.accessibilityOptionBtn {
+    background-color: var(--neutral-medium);
+    color: black;
+    padding-block: 5px;
+    padding-inline: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    font-size: inherit;
+} 
+
+.accessibilityOptionBtnActive {
+    background-color: var(--neutral-dark);
+    color: white;
+}
+
 .accessibilityContainer {
     position: fixed;
     background: white;
@@ -230,53 +266,12 @@ button:disabled {
     font-size: 30px;
 }
 
-.accessibilityCloseBtn {
-    scale: 0.9;
-    background-color: var(--close);
-    color: white;
-    float: left;
-}
-
-
-.accessibilityTitle {
-    padding: 10px;
-    font-weight: bold;
-}
-
-.accessibilityOptions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    font-size: 30px;
-}
-
-.accessibilityOptionBtn {
-    background-color: var(--neutral-medium);
-    color: black;
-    padding-block: 5px;
-    padding-inline: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-    font-size: 30px;
-}
-
-.accessibilityOptionBtnActive {
-    background-color: var(--neutral-dark);
-    color: white;
-    padding-block: 5px;
-    padding-inline: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-    font-size: 30px;
-}
-
-.typePanel {
+.bodyPanel {
     display: flex;
     min-width: 100vh;
 }
 
-.sideMenu {
+.typeMenu {
     display: flex;
     flex-direction: column;
     width: 15vw;
@@ -297,8 +292,6 @@ button:disabled {
     width: 25vw;
 }
 
-
-
 /* GENERIC CSS */
 .evenSpacing > * {
     margin: .8vh;
@@ -313,4 +306,10 @@ button:disabled {
 .flexBox {
     display: flex;
     justify-content: center;
+}
+
+body, button, input, textarea, select, 
+.typeBtn, .menuItemBtn, .basket,  
+.accessibilityContainer {
+    font-size: var(--dynamic-font-size);
 }
