@@ -19,6 +19,7 @@ function App() {
     const [menuItems, setMenuItems] = useState([]);
     const [languages, setLanguages] = useState({});
     const [currLanguage, setCurrLanguage] = useState("English (American)");
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
     const location = useLocation();
 
     // may need to do something with API key exposure
@@ -77,8 +78,8 @@ function App() {
                         ))}
                     </Select>
                 </FormControl>
-                <Login />
-                <Logout />
+                {!isLoggedIn && (<Login />)}   
+                {isLoggedIn && (<Logout />)}
             </div>
         );
     }

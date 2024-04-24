@@ -6,6 +6,8 @@ function Login() {
 
     const onSuccess = (res) => {
         console.log("Login Successful!");
+        console.log(res.profileObj.email);
+        setIsLoggedIn(true);
     }
 
     const onFailure = (res) => {
