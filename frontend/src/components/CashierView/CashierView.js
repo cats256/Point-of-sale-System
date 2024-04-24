@@ -23,6 +23,46 @@ import { useBasket } from "../CustomerView/BasketContext";
 import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 
+export const handleMakeCombo = (choice, menuItems, addItemToBasket, setOpenDialog) => {
+    setOpenDialog(false);
+
+    if (choice === "kettleChips") {
+        const kettleChipsItem = menuItems.find((item) =>
+            item.name.toLowerCase().includes("kettle")
+        );
+        const smallDrinkItem = menuItems.find((item) =>
+            item.name.toLowerCase().includes("drink")
+        );
+
+        const modifiedChipsItem = kettleChipsItem
+            ? { ...kettleChipsItem, price: 1.0 }
+            : null;
+        const modifiedDrinkItem = smallDrinkItem
+            ? { ...smallDrinkItem, price: 0.99 }
+            : null;
+
+        addItemToBasket(modifiedChipsItem);
+        addItemToBasket(modifiedDrinkItem);
+    } else if (choice === "frenchFries") {
+        const frenchFriesItem = menuItems.find((item) =>
+            item.name.toLowerCase().startsWith("fries")
+        );
+        const smallDrinkItem = menuItems.find((item) =>
+            item.name.toLowerCase().includes("drink")
+        );
+
+        const modifiedFriesItem = frenchFriesItem
+            ? { ...frenchFriesItem, price: 1.0 }
+            : null;
+        const modifiedDrinkItem = smallDrinkItem
+            ? { ...smallDrinkItem, price: 0.99 }
+            : null;
+
+        addItemToBasket(modifiedFriesItem);
+        addItemToBasket(modifiedDrinkItem);
+    }
+};
+
 const CashierView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
@@ -131,46 +171,6 @@ const CashierView = ({ menuItems }) => {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
-    };
-
-    const handleMakeCombo = (choice) => {
-        setOpenDialog(false);
-
-        if (choice === "kettleChips") {
-            const kettleChipsItem = menuItems.find((item) =>
-                item.name.toLowerCase().includes("kettle")
-            );
-            const smallDrinkItem = menuItems.find((item) =>
-                item.name.toLowerCase().includes("drink")
-            );
-
-            const modifiedChipsItem = kettleChipsItem
-                ? { ...kettleChipsItem, price: 1.0 }
-                : null;
-            const modifiedDrinkItem = smallDrinkItem
-                ? { ...smallDrinkItem, price: 0.99 }
-                : null;
-
-            addItemToBasket(modifiedChipsItem);
-            addItemToBasket(modifiedDrinkItem);
-        } else if (choice === "frenchFries") {
-            const frenchFriesItem = menuItems.find((item) =>
-                item.name.toLowerCase().startsWith("fries")
-            );
-            const smallDrinkItem = menuItems.find((item) =>
-                item.name.toLowerCase().includes("drink")
-            );
-
-            const modifiedFriesItem = frenchFriesItem
-                ? { ...frenchFriesItem, price: 1.0 }
-                : null;
-            const modifiedDrinkItem = smallDrinkItem
-                ? { ...smallDrinkItem, price: 0.99 }
-                : null;
-
-            addItemToBasket(modifiedFriesItem);
-            addItemToBasket(modifiedDrinkItem);
-        }
     };
 
     const DisplayBasket = () => {
@@ -427,10 +427,10 @@ const CashierView = ({ menuItems }) => {
                 <Dialog open={openDialog} onClose={handleCloseDialog}>
                     <DialogTitle>Combos</DialogTitle>
                     <DialogContent>
-                        <Button onClick={() => handleMakeCombo("kettleChips")}>
+                        <Button onClick={() => handleMakeCombo("kettleChips", menuItems, addItemToBasket, setOpenDialog)}>
                             Kettle Chips
                         </Button>
-                        <Button onClick={() => handleMakeCombo("frenchFries")}>
+                        <Button onClick={() => handleMakeCombo("frenchFries", menuItems, addItemToBasket, setOpenDialog)}>
                             Fries
                         </Button>
                     </DialogContent>

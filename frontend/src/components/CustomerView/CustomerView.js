@@ -1,15 +1,27 @@
-import { Button } from "@mui/material";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
+import { TextSizeControls } from "../CustomerView/TextEnlarger";
+import { useGamification } from "../CustomerView/GamificationContext";
+import { handleMakeCombo } from "../CashierView/CashierView";
 // import { ReactComponent as reveille_logo } from '../../img/reveille_logo.svg';
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
+
     const {
         basket,
         addItemToBasket,
@@ -26,6 +38,25 @@ const CustomerView = ({ menuItems }) => {
     } = useBasket();
     const [popupContent, setPopupContent] = useState("");
 
+    const handleComboDialog = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    // Gamified buttons
+    const {isGamified } = useGamification();
+    const buttonStyle = isGamified ? {
+        animation: 'pulse 1s infinite ease-in-out',
+        backgroundColor: 'hotpink',
+        color: 'white'
+    } : {
+        backgroundColor: '#C2A061',
+        color: 'white'
+    };
+
     const buttonWithImg = (text, panel = "", img = "", alt = "") => (
         <Button
             variant="outlined"
@@ -34,11 +65,14 @@ const CustomerView = ({ menuItems }) => {
                 setCurrType(text);
             }}
             style={{
-                backgroundColor: currType === text ? "#C2A061" : "",
-                color: currType === text ? "white" : "",
-                marginRight: 8,
-                borderRadius: 20,
-                margin: 4,
+                ...buttonStyle,
+                ...{
+                    backgroundColor: currType === text ? "#C2A061" : buttonStyle.backgroundColor,
+                    color: currType === text ? "white" : buttonStyle.color,
+                    marginRight: 8,
+                    borderRadius: 20,
+                    margin: 4,
+                }
             }}
         >
             {img && <img src={img} alt={alt} style={{ marginRight: 8 }} />}
@@ -84,9 +118,33 @@ const CustomerView = ({ menuItems }) => {
                 </div>
 
                 {/* Combo button */}
-                {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
-                    <button onClick={handleMakeCombo}>Make it a Combo</button>
-                )}
+                <Button
+                    variant="outlined"
+                    style={{
+                        backgroundColor: "#ecebed",
+                        color: "black",
+                        borderColor: "black",
+                        gridColumn: 3,
+                        gridRow: 8,
+                    }}
+                    onClick={handleComboDialog}
+                >
+                    Make a Combo
+                </Button>
+                <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Combos</DialogTitle>
+                    <DialogContent>
+                        <Button onClick={() => handleMakeCombo("kettleChips", menuItems, addItemToBasket, setOpenDialog)}>
+                            Kettle Chips
+                        </Button>
+                        <Button onClick={() => handleMakeCombo("frenchFries", menuItems, addItemToBasket, setOpenDialog)}>
+                            Fries
+                        </Button>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
 
                 {/* Close and Add to Order buttons */}
                 <div
@@ -300,6 +358,8 @@ const CustomerView = ({ menuItems }) => {
     const Accessibility = () => {
         const [showAccessibilityPanel, setShowAccessibilityPanel] =
             useState(false);
+        const { isGamified, toggleGamification } = useGamification();
+
         return (
             <>
                 <button
@@ -339,7 +399,16 @@ const CustomerView = ({ menuItems }) => {
                         >
                             <CloseIcon />
                         </button>
-                        <span> Accessibility Options </span>
+                        <div>
+                            <span> Accessibility Options </span>
+                            <TextSizeControls />
+                            <button 
+                                onClick={toggleGamification}
+                                aria-label={isGamified ? "Disable gamified mode" : "Enable gamified mode"}
+                            >
+                                {isGamified ? 'Disable Gamified Mode' : 'Enable Gamified Mode'}
+                            </button>
+                        </div>
                     </div>
                 )}
             </>
