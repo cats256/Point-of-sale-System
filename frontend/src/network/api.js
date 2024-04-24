@@ -181,6 +181,17 @@ export async function getIngredientUsage(start_date, end_date) {
     return response.data;
 }
 
+export async function getOrderTrends(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/order_trends`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
 export async function attachMenuItem(formData) {
     return request("/attach_menu_items", {
         method: "POST",

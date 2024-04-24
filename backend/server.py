@@ -266,6 +266,37 @@ def ingredient_usage():
 
     return ingredients_info
 
+
+# API endpoint for order trends report
+@app.route("/order_trends", methods=["GET"])
+def order_trends():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL("SELECT om1.menu_item_id AS menu_item_id_1, om2.menu_item_id AS menu_item_id_2, COUNT(*) AS count, o.date "
+                    +
+                    "FROM order_menu_items om1 " +
+                    "JOIN order_menu_items om2 ON om1.order_id = om2.order_id AND om1.menu_item_id < om2.menu_item_id "
+                    +
+                    "JOIN orders o ON om1.order_id = o.id " +
+                    "WHERE o.date BETWEEN CAST(%s AS TIMESTAMP) AND CAST(%s AS TIMESTAMP) " +
+                    "GROUP BY om1.menu_item_id, om2.menu_item_id, o.date " +
+                    "ORDER BY count DESC, o.date ASC;")
+    cur.execute(query, (start_date, end_date))
+    order_trends = cur.fetchall()
+    cur.close()
+
+    return order_trends
+
+
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
     data = request.json

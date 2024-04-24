@@ -14,6 +14,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TotalOrdersGraph from "./StatsDisplays/TotalOrdersGraph";
 import MenuItemOrdersHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
 import IngredientUsageTable from "./StatsDisplays/IngredientUsageTable";
+// import OrderTrendsTable from "./StatsDisplays/OrderTrendsTable";
 
 const StatsPage = () => {
     const defaultStartDate = new Date(2024, 0, 1);
@@ -46,6 +47,12 @@ const StatsPage = () => {
                 >
                     Ingredient Usage Table
                 </Button>
+                {/* <Button
+                    variant={displayGraph === "OrderTrendsTable" ? "contained" : "outlined"}
+                    onClick={() => setDisplayGraph("OrderTrendsTable")}
+                >
+                    Order Trends Table
+                </Button> */}
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
@@ -87,14 +94,19 @@ const StatsPage = () => {
                 />
             ) : displayGraph === "Histogram" ? (
                 <MenuItemOrdersHistogram 
-                    // start_date={startDate}
-                    // end_date={endDate}
+                    start_date={startDate}
+                    end_date={endDate}
                 />
             ) : (
                 <IngredientUsageTable 
                     start_date={startDate}
                     end_date={endDate}
                 />
+            // ) : (
+            //     <OrderTrendsTable
+            //         start_date={startDate}
+            //         end_date={endDate}
+            //     />
             )}
         </div>
     );
