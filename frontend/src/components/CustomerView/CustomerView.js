@@ -134,7 +134,13 @@ const CustomerView = ({ menuItems }) => {
                     alignItems: "center"
                 }}
             >
-                {filteredItems.map((item, index) => (
+                {filteredItems.map((item, index) => {
+
+                let itemName = formatItemName(item);
+                // Adjust this line to concatenate the string and the variable
+                let imgSrc = require(`../../img/${item.name}.png`);
+
+                    return(
                     <article
                         key={index}
                         style={{
@@ -158,13 +164,14 @@ const CustomerView = ({ menuItems }) => {
                             }}
                         >
                             <img
-                                src={require("../../img/temp_burger.jpeg")}
-                                alt={formatItemName(item)}
+                                src={imgSrc}
+                                alt={itemName}
                                 style={{
                                     marginRight: 8,
-                                    width: "25vh",
-                                    height: "100",
+                                    width: "180px",
+                                    height: "150px",
                                     borderRadius: "15px",
+                                    objectFit: "cover",
                                     margin: "2px"
                                 }}
                             />
@@ -183,7 +190,7 @@ const CustomerView = ({ menuItems }) => {
                         </button>
                     </article>
                     
-                ))}
+                )})}
                 {showItemInfoPopup && (
                     <Popup
                         item={popupContent}
