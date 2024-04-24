@@ -1,6 +1,6 @@
 :root {
     --primary-color: #8B1D41; /* Burgundy */
-    --light-primary-color: #a25c74; /* light, muted Burgundy */
+    --light-primary-color: #ae8e99; /* light, muted Burgundy */
     --secondary-color: #F5F5F5; /* Cream */
     --accent-color: #C2A061; /* Gold */
     --neutral-dark: #323232; /* Charcoal */
@@ -10,7 +10,12 @@
     --close: red;
     --open: green;
     --border-radius-r: 15px;
-    --dynamic-font-size: 18px;
+    --dynamic-font-size: 20px;
+    --dynamic-icon-scale: 1.5;
+}
+
+main {
+    background-color: var(--light-primary-color);
 }
 
 button {
@@ -29,15 +34,15 @@ button:disabled {
 }
 
 .typeBtn {
-    margin-right: 8px;
     border-radius: var(--border-radius-r);
     margin: 4px; 
     background-color: var(--neutral-light);
     color: var(--neutral-dark);
-    padding: 25px;
-    font-size: 20px;
+    padding: 1.8em 1em;
+    font-size: inherit;
     font-weight: 550;
     border: 2px solid var(--neutral-dark); 
+    overflow: hidden;
 }
 
 .typeBtnActive { /* for staying in active mode */
@@ -49,6 +54,7 @@ button:disabled {
 .menuItemPopUp {
     position: fixed;
     width: 20%;
+    min-width: 30vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -57,9 +63,9 @@ button:disabled {
     background: var(--white);
     border: 1px 8px solid black;
     border-radius: var(--border-radius-r);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
     z-index: 1000;
+    text-align: center;
 }
 
 .closeBtn {
@@ -173,7 +179,7 @@ button:disabled {
 }
 
 .basket > * {
-    font-size: 20px;
+    font-size: var(--dynamic-font-size);
 }
 
 .navBar {
@@ -267,13 +273,17 @@ button:disabled {
 }
 
 .bodyPanel {
-    display: flex;
-    min-width: 100vh;
+    display: flex; 
+    min-width: 100vw;
+    /* height: 100%;
+    bottom: 0px;
+    align-items: stretch; */
 }
 
 .typeMenu {
     display: flex;
     flex-direction: column;
+    /* justify-content: space-around; */
     width: 15vw;
     margin: 8px;
 }
@@ -306,6 +316,10 @@ button:disabled {
 .flexBox {
     display: flex;
     justify-content: center;
+}
+
+.icon {
+    transform: scale(var(--dynamic-icon-scale));
 }
 
 body, button, input, textarea, select, 

@@ -13,9 +13,7 @@ import classNames from 'classnames';
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
-    // const { setFontSizeMultiplier } = useFontSize();
-    const { setFontSizeMultiplier, fontSizeMultiplier } = useFontSize();
-    // const { fontSizeMultiplier, setLargeTxtEnabled, largeTxtEnabled } = useFontSize();
+    const { toggleFontSize, toggleIconScale, fontSizeMultiplier } = useFontSize();
     const {
         basket,
         increaseItemQuantity,
@@ -56,7 +54,7 @@ const CustomerView = ({ menuItems }) => {
                     onClick={onClose} 
                     aria-pressed="true"
                     aria-label="Close"
-                    className="closeBtn"
+                    className="closeBtn icon"
                 >
                     <CloseIcon />
             </button>
@@ -167,6 +165,7 @@ const CustomerView = ({ menuItems }) => {
                             <IconButton
                                 onClick={() => decreaseItemQuantity(item.name)}
                                 aria-label="Decrease item"
+                                className="icon"
                             >
                                 -
                             </IconButton>
@@ -174,6 +173,7 @@ const CustomerView = ({ menuItems }) => {
                             <IconButton
                                 onClick={() => increaseItemQuantity(item.name)}
                                 aria-label="Increase item"
+                                className="icon"
                             >
                                 +
                             </IconButton>
@@ -184,6 +184,7 @@ const CustomerView = ({ menuItems }) => {
                     <IconButton
                         aria-label="Delete"
                         onClick={() => removeItemFromBasket(item.name)}
+                        className="icon"
                     >
                         <DeleteIcon />
                     </IconButton>
@@ -208,10 +209,6 @@ const CustomerView = ({ menuItems }) => {
         const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
         const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
         const [highContrastEnabled, setHighContrastEnabled] = useState(false);
-
-        const toggleFontSize = () => {
-            setFontSizeMultiplier(fontSizeMultiplier === 1 ? 2 : 1);  // Toggle between 1 and 2
-        };
         
         return (
             <>
@@ -249,7 +246,8 @@ const CustomerView = ({ menuItems }) => {
                             <button
                                 className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': fontSizeMultiplier != 1 })}
                                 onClick={ () => (
-                                    toggleFontSize()
+                                    toggleFontSize(),
+                                    toggleIconScale()
                                 )}
                                 variant="contained"
                             >
