@@ -7,7 +7,7 @@ import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../CustomerView/BasketContext";
 import "./CustomerView.css";
 import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
-import { useFontSize } from "../../FontSizeProvider";
+import { useFontSize } from "../../utils/FontSizeProvider";
 import classNames from 'classnames';
 
 const CustomerView = ({ menuItems }) => {

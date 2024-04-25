@@ -136,6 +136,7 @@ button:disabled {
 .basketClearBtn {
     margin-bottom: .8vh;
     background-color: var(--close);
+    border-radius: var(--border-radius-r);
     color: var(--white);
     padding: 0.8vh;
     font-size: inherit;
@@ -176,6 +177,7 @@ button:disabled {
     background-color: var(--open);
     padding: 0.8vh;
     font-size: inherit;
+    border-radius: var(--border-radius-r);
 }
 
 .basket > * {
