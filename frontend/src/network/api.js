@@ -48,6 +48,19 @@ export async function getMenuItems() {
     return request("/menu_item_info", { method: "GET" });
 }
 
+export async function getOrderMenuItems() {
+    return request("/order_menu_item", { method: "GET" });
+    // const response = await axios.get(`${API_BASE}/order_menu_item_info`, {
+    //     params: {
+    //         start_id,
+    //         finish_id,
+    //     },
+    // });
+
+    // return response.data;
+    
+}
+
 export async function getMenuItemTypes() {
     return request("/menu_item_types", { method: "GET" });
 }
@@ -67,6 +80,18 @@ export async function getOrders(start_date, end_date) {
             end_date,
         },
     });
+
+    return response.data;
+}
+
+export async function getOrdersIds(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/orders_ids`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+    // const orderIds = response.data.map(order => order.id);
 
     return response.data;
 }
@@ -137,6 +162,25 @@ export async function getItemId(menuItemName) {
     return response; // Return the entire response object
 }
 
+export async function getItemName(menuItemId) {
+    const response = await request(
+        `/menu_item_name?id=${encodeURIComponent(menuItemId)}`,
+        { method: "GET" }
+    );
+    return response; // Return the entire response object
+}
+
+export async function getIngredientUsage(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/ingredient_usage`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
 export async function attachMenuItem(formData) {
     return request("/attach_menu_items", {
         method: "POST",
@@ -147,12 +191,4 @@ export async function attachMenuItem(formData) {
 
 export async function getTopTen() {
     return request("/top_ten", { method: "GET" });
-}
-
-export async function getItemName(menuItemID) {
-    const response = await request(
-        `/menu_item_name?id=${encodeURIComponent(menuItemID)}`,
-        { method: "GET" }
-    );
-    return response;
 }
