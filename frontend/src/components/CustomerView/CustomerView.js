@@ -4,7 +4,7 @@ import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState, useEffect } from "react";
 import { formatItemName } from "../../utils/formatItemName";
-import { useBasket } from "../CustomerView/BasketContext";
+import { useBasket } from "../common/BasketContext";
 import "./CustomerView.css";
 import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
 import { useFontSize } from "../../utils/FontSizeProvider";

@@ -19,7 +19,7 @@ import { useState } from "react";
 import { categories } from "../../utils/const";
 import { formatItemName } from "../../utils/formatItemName";
 import { getItemNameColor } from "../../utils/getItemNameColor";
-import { useBasket } from "../CustomerView/BasketContext";
+import { useBasket } from "../common/BasketContext";
 import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 
