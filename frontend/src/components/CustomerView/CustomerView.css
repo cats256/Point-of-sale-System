@@ -62,18 +62,22 @@ button:disabled {
     align-items: center;
     padding: 20px;
     background: var(--white);
-    border: 1px 8px solid black;
     border-radius: var(--border-radius-r);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
     z-index: 1000;
     text-align: center;
 }
 
+.popUpItemNameTxt {
+    font-weight: bold;
+    font-size: inherit;
+}
+
 .closeBtn {
     scale: 0.9;
     background-color: var(--close);
     color: var(--white);
-    float: left;
+    align-self: flex-start;
 }
 
 .addToOrderBtn {
@@ -312,6 +316,7 @@ button:disabled {
 .fullWidthImage {
     width: 100%; 
     height: auto; 
+    border-radius: var(--border-radius-r);
 }
 
 .flexBox {

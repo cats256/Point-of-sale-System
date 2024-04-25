@@ -2,7 +2,7 @@ import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../common/BasketContext";
 import "./CustomerView.css";
@@ -44,55 +44,60 @@ const CustomerView = ({ menuItems }) => {
         </button>
     );
 
-    const MenuItemPopUp = ({ item, onClose }) => (
-        <section
-            aria-label="Item details popup"
-            className="menuItemPopUp evenSpacing"
-        >
-            {/* Close button */}
-            <button 
-                    onClick={onClose} 
-                    aria-pressed="true"
-                    aria-label="Close"
-                    className="closeBtn icon"
-                >
-                    <CloseIcon />
-            </button>
+    const MenuItemPopUp = ({ item, onClose }) => {
+        let itemName = formatItemName(item)
+        let imgSrc = require(`../../img/${item.name}.png`)
 
-            {/* Image of the menu item */}
-            <img
-                src={require("../../img/temp_burger.jpeg")}
-                alt={item.name}
-                className="fullWidthImage"
-            />
-
-            {/* Name of the menu item */}
-            <div>
-                {formatItemName(item)}
-            </div>
-
-            {/* Combo and Add to Order buttons */}
-            <footer>
-                {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
-                    <button 
-                        onClick={handleMakeCombo}
-                        className={isCombo ? 'comboBtnActive' : 'comboBtn'}
-                        aria-pressed={isCombo}
+        return (
+            <section
+                aria-label="Item details popup"
+                className="menuItemPopUp evenSpacing"
+            >
+                {/* Close button */}
+                <button 
+                        onClick={onClose} 
+                        aria-pressed="true"
+                        aria-label="Close"
+                        className="closeBtn icon"
                     >
-                        {isCombo ? "Combo Selected" : "Make it a Combo"}
-                    </button>
-                )}
-
-                <button
-                    onClick={() => addItemToBasketWithCombo(item)}
-                    className="addToOrderBtn"
-                    aria-pressed={true}
-                >
-                    Add to Basket
+                        <CloseIcon />
                 </button>
-            </footer>
-        </section>
-    );
+
+                {/* Image of the menu item */}
+                <img
+                    src={imgSrc}
+                    alt={itemName}
+                    className="fullWidthImage"
+                />
+
+                {/* Name of the menu item */}
+                <div className="popUpItemNameTxt">
+                    {itemName}
+                </div>
+
+                {/* Combo and Add to Order buttons */}
+                <footer>
+                    {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
+                        <button 
+                            onClick={handleMakeCombo}
+                            className={isCombo ? 'comboBtnActive' : 'comboBtn'}
+                            aria-pressed={isCombo}
+                        >
+                            {isCombo ? "Combo Selected" : "Make it a Combo"}
+                        </button>
+                    )}
+
+                    <button
+                        onClick={() => addItemToBasketWithCombo(item)}
+                        className="addToOrderBtn"
+                        aria-pressed={true}
+                    >
+                        Add to Basket
+                    </button>
+                </footer>
+            </section>
+        );
+    };
 
     const PopulateMenuItems = () => {
         let filteredItems = menuItems.filter((item) => item.type === panel);
@@ -102,32 +107,30 @@ const CustomerView = ({ menuItems }) => {
                 {filteredItems.map((item, index) => {
 
                 let itemName = formatItemName(item);
-                // Adjust this line to concatenate the string and the variable
                 let imgSrc = require(`../../img/${item.name}.png`);
 
                     return(
-                    <button
-                        key={index}
-                        className="menuItemBtn"
-                        onClick={() => {
-                            setShowItemInfoPopup(true);
-                            setPopupContent(item);
-                        }}
-                    >
-                        <img
-                            src={imgSrc}
-                            alt={itemName}
-                            className="menuItemImg"
-                        />
-                        <div className="menuItemNameTxt">
-                            {formatItemName(item)}
-                        </div>
-                        <div className="menuItemPriceTxt">
-                            ${item.price}
-                        </div>
-                    </button>
-                    
-                )})}
+                        <button
+                            key={index}
+                            className="menuItemBtn"
+                            onClick={() => {
+                                setShowItemInfoPopup(true);
+                                setPopupContent(item);
+                            }}
+                        >
+                            <img
+                                src={imgSrc}
+                                alt={itemName}
+                                className="menuItemImg"
+                            />
+                            <div className="menuItemNameTxt">
+                                {formatItemName(item)}
+                            </div>
+                            <div className="menuItemPriceTxt">
+                                ${item.price}
+                            </div>
+                        </button>
+                    )})}
                 {showItemInfoPopup && (
                     <MenuItemPopUp
                         item={popupContent}
@@ -250,14 +253,14 @@ const CustomerView = ({ menuItems }) => {
                             </button>
 
                             <button
-                                className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': fontSizeMultiplier != 1 })}
-                                onClick={ () => (
-                                    toggleFontSize(),
+                                className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': fontSizeMultiplier !== 1 })}
+                                onClick={ () => {
+                                    toggleFontSize()
                                     toggleIconScale()
-                                )}
+                                }}
                                 variant="contained"
                             >
-                                {fontSizeMultiplier != 1 ? 'Disable Large Text' : 'Enable Large Text'}
+                                {fontSizeMultiplier !== 1 ? 'Disable Large Text' : 'Enable Large Text'}
                             </button>
 
                             <button
