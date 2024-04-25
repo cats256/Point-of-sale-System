@@ -15,25 +15,6 @@
     --accessibility-blue: #2289c1;
 }
 
-main {
-    background-color: var(--light-primary-color);
-}
-
-button {
-    border: none;
-}
-
-button:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-}
-
-button:disabled {
-    opacity: 0.6; 
-    cursor: not-allowed; 
-    transform: none;
-}
-
 .typeBtn {
     border-radius: var(--border-radius-r);
     margin: 4px; 
@@ -189,94 +170,6 @@ button:disabled {
     font-size: var(--dynamic-font-size);
 }
 
-.navBar {
-    width: 100%;
-    background-color: var(--primary-color);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    min-height: 6vh;
-    justify-content: space-between;
-    padding: 0 20px;
-}
-
-.navSide {
-    position: static; /* Corrected to a valid position value, adjust as needed */
-}
-
-.navHeader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-inline: 10px;
-}
-
-.reveilleLogo {
-    width: 50px;
-    height: 45px;
-    margin-right: 5px;
-}
-
-.navTitle {
-    color: #C2A061;
-    font-weight: bold;
-    font-size: 2rem;
-}
-
-.accessibilityBtn {
-    scale: 1.3;
-    border-radius: 50%;
-    padding: 11px 13px 9px; 
-    border: 2px solid var(--white); 
-    background-color: var(--accessibility-blue);
-}
-
-.accessibilityCloseBtn {
-    scale: 0.9;
-    background-color: var(--close);
-    color: white;
-    float: left;
-}
-
-.accessibilityTitle {
-    padding: 10px;
-    font-weight: bold;
-    font-size: inherit;
-}
-
-.accessibilityOptions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.accessibilityOptionBtn {
-    background-color: var(--neutral-medium);
-    color: black;
-    padding-block: 5px;
-    padding-inline: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-    font-size: inherit;
-} 
-
-.accessibilityOptionBtnActive {
-    background-color: var(--neutral-dark);
-    color: white;
-}
-
-.accessibilityContainer {
-    position: fixed;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 2000;
-    top: 10%;
-    font-size: 30px;
-}
-
 .bodyPanel {
     display: flex; 
     min-width: 100vw;
@@ -326,10 +219,34 @@ button:disabled {
 
 .icon {
     transform: scale(var(--dynamic-icon-scale));
+    transition: transform 0.3s linear;
 }
 
-body, button, input, textarea, select, 
-.typeBtn, .menuItemBtn, .basket,  
-.accessibilityContainer {
+main {
+    background-color: var(--light-primary-color);
+}
+
+button {
+    border: none;
+}
+
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6; 
+    cursor: not-allowed; 
+    transform: none;
+}
+
+button:hover .icon {
+    transform: scale(calc(1.05 * var(--dynamic-icon-scale)));
+}
+
+body, button:not(.accessibilityBtn), input, textarea, select, 
+.typeBtn, .menuItemBtn, .basket {
     font-size: var(--dynamic-font-size);
+    transition: font-size 0.1s linear;
 }
