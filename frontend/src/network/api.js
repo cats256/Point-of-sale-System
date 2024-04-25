@@ -61,6 +61,19 @@ export async function getOrderMenuItems() {
     
 }
 
+export async function getOrderMenuItemsFromId(start_id, end_id) {
+    // return request("/order_menu_item_f", { method: "GET" });
+    const response = await axios.get(`${API_BASE}/order_menu_item_from_id`, {
+        params: {
+            start_id,
+            end_id,
+        },
+    });
+
+    return response.data;
+    
+}
+
 export async function getMenuItemTypes() {
     return request("/menu_item_types", { method: "GET" });
 }
@@ -172,6 +185,17 @@ export async function getItemName(menuItemId) {
 
 export async function getIngredientUsage(start_date, end_date) {
     const response = await axios.get(`${API_BASE}/ingredient_usage`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
+export async function getOrderTrends(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/order_trends`, {
         params: {
             start_date,
             end_date,

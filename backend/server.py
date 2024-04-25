@@ -130,6 +130,21 @@ def get_order_menu_item():
     cur.close()
     return jsonify(order_menu_items_info)
 
+@app.route("/order_menu_item_from_id", methods=["GET"])
+def get_order_menu_item_from_id():
+    start_id = request.args.get("start_id")
+    end_id = request.args.get("end_id")
+
+    cur = conn.cursor()
+    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items WHERE order_id BETWEEN %s AND %s GROUP BY menu_item_id ORDER BY menu_item_id ASC")
+    cur.execute(query, (start_id, end_id))
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    order_menu_items_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(order_menu_items_info)
+
+
 @app.route("/orders_ids", methods=["GET"])
 def get_orders_ids():
     try:
@@ -265,6 +280,37 @@ def ingredient_usage():
     cur.close()
 
     return ingredients_info
+
+
+# API endpoint for order trends report
+@app.route("/order_trends", methods=["GET"])
+def order_trends():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL("SELECT om1.menu_item_id AS menu_item_id_1, om2.menu_item_id AS menu_item_id_2, COUNT(*) AS count, o.date "
+                    +
+                    "FROM order_menu_items om1 " +
+                    "JOIN order_menu_items om2 ON om1.order_id = om2.order_id AND om1.menu_item_id < om2.menu_item_id "
+                    +
+                    "JOIN orders o ON om1.order_id = o.id " +
+                    "WHERE o.date BETWEEN CAST(%s AS TIMESTAMP) AND CAST(%s AS TIMESTAMP) " +
+                    "GROUP BY om1.menu_item_id, om2.menu_item_id, o.date " +
+                    "ORDER BY count DESC, o.date ASC;")
+    cur.execute(query, (start_date, end_date))
+    order_trends = cur.fetchall()
+    cur.close()
+
+    return order_trends
+
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
