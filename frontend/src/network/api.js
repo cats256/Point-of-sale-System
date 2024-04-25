@@ -61,6 +61,19 @@ export async function getOrderMenuItems() {
     
 }
 
+export async function getOrderMenuItemsFromId(start_id, end_id) {
+    // return request("/order_menu_item_f", { method: "GET" });
+    const response = await axios.get(`${API_BASE}/order_menu_item_from_id`, {
+        params: {
+            start_id,
+            end_id,
+        },
+    });
+
+    return response.data;
+    
+}
+
 export async function getMenuItemTypes() {
     return request("/menu_item_types", { method: "GET" });
 }

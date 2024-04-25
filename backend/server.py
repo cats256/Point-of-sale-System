@@ -130,6 +130,21 @@ def get_order_menu_item():
     cur.close()
     return jsonify(order_menu_items_info)
 
+@app.route("/order_menu_item_from_id", methods=["GET"])
+def get_order_menu_item_from_id():
+    start_id = request.args.get("start_id")
+    end_id = request.args.get("end_id")
+
+    cur = conn.cursor()
+    query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items WHERE order_id BETWEEN %s AND %s GROUP BY menu_item_id ORDER BY menu_item_id ASC")
+    cur.execute(query, (start_id, end_id))
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    order_menu_items_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(order_menu_items_info)
+
+
 @app.route("/orders_ids", methods=["GET"])
 def get_orders_ids():
     try:
