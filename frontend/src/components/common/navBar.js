@@ -4,6 +4,7 @@ import { useFontSize } from "../../utils/FontSizeProvider";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState } from "react";
 import classNames from 'classnames';
+import { Link } from "react-router-dom";
 import "./navBar.css";
 
 const Accessibility = () => {
@@ -86,12 +87,15 @@ const navBar = () => {
                 <Accessibility />
             </div>
             
-            <header className="navHeader">
-                <ReveilleLogo className="reveilleLogo" />
-                <h1 className="navTitle">
-                    Rev's American Grill
-                </h1>
-            </header>
+            <Link to="/" className="linkWithoutUnderline">
+                <header className="navHeader">
+                    <ReveilleLogo className="reveilleLogo" />
+                    <h1 className="navTitle">
+                        Rev's American Grill
+                    </h1>
+                </header>
+            </Link>
+            
             <div className="navSide">
                 {/* TODO: add content */}
             </div>
