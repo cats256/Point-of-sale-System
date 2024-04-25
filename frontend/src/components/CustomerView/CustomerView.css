@@ -12,6 +12,7 @@
     --border-radius-r: 15px;
     --dynamic-font-size: 20px;
     --dynamic-icon-scale: 1.5;
+    --accessibility-blue: #2289c1;
 }
 
 main {
@@ -187,12 +188,12 @@ button:disabled {
 .navBar {
     width: 100%;
     background-color: var(--primary-color);
-    text-align: center;
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-items: center;
     min-height: 6vh;
+    justify-content: space-between;
+    padding: 0 20px;
 }
 
 .navSide {
@@ -219,13 +220,11 @@ button:disabled {
 }
 
 .accessibilityBtn {
-    position: fixed;
     scale: 1.3;
     border-radius: 50%;
-    padding: 10px; 
-    border: 2px solid var(--neutral-dark); 
-    margin: 20px;
-    left: 0;
+    padding: 11px 13px 9px; 
+    border: 2px solid var(--white); 
+    background-color: var(--accessibility-blue);
 }
 
 .accessibilityCloseBtn {

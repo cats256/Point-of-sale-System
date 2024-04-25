@@ -219,7 +219,7 @@ const CustomerView = ({ menuItems }) => {
                     }
                     className="accessibilityBtn"
                 >
-                    <SettingsAccessibilityIcon />
+                    <SettingsAccessibilityIcon style={{fill: "white"}}/>
                 </button>
                 {showAccessibilityPanel && (
                     <div className="accessibilityContainer">
@@ -279,7 +279,9 @@ const CustomerView = ({ menuItems }) => {
     const navBar = () => {
         return (
             <nav className="navBar">
-                {Accessibility()}
+                <div className="navSide">
+                    <Accessibility />
+                </div>
                 
                 <header className="navHeader">
                     <ReveilleLogo className="reveilleLogo" />
@@ -287,6 +289,9 @@ const CustomerView = ({ menuItems }) => {
                         Rev's American Grill
                     </h1>
                 </header>
+                <div className="navSide">
+                    {/* TODO: add content */}
+                </div>
             </nav>
         )
     };
