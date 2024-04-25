@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getIngredientUsage } from "../../../../network/api";
 
-const IngredientUsageTable = ({ start_date, end_date, smoothingOption }) => {
+const IngredientUsageTable = ({ start_date, end_date }) => {
     const [ingredientUsage, setIngredientUsage] = useState([]);
 
     useEffect(() => {

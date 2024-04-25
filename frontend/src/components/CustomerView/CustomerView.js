@@ -99,7 +99,13 @@ const CustomerView = ({ menuItems }) => {
 
         return (
             <section className="menuItemsContainer">
-                {filteredItems.map((item, index) => (
+                {filteredItems.map((item, index) => {
+
+                let itemName = formatItemName(item);
+                // Adjust this line to concatenate the string and the variable
+                let imgSrc = require(`../../img/${item.name}.png`);
+
+                    return(
                     <button
                         key={index}
                         className="menuItemBtn"
@@ -109,8 +115,8 @@ const CustomerView = ({ menuItems }) => {
                         }}
                     >
                         <img
-                            src={require("../../img/temp_burger.jpeg")}
-                            alt={formatItemName(item)}
+                            src={imgSrc}
+                            alt={itemName}
                             className="menuItemImg"
                         />
                         <div className="menuItemNameTxt">
@@ -121,7 +127,7 @@ const CustomerView = ({ menuItems }) => {
                         </div>
                     </button>
                     
-                ))}
+                )})}
                 {showItemInfoPopup && (
                     <MenuItemPopUp
                         item={popupContent}
