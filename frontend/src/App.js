@@ -8,7 +8,7 @@ import { MenuView } from "./components/MenuView/MenuView";
 import { Login } from "./components/Authentication/login";
 import { Logout } from "./components/Authentication/logout";
 import { getLanguages, getMenuItems } from "./network/api";
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Nav } from "./components/Authentication/navpage";
 import { useVisualCrossing } from "react-open-weather";
 import { useLocation } from "react-router-dom";
 import { gapi } from "gapi-script";
@@ -21,6 +21,7 @@ function App() {
     const [currLanguage, setCurrLanguage] = useState("English (American)");
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
     const location = useLocation();
+    sessionStorage.setItem("user_email", "");
 
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
@@ -51,41 +52,18 @@ function App() {
     if (location.pathname === "/") {
         return (
             <div style={{ margin: 10 }}>
-                <Link to="/manager">
-                    <Button variant="outlined">Manager</Button>
-                </Link>
-                <Link to="/cashier">
-                    <Button variant="outlined">Cashier</Button>
-                </Link>
-                <Link to="/customer">
-                    <Button variant="outlined">Customer</Button>
-                </Link>
-                <Link to="/menu">
-                    <Button variant="outlined">Menu</Button>
-                </Link>
+                <Login />
 
-                <FormControl>
-                    <InputLabel>Language</InputLabel>
-                    <Select
-                        value={currLanguage}
-                        label={currLanguage}
-                        onChange={handleChange}
-                    >
-                        {Object.keys(languages).map((currLanguage) => (
-                            <MenuItem key={currLanguage} value={currLanguage}>
-                                {currLanguage}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                {!isLoggedIn && (<Login />)}   
-                {isLoggedIn && (<Logout />)}
+                <div style={{display: "none"}}>
+                    <Logout />
+                </div>
             </div>
         );
     }
 
     return (
         <Routes>
+            <Route path="/nav" element={<Nav />} />
             <Route path="/manager" element={<ManagerView />} />
             <Route
                 path="/cashier"
