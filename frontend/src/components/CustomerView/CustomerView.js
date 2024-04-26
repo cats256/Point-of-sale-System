@@ -5,11 +5,12 @@ import React, { useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../common/BasketContext";
 import "./CustomerView.css";
-import { navBar } from "../common/navBar";
+import NavBar from "../common/navBar";
 
 const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
+    const [zoom, setZoom] = useState(100);
     
     const {
         basket,
@@ -26,6 +27,16 @@ const CustomerView = ({ menuItems }) => {
         addItemToBasketWithCombo,
     } = useBasket();
     const [popupContent, setPopupContent] = useState("");
+
+    const increaseZoom = () => {
+        setZoom(zoom + 25);
+    };
+
+    const decreaseZoom = () => {
+        if (zoom > 100) {
+            setZoom(zoom - 25);
+        }
+    };
 
     const typeButton = (text, panel = "") => (
         <button
@@ -212,9 +223,9 @@ const CustomerView = ({ menuItems }) => {
 
     return (
         <main>
-            {navBar()}
+            <NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
 
-            <div className="bodyPanel">   
+            <div className="bodyPanel" style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}>   
                 <aside className="typeMenu">
                     {typeButton("Burgers")}
                     {typeButton("Baskets")}
