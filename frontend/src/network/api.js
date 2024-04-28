@@ -78,6 +78,10 @@ export async function getMenuItemTypes() {
     return request("/menu_item_types", { method: "GET" });
 }
 
+export async function getSuppliers() {
+    return request("/suppliers", { method: "GET" });
+}
+
 export async function getIngredients() {
     return request("/ingredients_info", { method: "GET" });
 }
@@ -215,4 +219,12 @@ export async function attachMenuItem(formData) {
 
 export async function getTopTen() {
     return request("/top_ten", { method: "GET" });
+}
+
+export async function addIngredient(formData){
+    return request("/add_ingredient", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
 }
