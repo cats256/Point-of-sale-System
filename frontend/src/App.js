@@ -12,6 +12,7 @@ import { Nav } from "./components/Authentication/navpage";
 import { useVisualCrossing } from "react-open-weather";
 import { useLocation } from "react-router-dom";
 import { gapi } from "gapi-script";
+import { GamificationProvider } from "./components/CustomerView/GamificationContext";
 
 const clientID = "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
 
@@ -62,31 +63,38 @@ function App() {
     }
 
     return (
-        <Routes>
-            <Route path="/nav" element={<Nav />} />
-            <Route path="/manager" element={<ManagerView />} />
-            <Route
-                path="/cashier"
-                element={<CashierView menuItems={menuItems} />}
-            />
-            <Route
-                path="/customer"
-                element={<CustomerView menuItems={menuItems} />}
-            />
-            <Route
-                path="/menu"
-                element={
-                    <MenuView
-                        languages={languages}
-                        language={currLanguage}
-                        menuItems={menuItems}
-                        weatherData={data}
-                        isWeatherLoading={isLoading}
-                        weatherErrorMessage={errorMessage}
-                    />
-                }
-            />
-        </Routes>
+        <div>
+            {/* Gamified interface */}
+            <GamificationProvider>
+                <div>
+                    <Routes>
+                        <Route path="/nav" element={<Nav />} />
+                        <Route path="/manager" element={<ManagerView />} />
+                        <Route
+                            path="/cashier"
+                            element={<CashierView menuItems={menuItems} />}
+                        />
+                        <Route
+                            path="/customer"
+                            element={<CustomerView menuItems={menuItems} />}
+                        />
+                        <Route
+                            path="/menu"
+                            element={
+                                <MenuView
+                                    languages={languages}
+                                    language={currLanguage}
+                                    menuItems={menuItems}
+                                    weatherData={data}
+                                    isWeatherLoading={isLoading}
+                                    weatherErrorMessage={errorMessage}
+                                />
+                            }
+                        />
+                    </Routes>
+                </div>
+            </GamificationProvider>
+        </div>
     );
 }
 
