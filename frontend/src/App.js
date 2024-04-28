@@ -5,24 +5,17 @@ import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
-import { Login } from "./components/Authentication/login";
-import { Logout } from "./components/Authentication/logout";
 import { getLanguages, getMenuItems } from "./network/api";
-import { Nav } from "./components/Authentication/navpage";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { useVisualCrossing } from "react-open-weather";
 import { useLocation } from "react-router-dom";
-import { gapi } from "gapi-script";
 import { GamificationProvider } from "./components/CustomerView/GamificationContext";
-
-const clientID = "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
 
 function App() {
     const [menuItems, setMenuItems] = useState([]);
     const [languages, setLanguages] = useState({});
     const [currLanguage, setCurrLanguage] = useState("English (American)");
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
     const location = useLocation();
-    sessionStorage.setItem("user_email", "");
 
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
@@ -36,14 +29,6 @@ function App() {
     useEffect(() => {
         getMenuItems().then((data) => setMenuItems(data));
         getLanguages().then((data) => setLanguages(data));
-        function start() {
-            gapi.client.init({
-                clientID: clientID,
-                scope: ""
-            })
-        };
-
-        gapi.load("client:auth2", start);
     }, []);
 
     const handleChange = (event) => {
@@ -53,11 +38,33 @@ function App() {
     if (location.pathname === "/") {
         return (
             <div style={{ margin: 10 }}>
-                <Login />
+                <Link to="/manager">
+                    <Button variant="outlined">Manager</Button>
+                </Link>
+                <Link to="/cashier">
+                    <Button variant="outlined">Cashier</Button>
+                </Link>
+                <Link to="/customer">
+                    <Button variant="outlined">Customer</Button>
+                </Link>
+                <Link to="/menu">
+                    <Button variant="outlined">Menu</Button>
+                </Link>
 
-                <div style={{display: "none"}}>
-                    <Logout />
-                </div>
+                <FormControl>
+                    <InputLabel>Language</InputLabel>
+                    <Select
+                        value={currLanguage}
+                        label={currLanguage}
+                        onChange={handleChange}
+                    >
+                        {Object.keys(languages).map((currLanguage) => (
+                            <MenuItem key={currLanguage} value={currLanguage}>
+                                {currLanguage}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </div>
         );
     }
@@ -68,7 +75,6 @@ function App() {
             <GamificationProvider>
                 <div>
                     <Routes>
-                        <Route path="/nav" element={<Nav />} />
                         <Route path="/manager" element={<ManagerView />} />
                         <Route
                             path="/cashier"
