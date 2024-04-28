@@ -105,6 +105,24 @@ def get_menu_item_types():
     cur.close()
     return jsonify(menu_item_types)
 
+# API endpoint to fetch suppliers
+@app.route("/suppliers", methods=["GET"])
+def get_suppliers():
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+    query = sql.SQL("SELECT DISTINCT supplier FROM ingredients")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    suppliers = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(suppliers)
+
 
 # API endpoint to fetch menu items
 @app.route("/restock_info", methods=["GET"])
@@ -362,6 +380,33 @@ def menu_item_add():
     return jsonify(
         {
             "message": "Menu Item added successfully",
+        }
+    )
+
+# API endpoint to add a new ingredient
+@app.route("/add_ingredient", methods=["POST"])
+def add_ingredient():
+    data = request.json
+
+    name = data.get("name")
+    price = data.get("price")
+
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    query = sql.SQL("INSERT INTO ingredients (name, price, quantity) VALUES (%s, %s, 0);")
+    cur.execute(query, (name, price))
+
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Ingredient added successfully",
         }
     )
 
