@@ -138,7 +138,7 @@ function App() {
             />
             <Route
                 path="/customer"
-                element={<CustomerView menuItems={translatedMenuItems} />}
+                element={<CustomerView menuItems={menuItems} />}
             />
             <Route
                 path="/menu"
