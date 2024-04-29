@@ -59,7 +59,9 @@ export const BasketProvider = ({ children }) => {
     };
 
     const addItemToBasketWithCombo = (item) => {
-        addItemToBasket(item);
+        if (!isCombo) { // to not add duplicates
+            addItemToBasket(item);
+        }
 
         if (isCombo) {
             // Define the combo details

@@ -130,6 +130,17 @@ def get_restock_info():
     cur.close()
     return jsonify(restock_info)
 
+# API endpoint to fetch orders in progress 
+@app.route("/in_progress", methods=["GET"])
+def get_current_orders():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT id FROM orders WHERE status='in progress';")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    current_orders = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(current_orders)
 
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
@@ -187,6 +198,61 @@ def get_employee_info():
     cur.close()
     return jsonify(menu_info)
 
+# API endpoint to add a new ingredient
+@app.route("/add_employee", methods=["POST"])
+def add_employee():
+    data = request.json
+
+    id = data.get("id")
+    name = data.get("name")
+    salary = data.get("salary")
+    email = data.get("email")
+    manager = data.get("manager")
+    password = "password"
+
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    query = sql.SQL("INSERT INTO employees (id, name, salary, sales, email, password, manager) VALUES (%s, %s, %s, 0, %s, %s, %s);")
+    cur.execute(query, (id, name, salary, email, password, manager))
+
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Employee added successfully",
+        }
+    )
+
+@app.route("/delete_employee", methods=["POST"])
+def delete_employee():
+    data = request.json
+
+    id = data.get("id")
+
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    query = sql.SQL("DELETE FROM employees WHERE id = %s;")
+    cur.execute(query, (id,))
+
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Employee deleted successfully",
+        }
+    )
 
 # API endpoint to fetch orders
 # not sure we need this
@@ -329,9 +395,17 @@ def submit_order():
     price = data.get("price")
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
-    cur = get_cursor()
-    orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
-    cur.execute(orders_query, (name, price, date, assigned_employee))
+    status = "in progress"
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee, status) VALUES (%s, %s, %s, %s, %s);")
+    cur.execute(orders_query, (name, price, date, assigned_employee, status))
 
     conn.commit()
     cur.close()
@@ -361,6 +435,42 @@ def menu_item_edit():
     return jsonify(
         {
             "message": "menu item successfully updated",
+        }
+    )
+
+# API endpoint to mark order completed 
+@app.route("/completed", methods=["POST"])
+def complete_order():
+    data = request.json
+
+    id = data.get("id")
+
+    cur = conn.cursor()
+    query = sql.SQL("UPDATE orders SET status='completed' WHERE id = %s;")
+    cur.execute(query, (id,))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "order successfully completed",
+        }
+    )
+
+# API endpoint to mark order cancelled 
+@app.route("/cancelled", methods=["POST"])
+def cancel_order():
+    data = request.json
+
+    id = data.get("id")
+
+    cur = conn.cursor()
+    query = sql.SQL("UPDATE orders SET status='cancelled' WHERE id = %s;")
+    cur.execute(query, (id,))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "order successfully cancelled",
         }
     )
 
@@ -428,6 +538,16 @@ def top_ten():
     top_ten = [dict(zip(columns, row)) for row in rows]
     cur.close()
     return jsonify(top_ten)
+
+# API endpoint to fetch 10 most sold menu items
+@app.route("/highest_employee_id", methods=["GET"])
+def highest_employee_id():
+    cur = get_cursor()
+    query = sql.SQL("SELECT MAX(id) AS max_id FROM employees;")
+    cur.execute(query)
+    highest_id = cur.fetchone()[0]
+    cur.close()
+    return jsonify({"highest_id": highest_id})
 
 
 # API endpoint to update an employee's salary

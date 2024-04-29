@@ -22,11 +22,13 @@ import { getItemNameColor } from "../../utils/getItemNameColor";
 import { useBasket } from "../common/BasketContext";
 import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
+import NavBar from "../common/navBar";
 
-const CashierView = ({ menuItems }) => {
+const CashierView = ({ menuItems, languages, language }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [zoom, setZoom] = useState(100);
 
     const {
         basket,
@@ -38,6 +40,16 @@ const CashierView = ({ menuItems }) => {
         RemoveItemConfirmationDialog,
     } = useBasket();
 
+    const increaseZoom = () => {
+        setZoom(zoom + 25);
+    };
+
+    const decreaseZoom = () => {
+        if (zoom > 100) {
+            setZoom(zoom - 25);
+        }
+    };
+
     const PopulateMenuItems = () => {
         // sorting the beef & bean burgers to group by type
         const customSort = (a, b) => {
@@ -48,7 +60,13 @@ const CashierView = ({ menuItems }) => {
             return 0;
         };
 
-        let filteredItems = menuItems.filter((item) => item.type === panel);
+        let filteredItems =
+            menuItems && Object.keys(menuItems).length !== 0 && panel
+                ? menuItems[panel]
+                : [];
+
+        console.log("menu items", menuItems);
+        console.log("filtered", filteredItems);
         filteredItems.sort(customSort);
 
         const handleItemClick = (item) => {
@@ -58,17 +76,19 @@ const CashierView = ({ menuItems }) => {
         return (
             <>
                 {filteredItems.map((item, index) => {
-                    let itemName = formatItemName(item);
+                    let itemName = item.translatedName || formatItemName(item);
 
                     return (
                         <Button
-                            key={index}
+                            key={item.id}
                             variant="outlined"
                             style={{
                                 flexGrow: 1,
                                 borderRadius: 0,
                                 color: "black",
-                                backgroundColor: getItemNameColor(itemName),
+                                backgroundColor: getItemNameColor(
+                                    formatItemName(item)
+                                ),
                                 border: "1px solid black",
                                 borderLeftWidth: 0,
                                 borderTopWidth: 0,
@@ -77,10 +97,6 @@ const CashierView = ({ menuItems }) => {
                             onClick={() => handleItemClick(item)}
                             className="menu-item"
                         >
-                            <img
-                                src={require("../../img/temp_burger.jpeg")}
-                                alt={itemName}
-                            />
                             <div>{itemName}</div>
                             <div>${parseFloat(item.price).toFixed(2)}</div>
                         </Button>
@@ -395,61 +411,66 @@ const CashierView = ({ menuItems }) => {
 
     return (
         <div className="view">
-            <div className="right-panel">{DisplayBasket()}</div>
-            <div className="center-panel">
-                {PopulateMenuItems()}
-                {Accessibility()}
-                <Button
-                    variant="outlined"
-                    style={{
-                        backgroundColor: "#ecebed",
-                        color: "black",
-                        borderColor: "black",
-                        gridColumn: 1,
-                        gridRow: 8,
-                    }}
-                >
-                    Order
-                </Button>
-                <Button
-                    variant="outlined"
-                    style={{
-                        backgroundColor: "#ecebed",
-                        color: "black",
-                        borderColor: "black",
-                        gridColumn: 3,
-                        gridRow: 8,
-                    }}
-                    onClick={handleComboDialog}
-                >
-                    Make a Combo
-                </Button>
-                <Dialog open={openDialog} onClose={handleCloseDialog}>
-                    <DialogTitle>Combos</DialogTitle>
-                    <DialogContent>
-                        <Button onClick={() => handleMakeCombo("kettleChips")}>
-                            Kettle Chips
-                        </Button>
-                        <Button onClick={() => handleMakeCombo("frenchFries")}>
-                            Fries
-                        </Button>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseDialog}>Cancel</Button>
-                    </DialogActions>
-                </Dialog>
-                <RemoveItemConfirmationDialog />
-            </div>
-            <div className="left-panel">
-                {categories.map((category) => (
-                    <CategoryButton
-                        text={category}
-                        panel={category}
-                        setPanel={setPanel}
-                        setCurrType={setCurrType}
-                        currType={currType}
-                    />
-                ))}
+            <NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+
+            <div className="panels" style={{ transform: `scale(${zoom / 100})` }}>
+                <div className="right-panel">{DisplayBasket()}</div>
+                <div className="center-panel">
+                    {PopulateMenuItems()}
+                    {Accessibility()}
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            gridColumn: 1,
+                            gridRow: 8,
+                        }}
+                    >
+                        Order
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            gridColumn: 3,
+                            gridRow: 8,
+                        }}
+                        onClick={handleComboDialog}
+                    >
+                        Make a Combo
+                    </Button>
+                    <Dialog open={openDialog} onClose={handleCloseDialog}>
+                        <DialogTitle>Combos</DialogTitle>
+                        <DialogContent>
+                            <Button onClick={() => handleMakeCombo("kettleChips")}>
+                                Kettle Chips
+                            </Button>
+                            <Button onClick={() => handleMakeCombo("frenchFries")}>
+                                Fries
+                            </Button>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog}>Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <RemoveItemConfirmationDialog />
+                </div>
+                <div className="left-panel">
+                    {categories.map((category) => (
+                        <CategoryButton
+                            key={category}
+                            text={category}
+                            panel={category}
+                            setPanel={setPanel}
+                            setCurrType={setCurrType}
+                            currType={currType}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );

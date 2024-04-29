@@ -117,6 +117,22 @@ export async function getEmployees() {
     return request("/employee_info", { method: "GET" });
 }
 
+export async function addEmployee(formData) {
+    return request("/add_employee", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function deleteEmployee(formData) {
+    return request("/delete_employee", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
 export async function translate(text, targetLanguage) {
     return request(`/translate`, {
         method: "POST",
@@ -221,8 +237,32 @@ export async function getTopTen() {
     return request("/top_ten", { method: "GET" });
 }
 
+export async function getHighestEmployeeId() {
+    return request("/highest_employee_id", { method: "GET" });
+}
+
+export async function getCurrent() {
+    return request("/in_progress", { method: "GET" });
+}
+
 export async function addIngredient(formData){
     return request("/add_ingredient", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function cancelOrder(formData) {
+    return request("/cancelled", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function completeOrder(formData) {
+    return request("/completed", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
