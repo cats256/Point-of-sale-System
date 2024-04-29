@@ -65,6 +65,13 @@ const CashierView = ({ menuItems, languages, language }) => {
             <>
                 {filteredItems.map((item, index) => {
                     let itemName = item.translatedName || formatItemName(item);
+                    let imgSrc;
+
+                    if (panel !== "Combos") {
+                        imgSrc = require(`../../img/${item.name}.png`);
+                    } else {
+                        imgSrc = require("../../img/temp_burger.jpeg");
+                    }
 
                     return (
                         <Button
@@ -85,10 +92,7 @@ const CashierView = ({ menuItems, languages, language }) => {
                             onClick={() => handleItemClick(item)}
                             className="menu-item"
                         >
-                            <img
-                                src={require("../../img/temp_burger.jpeg")}
-                                alt={itemName}
-                            />
+                            <img src={imgSrc} alt={itemName} />
                             <div>{itemName}</div>
                             <div>${parseFloat(item.price).toFixed(2)}</div>
                         </Button>
