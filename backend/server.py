@@ -1,6 +1,6 @@
-import eventlet
+# import eventlet
 
-eventlet.monkey_patch()
+# eventlet.monkey_patch()
 
 import os
 import deepl
@@ -9,6 +9,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from psycopg2 import sql
 from dotenv import load_dotenv
+import select
+import psycopg2.extensions
 
 load_dotenv()
 database_password = os.getenv("DATABASE_PASSWORD")
@@ -21,17 +23,24 @@ conn = psycopg2.connect(
 )
 
 
-# not standard practice to add info add the end, just have the name of the resource requested aka "/ingredients"
-# API endpoint to fetch ingredients
-@app.route("/ingredients_info", methods=["GET"])
-def get_ingredients_info():
+def get_cursor():
+    global conn
     try:
         cur = conn.cursor()
+        return cur
     except:
         conn = psycopg2.connect(
             host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
         )
         cur = conn.cursor()
+        return cur
+
+
+# not standard practice to add info add the end, just have the name of the resource requested aka "/ingredients"
+# API endpoint to fetch ingredients
+@app.route("/ingredients_info", methods=["GET"])
+def get_ingredients_info():
+    cur = get_cursor()
     query = sql.SQL("SELECT * FROM ingredients ORDER BY name ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -44,13 +53,7 @@ def get_ingredients_info():
 # API endpoint to fetch menu items
 @app.route("/menu_item_info", methods=["GET"])
 def get_menu_item_info():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT * FROM menu_items ORDER BY id ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -59,25 +62,22 @@ def get_menu_item_info():
     cur.close()
     return jsonify(menu_info)
 
+
 # API endpoint to fetch ordered menu items
 @app.route("/order_menu_item_info", methods=["GET"])
 def get_order_menu_item_info():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
     start_id = request.args.get("start_id")
     finish_id = request.args.get("finsih_id")
-    query = sql.SQL("""
+    query = sql.SQL(
+        """
         SELECT menu_item_id, COUNT(*) AS category_count 
         FROM order_menu_items 
         WHERE order_id BETWEEN %s AND %s 
         GROUP BY menu_item_id 
         ORDER BY menu_item_id ASC
-    """)
+    """
+    )
 
     cur.execute(query, (start_id, finish_id))
     columns = [desc[0] for desc in cur.description]
@@ -90,13 +90,7 @@ def get_order_menu_item_info():
 # API endpoint to fetch menu items
 @app.route("/menu_item_types", methods=["GET"])
 def get_menu_item_types():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT DISTINCT type FROM menu_items")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -127,7 +121,7 @@ def get_suppliers():
 # API endpoint to fetch menu items
 @app.route("/restock_info", methods=["GET"])
 def get_restock_info():
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT * FROM restock_order")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -139,7 +133,7 @@ def get_restock_info():
 
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY menu_item_id ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -148,15 +142,27 @@ def get_order_menu_item():
     cur.close()
     return jsonify(order_menu_items_info)
 
+
+@app.route("/order_menu_item_from_id", methods=["GET"])
+def get_order_menu_item_from_id():
+    start_id = request.args.get("start_id")
+    end_id = request.args.get("end_id")
+
+    cur = get_cursor()
+    query = sql.SQL(
+        "SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items WHERE order_id BETWEEN %s AND %s GROUP BY menu_item_id ORDER BY menu_item_id ASC"
+    )
+    cur.execute(query, (start_id, end_id))
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    order_menu_items_info = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(order_menu_items_info)
+
+
 @app.route("/orders_ids", methods=["GET"])
 def get_orders_ids():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password="nighthawk", port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
 
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
@@ -172,13 +178,7 @@ def get_orders_ids():
 # API endpoint to fetch employees
 @app.route("/employee_info", methods=["GET"])
 def get_employee_info():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT * FROM employees ORDER BY name ASC")
     cur.execute(query)
     columns = [desc[0] for desc in cur.description]
@@ -192,13 +192,7 @@ def get_employee_info():
 # not sure we need this
 @app.route("/orders_info", methods=["GET"])
 def get_orders_info():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
 
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
@@ -214,7 +208,7 @@ def get_orders_info():
 # API endpoint to return order id
 @app.route("/order_id", methods=["GET"])
 def order_id():
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT id FROM orders WHERE id=(SELECT max(id) FROM orders);")
     cur.execute(query)
     order_id = cur.fetchone()[0]
@@ -226,39 +220,36 @@ def order_id():
 def menu_item_id():
     item_name = request.args.get("name")
 
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT id FROM menu_items WHERE name=%s;")
     cur.execute(query, (item_name,))
     item_id = cur.fetchone()[0]
     cur.close()
     return jsonify({"item_id": item_id})
 
+
 @app.route("/menu_item_name", methods=["GET"])
 def menu_item_name():
     item_id = request.args.get("id")
 
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
     cur.execute(query, (item_id,))
     item_name = cur.fetchone()[0]
     cur.close()
     return jsonify({"item_id": item_name})
 
+
 # API endpoint for ingredient usage report
 @app.route("/ingredient_usage", methods=["GET"])
 def ingredient_usage():
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
 
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
 
-    query = sql.SQL("""
+    query = sql.SQL(
+        """
         SELECT
             i.id AS ingredient_id,
             i.name AS ingredient_name,
@@ -277,12 +268,38 @@ def ingredient_usage():
             i.id
         ORDER BY
             total_ingredient_count DESC
-                """)
+                """
+    )
     cur.execute(query, (start_date, end_date))
     ingredients_info = cur.fetchall()
     cur.close()
 
     return ingredients_info
+
+
+# API endpoint for order trends report
+@app.route("/order_trends", methods=["GET"])
+def order_trends():
+    cur = get_cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL(
+        "SELECT om1.menu_item_id AS menu_item_id_1, om2.menu_item_id AS menu_item_id_2, COUNT(*) AS count, o.date "
+        + "FROM order_menu_items om1 "
+        + "JOIN order_menu_items om2 ON om1.order_id = om2.order_id AND om1.menu_item_id < om2.menu_item_id "
+        + "JOIN orders o ON om1.order_id = o.id "
+        + "WHERE o.date BETWEEN CAST(%s AS TIMESTAMP) AND CAST(%s AS TIMESTAMP) "
+        + "GROUP BY om1.menu_item_id, om2.menu_item_id, o.date "
+        + "ORDER BY count DESC, o.date ASC;"
+    )
+    cur.execute(query, (start_date, end_date))
+    order_trends = cur.fetchall()
+    cur.close()
+
+    return order_trends
+
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
@@ -291,7 +308,7 @@ def attach_menu_items():
     order_id = data.get("order_id")
     item_id = data.get("item_id")
 
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (%s, %s);")
     cur.execute(query, (order_id, item_id))
     conn.commit()
@@ -312,14 +329,7 @@ def submit_order():
     price = data.get("price")
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
-
+    cur = get_cursor()
     orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
     cur.execute(orders_query, (name, price, date, assigned_employee))
 
@@ -341,7 +351,7 @@ def menu_item_edit():
     name = data.get("name")
     price = data.get("price")
 
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("UPDATE menu_items SET price = %s WHERE id = %s;")
     cur.execute(query, (price, id))
     query2 = sql.SQL("UPDATE menu_items SET name = %s WHERE id = %s;")
@@ -364,13 +374,7 @@ def menu_item_add():
     price = data.get("price")
     type = data.get("type")
 
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
+    cur = get_cursor()
 
     orders_query = sql.SQL("INSERT INTO menu_items (name, price, type) VALUES (%s, %s, %s);")
     cur.execute(orders_query, (name, price, type))
@@ -414,7 +418,7 @@ def add_ingredient():
 # API endpoint to fetch 10 most sold menu items
 @app.route("/top_ten", methods=["GET"])
 def top_ten():
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL(
         "SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10"
     )
@@ -434,7 +438,7 @@ def salary():
     id = data.get("id")
     salary = data.get("salary")
 
-    cur = conn.cursor()
+    cur = get_cursor()
     query = sql.SQL("UPDATE employees SET salary = %s WHERE id = %s;")
     cur.execute(query, (salary, id))
     conn.commit()
@@ -457,14 +461,7 @@ def restock_order():
     quantity = data.get("quantity")
     ingredient_id = data.get("ingredient_id")
 
-    try:
-        cur = conn.cursor()
-    except:
-        conn = psycopg2.connect(
-            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
-        )
-        cur = conn.cursor()
-
+    cur = get_cursor()
     restock_query = sql.SQL("INSERT INTO restock_order (name, price, quantity, ingredient_id) VALUES (%s, %s, %s, %s);")
     cur.execute(restock_query, (name, price, quantity, ingredient_id))
 
@@ -488,7 +485,7 @@ def restock_order():
     )
 
 
-deepl_auth_key = "a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx"
+deepl_auth_key = os.getenv("deepl_auth_key")
 translator = deepl.Translator(deepl_auth_key)
 
 
