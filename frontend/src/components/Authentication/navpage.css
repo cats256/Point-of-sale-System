@@ -1,19 +1,19 @@
 html, body {
-    height: 100%; /* Ensures the body takes full viewport height */
-    margin: 0; /* Removes default margin */
-    padding: 0; /* Removes default padding */
-    overflow: hidden; /* Prevents scroll bars if not necessary */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 .navigation-page {
     font-family: 'Arial', sans-serif;
-    background-color: #8B1D41; /* Setting the entire background to maroon */
-    color: white; /* Ensuring text is readable against the dark background */
-    height: 100vh; /* Full viewport height */
+    background-color: #8B1D41;
+    color: white;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers children vertically */
-    align-items: center; /* Centers children horizontally */
+    justify-content: center;
+    align-items: center;
     margin: 0;
 }
 
@@ -22,35 +22,34 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px; /* Spacing between buttons */
+    gap: 20px;
 }
 
 .navigation-page .button-row {
     display: flex;
-    gap: 20px; /* Spacing between buttons in the same row */
+    gap: 20px;
 }
 
 .navigation-page .control-panel {
     position: absolute;
     top: 0;
     right: 0;
-    padding: 20px; /* Adds padding to top-right corner elements */
+    padding: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* Specific overrides for Material-UI buttons */
 .navigation-page .MuiButton-outlined {
-    background-color: white !important; /* Ensures background is white */
-    color: #0091f9 !important; /* Text color, blue */
-    border: 2.2px solid #0091f9 !important; /* Border color, blue */
-    width: 200px; /* Uniform width for all buttons */
-    height: 70px; /* Uniform height for all buttons */
+    background-color: white !important;
+    color: #0091f9 !important;
+    border: 2.2px solid #0091f9 !important;
+    width: 200px;
+    height: 70px;
     display: flex;
     justify-content: center;
     align-items: center;
-    text-transform: none; /* Optional: prevents uppercase styling */
+    text-transform: none;
     font-size: 20px;
 }
 
@@ -60,48 +59,48 @@ html, body {
 }
 
 .navigation-page a {
-    text-decoration: none; /* Removes underline from links */
+    text-decoration: none;
 }
 
 /* Styles for select component */
 .navigation-page .MuiFormControl-root {
-    background-color: white !important; /* White background for form control */
-    border-radius: 4px; /* Optional: adds rounded corners */
+    background-color: white !important;
+    border-radius: 4px;
 }
 
 .navigation-page select {
-    color: #0091f9 !important; /* Blue text color for select dropdown */
-    background-color: white !important; /* White background */
+    color: #0091f9 !important;
+    background-color: white !important;
 }
 
 .navigation-page .MuiOutlinedInput-notchedOutline {
-    border-color: #0091f9 !important; /* Blue border for the input */
+    border-color: #0091f9 !important;
 }
 
 .navigation-page .logout-button {
-    width: 80px;  /* Smaller width */
-    height: 40px;  /* Smaller height */
-    font-size: 15px; /* Smaller font size */
+    width: 80px;
+    height: 40px;
+    font-size: 15px;
 }
 
 .page-header {
     display: flex;
-    align-items: center; /* Aligns items vertically in the center */
-    justify-content: center; /* Center the items horizontally */
-    padding: 20px; /* Padding around the content */
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .page-header .logo {
-    margin-right: 20px; /* Space between the logo and the text */
-    width: 60px; /* Adjust based on your SVG's dimensions */
-    height: auto; /* Maintain aspect ratio */
+    margin-right: 20px;
+    width: 60px;
+    height: auto;
 }
 
 .page-header h1 {
-    font-family: 'Montserrat', sans-serif; /* Sophisticated yet fun font */
-    color: #C2A061; /* Sophisticated golden color */
-    font-size: 50px; /* Larger font size */
-    font-weight: 700; /* Bold font weight */
+    font-family: 'Montserrat', sans-serif;
+    color: #C2A061;
+    font-size: 50px;
+    font-weight: 700;
     margin: 0;
     padding: 10px 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
