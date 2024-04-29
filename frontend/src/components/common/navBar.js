@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { Link } from "react-router-dom";
 import "./navBar.css";
 
-const Accessibility = () => {
+const Accessibility = ({ increaseZoom, decreaseZoom }) => {
     const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
     const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
     const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
@@ -73,6 +73,23 @@ const Accessibility = () => {
                         >
                             {highContrastEnabled ? 'Disable High Contrast' : 'Enable High Contrast'}
                         </button>
+
+                        <button
+                            className="accessibilityOptionBtn"
+                            aria-label="Increase Zoom"
+                            onClick={increaseZoom}
+                            variant="contained"
+                        >
+                            Zoom In (+)
+                        </button>
+                        <button
+                            className="accessibilityOptionBtn"
+                            aria-label="Decrease Zoom"
+                            onClick={decreaseZoom}
+                            variant="contained"
+                        >
+                            Zoom Out (-)
+                        </button>
                     </div>
                 </div>
             )}
@@ -80,11 +97,11 @@ const Accessibility = () => {
     );
 };
 
-const navBar = () => {
+const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
     return (
         <nav className="navBar">
             <div className="navSide">
-                <Accessibility />
+                <Accessibility increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
             </div>
             
             <Link to="/" className="linkWithoutUnderline">
@@ -103,4 +120,4 @@ const navBar = () => {
     )
 };
 
-export {navBar};
+export default NavBar;
