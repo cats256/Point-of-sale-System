@@ -104,7 +104,7 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
                 <Accessibility increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
             </div>
             
-            <Link to="/" className="linkWithoutUnderline">
+            <Link to="/nav" className="linkWithoutUnderline">
                 <header className="navHeader">
                     <ReveilleLogo className="reveilleLogo" />
                     <h1 className="navTitle">
