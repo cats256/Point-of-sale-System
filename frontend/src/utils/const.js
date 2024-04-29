@@ -6,5 +6,5 @@ export const categories = [
     "Desserts",
     "Sides",
     "Sauces",
-    "Combo",
+    "Combos",
 ];

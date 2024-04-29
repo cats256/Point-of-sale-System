@@ -27,6 +27,7 @@ function App() {
     const location = useLocation();
     sessionStorage.setItem("user_email", "");
 
+    console.log(menuItems);
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
         key: "HLRHT43XJPSVMQHAMK7PDLL92",
@@ -36,22 +37,12 @@ function App() {
         unit: "us",
     });
 
-    console.log(menuItems);
-
     useEffect(() => {
         getMenuItems().then((data) => setMenuItems(data));
         getLanguages().then((data) => {
             setLanguages(data);
             setCurrLanguage(Object.keys(data)[5]);
         });
-        function start() {
-            gapi.client.init({
-                clientID: clientID,
-                scope: "",
-            });
-        }
-
-        gapi.load("client:auth2", start);
     }, []);
 
     useEffect(() => {
@@ -90,10 +81,6 @@ function App() {
         translateMenuItems();
     }, [menuItems, currLanguage, languages]);
 
-    const handleChange = (event) => {
-        setCurrLanguage(event.target.value);
-    };
-
     if (!languages) {
         return (
             <div
@@ -123,14 +110,23 @@ function App() {
 
     return (
         <Routes>
-            <Route path="/nav" element={<Nav />} />
+            <Route
+                path="/nav"
+                element={
+                    <Nav
+                        languages={languages}
+                        currLanguage={currLanguage}
+                        setCurrLanguage={setCurrLanguage}
+                    />
+                }
+            />
 
             <Route path="/manager" element={<ManagerView />} />
             <Route
                 path="/cashier"
                 element={
                     <CashierView
-                        menuItems={menuItems}
+                        menuItems={translatedMenuItems}
                         languages={languages}
                         language={currLanguage}
                     />
@@ -138,7 +134,7 @@ function App() {
             />
             <Route
                 path="/customer"
-                element={<CustomerView menuItems={menuItems} />}
+                element={<CustomerView menuItems={translatedMenuItems} />}
             />
             <Route
                 path="/menu"

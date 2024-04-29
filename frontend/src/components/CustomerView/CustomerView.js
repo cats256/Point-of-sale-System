@@ -104,13 +104,16 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const PopulateMenuItems = () => {
-        console.log(menuItems);
-        let filteredItems = menuItems.filter((item) => item.type === panel);
+        if (!menuItems || !panel) {
+            return <div>Loading...</div>;
+        }
+
+        let filteredItems = menuItems[panel];
 
         return (
             <section className="menuItemsContainer">
                 {filteredItems.map((item, index) => {
-                    let itemName = formatItemName(item);
+                    let itemName = item.translatedName || formatItemName(item);
                     let imgSrc = require(`../../img/${item.name}.png`);
 
                     return (
@@ -127,9 +130,7 @@ const CustomerView = ({ menuItems }) => {
                                 alt={itemName}
                                 className="menuItemImg"
                             />
-                            <div className="menuItemNameTxt">
-                                {formatItemName(item)}
-                            </div>
+                            <div className="menuItemNameTxt">{itemName}</div>
                             <div className="menuItemPriceTxt">
                                 ${item.price}
                             </div>

@@ -48,7 +48,13 @@ const CashierView = ({ menuItems, languages, language }) => {
             return 0;
         };
 
-        let filteredItems = menuItems.filter((item) => item.type === panel);
+        let filteredItems =
+            menuItems && Object.keys(menuItems).length !== 0 && panel
+                ? menuItems[panel]
+                : [];
+
+        console.log("menu items", menuItems);
+        console.log("filtered", filteredItems);
         filteredItems.sort(customSort);
 
         const handleItemClick = (item) => {
@@ -58,17 +64,19 @@ const CashierView = ({ menuItems, languages, language }) => {
         return (
             <>
                 {filteredItems.map((item, index) => {
-                    let itemName = formatItemName(item);
+                    let itemName = item.translatedName || formatItemName(item);
 
                     return (
                         <Button
-                            key={item}
+                            key={item.id}
                             variant="outlined"
                             style={{
                                 flexGrow: 1,
                                 borderRadius: 0,
                                 color: "black",
-                                backgroundColor: getItemNameColor(itemName),
+                                backgroundColor: getItemNameColor(
+                                    formatItemName(item)
+                                ),
                                 border: "1px solid black",
                                 borderLeftWidth: 0,
                                 borderTopWidth: 0,
