@@ -117,6 +117,22 @@ export async function getEmployees() {
     return request("/employee_info", { method: "GET" });
 }
 
+export async function addEmployee(formData) {
+    return request("/add_employee", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function deleteEmployee(formData) {
+    return request("/delete_employee", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
 export async function translate(text, targetLanguage) {
     return request(`/translate`, {
         method: "POST",
