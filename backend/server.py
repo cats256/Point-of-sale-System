@@ -130,6 +130,17 @@ def get_restock_info():
     cur.close()
     return jsonify(restock_info)
 
+# API endpoint to fetch orders in progress 
+@app.route("/in_progress", methods=["GET"])
+def get_current_orders():
+    cur = conn.cursor()
+    query = sql.SQL("SELECT id FROM orders WHERE status='in progress';")
+    cur.execute(query)
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    current_orders = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    return jsonify(current_orders)
 
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
@@ -329,9 +340,17 @@ def submit_order():
     price = data.get("price")
     date = data.get("date")
     assigned_employee = data.get("assigned_employee")
-    cur = get_cursor()
-    orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee) VALUES (%s, %s, %s, %s);")
-    cur.execute(orders_query, (name, price, date, assigned_employee))
+    status = "in progress"
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    orders_query = sql.SQL("INSERT INTO orders (name, price, date, assigned_employee, status) VALUES (%s, %s, %s, %s, %s);")
+    cur.execute(orders_query, (name, price, date, assigned_employee, status))
 
     conn.commit()
     cur.close()
@@ -361,6 +380,42 @@ def menu_item_edit():
     return jsonify(
         {
             "message": "menu item successfully updated",
+        }
+    )
+
+# API endpoint to mark order completed 
+@app.route("/completed", methods=["POST"])
+def complete_order():
+    data = request.json
+
+    id = data.get("id")
+
+    cur = conn.cursor()
+    query = sql.SQL("UPDATE orders SET status='completed' WHERE id = %s;")
+    cur.execute(query, (id,))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "order successfully completed",
+        }
+    )
+
+# API endpoint to mark order cancelled 
+@app.route("/cancelled", methods=["POST"])
+def cancel_order():
+    data = request.json
+
+    id = data.get("id")
+
+    cur = conn.cursor()
+    query = sql.SQL("UPDATE orders SET status='cancelled' WHERE id = %s;")
+    cur.execute(query, (id,))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "order successfully cancelled",
         }
     )
 
