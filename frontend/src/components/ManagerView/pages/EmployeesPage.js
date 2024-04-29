@@ -7,7 +7,7 @@ import { getEmployees, updateSalary, deleteEmployee, addEmployee } from "../../.
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
   employee image (either on same list as names in dictionary form or gathered from name),
   all employee information for name (could also be from id if that's easier) */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import sha256 from "crypto-js/sha256";
 
 const EmployeesPage = () => {
@@ -89,10 +89,32 @@ const EmployeesPage = () => {
             } else {
                 alert("Please enter a valid number for the salary.");
             }
-        }
-        else{
+        } else {
             alert("Please enter a new salary.");
         }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const employees_ = await getEmployees();
+            //console.log(employees);
+            const employee_names = [];
+            const employee_images = [];
+
+            employees_.forEach((employee) => {
+                employee_names.push(employee["name"]);
+                const imagelink =
+                    "https://gravatar.com/avatar/" +
+                    hashEmail(employee["email"]);
+                // console.log(imagelink);
+                employee_images.push(imagelink);
+                //console.log(employee["name"]);
+            });
+
+            setEmployeeNames(employee_names);
+            setEmployeeImages(employee_images);
+            setEmployees(employees_);
+        };
     };
 
     const handleDeleteConfirmation = () => {
@@ -140,7 +162,8 @@ const EmployeesPage = () => {
         }
     };
 
-    fetchData();
+        fetchData();
+    }, []);
 
     return (
         <div style={{ marginLeft: "15%", display: "flex" }}>
@@ -174,12 +197,16 @@ const EmployeesPage = () => {
                     ))}
                 </div>
             </div>
-            <div style={{ flex: "1", 
-                        marginLeft: "10%",
-                        position: "fixed",
-                        top: "10%",
-                        width: "30%",
-                        right: "10%",}}>
+            <div
+                style={{
+                    flex: "1",
+                    marginLeft: "10%",
+                    position: "fixed",
+                    top: "10%",
+                    width: "30%",
+                    right: "10%",
+                }}
+            >
                 <h2>Employee Information</h2>
                 {selectedEmployee && (
                     <div
@@ -225,11 +252,15 @@ const EmployeesPage = () => {
                                         type="text"
                                         placeholder="Enter new salary"
                                         value={newSalary}
-                                        onChange={(e) => setNewSalary(e.target.value)}
+                                        onChange={(e) =>
+                                            setNewSalary(e.target.value)
+                                        }
                                         onKeyDown={(e) => {
                                             if (e.key === "Enter") {
                                                 handleUpdateSalary(
-                                                    employees[selectedEmployeeNum]["id"],
+                                                    employees[
+                                                        selectedEmployeeNum
+                                                    ]["id"],
                                                     newSalary
                                                 );
                                             }
@@ -239,7 +270,9 @@ const EmployeesPage = () => {
                                         style={{ marginLeft: "10px" }}
                                         onClick={() =>
                                             handleUpdateSalary(
-                                                employees[selectedEmployeeNum]["id"],
+                                                employees[selectedEmployeeNum][
+                                                    "id"
+                                                ],
                                                 newSalary
                                             )
                                         }

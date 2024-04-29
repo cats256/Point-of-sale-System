@@ -61,8 +61,25 @@ export async function getOrderMenuItems() {
     
 }
 
+export async function getOrderMenuItemsFromId(start_id, end_id) {
+    // return request("/order_menu_item_f", { method: "GET" });
+    const response = await axios.get(`${API_BASE}/order_menu_item_from_id`, {
+        params: {
+            start_id,
+            end_id,
+        },
+    });
+
+    return response.data;
+    
+}
+
 export async function getMenuItemTypes() {
     return request("/menu_item_types", { method: "GET" });
+}
+
+export async function getSuppliers() {
+    return request("/suppliers", { method: "GET" });
 }
 
 export async function getIngredients() {
@@ -181,6 +198,17 @@ export async function getIngredientUsage(start_date, end_date) {
     return response.data;
 }
 
+export async function getOrderTrends(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/order_trends`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
 export async function attachMenuItem(formData) {
     return request("/attach_menu_items", {
         method: "POST",
@@ -191,4 +219,12 @@ export async function attachMenuItem(formData) {
 
 export async function getTopTen() {
     return request("/top_ten", { method: "GET" });
+}
+
+export async function addIngredient(formData){
+    return request("/add_ingredient", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
 }

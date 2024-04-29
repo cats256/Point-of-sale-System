@@ -1,21 +1,80 @@
 // Sidebar.js
 import React from "react";
+import Button from "@mui/material/Button";
 
 const Sidebar = ({ setPage }) => {
     return (
-        <div className="sidebar" style={{ position: "fixed", top: 0, left: 0, width: "15%", height: "100vh", padding: "10px"  }} >
-            <button onClick={() => setPage("employees")}>
+        <div
+            className="sidebar"
+            style={{
+                position: "fixed",
+                display: "flex",
+                flexDirection: "column",
+                width: "15vw",
+                justifyContent: "space-between",
+                minHeight: "100vh",
+            }}
+        >
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("employees")}
+            >
                 Employee Information
-            </button>
-            <button onClick={() => setPage("inventory")}>
+            </Button>
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("inventory")}
+            >
                 Inventory Display
-            </button>
-            <button onClick={() => setPage("stats")}>
+            </Button>
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("stats")}
+            >
                 POS Information
-            </button>
-            <button onClick={() => setPage("menu")}>
+            </Button>
+            <Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("menu")}
+            >
                 Menu
-            </button>
+            </Button>
         </div>
     );
 };
