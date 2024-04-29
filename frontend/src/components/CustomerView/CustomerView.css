@@ -227,7 +227,7 @@ main {
     background-color: var(--light-primary-color);
 }
 
-/* button {
+button {
     border: none;
 }
 
@@ -257,4 +257,4 @@ select,
 .basket {
     font-size: var(--dynamic-font-size);
     transition: font-size 0.1s linear;
-} */
+}

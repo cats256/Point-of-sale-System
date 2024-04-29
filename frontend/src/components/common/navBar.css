@@ -11,7 +11,7 @@
 }
 
 .navSide {
-    position: static; /* Corrected to a valid position value, adjust as needed */
+    position: static; 
 }
 
 .navHeader {
