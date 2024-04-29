@@ -6,6 +6,7 @@ import {
     updateSalary,
     deleteEmployee,
     addEmployee,
+    getHighestEmployeeId,
 } from "../../../network/api";
 // import { updateSalary } from "../../../network/api";
 
@@ -92,7 +93,10 @@ const EmployeesPage = () => {
                         console.error("Error:", error);
                         // Handle error if needed
                     });
-            } else {
+                console.log("update salary");
+                fetchData();
+            } 
+            else {
                 alert("Please enter a valid number for the salary.");
             }
         } else {
@@ -117,19 +121,21 @@ const EmployeesPage = () => {
             setSelectedEmployee(null);
             setSelectedEmployeeNum(null);
             setShowDeleteConfirmation(false);
-
+            setReasonForDeletion("");
             fetchData();
         } else {
             alert("Please provide a reason for the deletion.");
         }
     };
 
-    const handleAddEmployee = () => {
+    const handleAddEmployee = async () => {
         // Make sure all fields are filled
         if (newEmployeeName && newEmployeeEmail && newEmployeeSalary) {
             // Assuming you have a function to add an employee to the database
             // You can call an API or use another method to send this data to the server
-            const newEmployeeId = employeeNames.length + 6;
+            const newEmployeeIdAwait = await getHighestEmployeeId();
+            console.log(newEmployeeIdAwait.highest_id);
+            const newEmployeeId = parseInt(newEmployeeIdAwait.highest_id) +1;
             const employeeData = {
                 id: newEmployeeId,
                 name: newEmployeeName,
@@ -144,6 +150,7 @@ const EmployeesPage = () => {
         } else {
             alert("Please fill in all fields.");
         }
+        fetchData();
     };
 
     return (

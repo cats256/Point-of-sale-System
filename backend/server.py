@@ -539,6 +539,16 @@ def top_ten():
     cur.close()
     return jsonify(top_ten)
 
+# API endpoint to fetch 10 most sold menu items
+@app.route("/highest_employee_id", methods=["GET"])
+def highest_employee_id():
+    cur = get_cursor()
+    query = sql.SQL("SELECT MAX(id) AS max_id FROM employees;")
+    cur.execute(query)
+    highest_id = cur.fetchone()[0]
+    cur.close()
+    return jsonify({"highest_id": highest_id})
+
 
 # API endpoint to update an employee's salary
 @app.route("/salary", methods=["POST"])
