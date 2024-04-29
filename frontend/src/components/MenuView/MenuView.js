@@ -9,14 +9,11 @@ import ReactWeather from "react-open-weather";
 import "./MenuView.css";
 
 const MenuView = ({
-    languages,
-    language,
-    menuItems,
     weatherData,
     isWeatherLoading,
     weatherErrorMessage,
+    translatedMenuItems,
 }) => {
-    const [translatedMenuItems, setTranslatedMenuItems] = useState(null);
     const [page, setPage] = useState(1);
 
     useEffect(() => {
@@ -30,38 +27,6 @@ const MenuView = ({
             clearInterval(timerId);
         };
     }, []);
-
-    useEffect(() => {
-        const translateMenuItems = async () => {
-            const translatedMenuItems = await Promise.all(
-                menuItems.map(async (item) => {
-                    if (language === "English (American)") {
-                        return {
-                            ...item,
-                            translatedName: formatItemName(item),
-                        };
-                    }
-                    const translatedName = await translate(
-                        formatItemName(item).toLowerCase(),
-                        languages[language]
-                    );
-                    return { ...item, translatedName };
-                })
-            );
-
-            const menuItemsByType = translatedMenuItems.reduce((acc, item) => {
-                if (!acc[item.type]) {
-                    acc[item.type] = [];
-                }
-                acc[item.type].push(item);
-                return acc;
-            }, {});
-
-            setTranslatedMenuItems(menuItemsByType);
-        };
-
-        translateMenuItems();
-    }, [menuItems, language, languages]);
 
     if (!translatedMenuItems) {
         return (

@@ -18,7 +18,6 @@ const CategoryButton = ({
         }}
         style={{
             backgroundColor: currType === text ? "#C2A061" : "",
-            color: currType === text ? "white" : "",
             flexGrow: 1,
             borderRadius: 0,
             borderWidth: 0,

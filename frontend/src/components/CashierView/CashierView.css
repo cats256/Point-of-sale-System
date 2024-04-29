@@ -14,7 +14,16 @@
     flex-direction: column;
     width: 15vw;
     justify-content: space-between;
+    /* position: relative;
+    overflow: visible; */
 }
+
+/* .left-panel button {
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+    margin: 10px;
+} */
 
 .center-panel {
     flex-direction: column;
@@ -49,7 +58,7 @@
 }
 
 .menu-item img {
-    max-width: 50%;
+    max-width: 30%;
     height: auto;
     object-fit: contain;
 }

@@ -13,34 +13,21 @@ import { useLocation } from "react-router-dom";
 import { gapi } from "gapi-script";
 import { Login } from "./login";
 
-const clientID = "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+const clientID =
+    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
 
-function Nav() {
-    const [menuItems, setMenuItems] = useState([]);
-    const [languages, setLanguages] = useState({});
-    const [currLanguage, setCurrLanguage] = useState("English (American)");
+function Nav({ languages, setCurrLanguage, currLanguage }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
     const location = useLocation();
     sessionStorage.setItem("user_email", "");
 
-    // may need to do something with API key exposure
-    const { data, isLoading, errorMessage } = useVisualCrossing({
-        key: "HLRHT43XJPSVMQHAMK7PDLL92",
-        lat: "30.622370",
-        lon: "-96.325851",
-        lang: "en",
-        unit: "us",
-    });
-
     useEffect(() => {
-        getMenuItems().then((data) => setMenuItems(data));
-        getLanguages().then((data) => setLanguages(data));
         function start() {
             gapi.client.init({
                 clientID: clientID,
-                scope: ""
-            })
-        };
+                scope: "",
+            });
+        }
 
         gapi.load("client:auth2", start);
     }, []);
@@ -79,37 +66,10 @@ function Nav() {
                 </Select>
             </FormControl>
             <Logout />
-            <div style={{display: "none"}}>
-                    <Login />
+            <div style={{ display: "none" }}>
+                <Login />
             </div>
         </div>
-    );
-
-    return (
-        <Routes>
-            <Route path="/manager" element={<ManagerView />} />
-            <Route
-                path="/cashier"
-                element={<CashierView menuItems={menuItems} />}
-            />
-            <Route
-                path="/customer"
-                element={<CustomerView menuItems={menuItems} />}
-            />
-            <Route
-                path="/menu"
-                element={
-                    <MenuView
-                        languages={languages}
-                        language={currLanguage}
-                        menuItems={menuItems}
-                        weatherData={data}
-                        isWeatherLoading={isLoading}
-                        weatherErrorMessage={errorMessage}
-                    />
-                }
-            />
-        </Routes>
     );
 }
 

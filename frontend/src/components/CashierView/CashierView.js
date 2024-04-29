@@ -24,7 +24,7 @@ import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 import NavBar from "../common/navBar";
 
-const CashierView = ({ menuItems }) => {
+const CashierView = ({ menuItems, languages, language }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -60,7 +60,13 @@ const CashierView = ({ menuItems }) => {
             return 0;
         };
 
-        let filteredItems = menuItems.filter((item) => item.type === panel);
+        let filteredItems =
+            menuItems && Object.keys(menuItems).length !== 0 && panel
+                ? menuItems[panel]
+                : [];
+
+        console.log("menu items", menuItems);
+        console.log("filtered", filteredItems);
         filteredItems.sort(customSort);
 
         const handleItemClick = (item) => {
@@ -70,17 +76,26 @@ const CashierView = ({ menuItems }) => {
         return (
             <>
                 {filteredItems.map((item, index) => {
-                    let itemName = formatItemName(item);
+                    let itemName = item.translatedName || formatItemName(item);
+                    let imgSrc;
+
+                    if (panel !== "Combos") {
+                        imgSrc = require(`../../img/${item.name}.png`);
+                    } else {
+                        imgSrc = require("../../img/temp_burger.jpeg");
+                    }
 
                     return (
                         <Button
-                            key={index}
+                            key={item.id}
                             variant="outlined"
                             style={{
                                 flexGrow: 1,
                                 borderRadius: 0,
                                 color: "black",
-                                backgroundColor: getItemNameColor(itemName),
+                                backgroundColor: getItemNameColor(
+                                    formatItemName(item)
+                                ),
                                 border: "1px solid black",
                                 borderLeftWidth: 0,
                                 borderTopWidth: 0,
@@ -454,6 +469,7 @@ const CashierView = ({ menuItems }) => {
                 <div className="left-panel">
                     {categories.map((category) => (
                         <CategoryButton
+                            key={category}
                             text={category}
                             panel={category}
                             setPanel={setPanel}
