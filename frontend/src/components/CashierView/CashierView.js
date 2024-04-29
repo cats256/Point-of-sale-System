@@ -23,7 +23,7 @@ import { useBasket } from "../common/BasketContext";
 import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 
-const CashierView = ({ menuItems }) => {
+const CashierView = ({ menuItems, languages, language }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -62,7 +62,7 @@ const CashierView = ({ menuItems }) => {
 
                     return (
                         <Button
-                            key={index}
+                            key={item}
                             variant="outlined"
                             style={{
                                 flexGrow: 1,
@@ -443,6 +443,7 @@ const CashierView = ({ menuItems }) => {
             <div className="left-panel">
                 {categories.map((category) => (
                     <CategoryButton
+                        key={category}
                         text={category}
                         panel={category}
                         setPanel={setPanel}

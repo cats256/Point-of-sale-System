@@ -11,7 +11,7 @@ const CustomerView = ({ menuItems }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
     const [zoom, setZoom] = useState(100);
-    
+
     const {
         basket,
         increaseItemQuantity,
@@ -45,16 +45,16 @@ const CustomerView = ({ menuItems }) => {
                 setPanel(panel || text);
                 setCurrType(text);
             }}
-            className={`typeBtn ${currType === text ? 'typeBtnActive' : ''}`}
-            aria-pressed ={true}
+            className={`typeBtn ${currType === text ? "typeBtnActive" : ""}`}
+            aria-pressed={true}
         >
             {text}
         </button>
     );
 
     const MenuItemPopUp = ({ item, onClose }) => {
-        let itemName = formatItemName(item)
-        let imgSrc = require(`../../img/${item.name}.png`)
+        let itemName = formatItemName(item);
+        let imgSrc = require(`../../img/${item.name}.png`);
 
         return (
             <section
@@ -62,33 +62,29 @@ const CustomerView = ({ menuItems }) => {
                 className="menuItemPopUp evenSpacing"
             >
                 {/* Close button */}
-                <button 
-                        onClick={onClose} 
-                        aria-pressed="true"
-                        aria-label="Close"
-                        className="closeBtn icon"
-                    >
-                        <CloseIcon />
+                <button
+                    onClick={onClose}
+                    aria-pressed="true"
+                    aria-label="Close"
+                    className="closeBtn icon"
+                >
+                    <CloseIcon />
                 </button>
 
                 {/* Image of the menu item */}
-                <img
-                    src={imgSrc}
-                    alt={itemName}
-                    className="fullWidthImage"
-                />
+                <img src={imgSrc} alt={itemName} className="fullWidthImage" />
 
                 {/* Name of the menu item */}
-                <div className="popUpItemNameTxt">
-                    {itemName}
-                </div>
+                <div className="popUpItemNameTxt">{itemName}</div>
 
                 {/* Combo and Add to Order buttons */}
                 <footer>
-                    {["Burgers", "Baskets", "Sandwiches"].includes(item.type) && (
-                        <button 
+                    {["Burgers", "Baskets", "Sandwiches"].includes(
+                        item.type
+                    ) && (
+                        <button
                             onClick={handleMakeCombo}
-                            className={isCombo ? 'comboBtnActive' : 'comboBtn'}
+                            className={isCombo ? "comboBtnActive" : "comboBtn"}
                             aria-pressed={isCombo}
                         >
                             {isCombo ? "Combo Selected" : "Make it a Combo"}
@@ -108,16 +104,16 @@ const CustomerView = ({ menuItems }) => {
     };
 
     const PopulateMenuItems = () => {
+        console.log(menuItems);
         let filteredItems = menuItems.filter((item) => item.type === panel);
 
         return (
             <section className="menuItemsContainer">
                 {filteredItems.map((item, index) => {
+                    let itemName = formatItemName(item);
+                    let imgSrc = require(`../../img/${item.name}.png`);
 
-                let itemName = formatItemName(item);
-                let imgSrc = require(`../../img/${item.name}.png`);
-
-                    return(
+                    return (
                         <button
                             key={index}
                             className="menuItemBtn"
@@ -138,7 +134,8 @@ const CustomerView = ({ menuItems }) => {
                                 ${item.price}
                             </div>
                         </button>
-                    )})}
+                    );
+                })}
                 {showItemInfoPopup && (
                     <MenuItemPopUp
                         item={popupContent}
@@ -167,16 +164,12 @@ const CustomerView = ({ menuItems }) => {
             </div>
 
             {basket.map((item, index) => (
-                <div
-                    key={index}
-                    className="basketItem"
-                >
+                <div key={index} className="basketItem">
                     <div>
                         <span className="basketItemName">
                             {formatItemName(item)}{" "}
                         </span>
                         ${parseFloat(item.price * item.quantity).toFixed(2)}
-                        
                         {/* Quantity modification buttons */}
                         <div className="basketItemQuantity">
                             <IconButton
@@ -223,9 +216,19 @@ const CustomerView = ({ menuItems }) => {
 
     return (
         <main>
-            <NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+            <NavBar
+                increaseZoom={increaseZoom}
+                decreaseZoom={decreaseZoom}
+                zoom={zoom}
+            />
 
-            <div className="bodyPanel" style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}>   
+            <div
+                className="bodyPanel"
+                style={{
+                    transform: `scale(${zoom / 100})`,
+                    transformOrigin: "center center",
+                }}
+            >
                 <aside className="typeMenu">
                     {typeButton("Burgers")}
                     {typeButton("Baskets")}
@@ -236,13 +239,9 @@ const CustomerView = ({ menuItems }) => {
                     {typeButton("Sauces")}
                 </aside>
 
-                <article className="centerPanel">
-                    {PopulateMenuItems()}
-                </article>
+                <article className="centerPanel">{PopulateMenuItems()}</article>
 
-                <article className="basketPanel">
-                    {DisplayBasket()}
-                </article>
+                <article className="basketPanel">{DisplayBasket()}</article>
             </div>
         </main>
     );
