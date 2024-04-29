@@ -23,36 +23,54 @@ Install prettier, copy absolute path, to .prettierc, add that to prettier extens
 
 # Scrum meeting times
 
-- Sprint 1
-
-- - Planning meeting
-- - - 3/20 12:00 - 12:15
-
-- - Scrum 1
-- - - 3/22 12:00 - 12:15
-
-- - Scrum 2
-- - - 3/25 12:00 - 12:15
-
-- - Scrum 3
-- - - 3/29 12:00 - 12:15
-
-- - Retrospective
-- - - 4/1 12:00 - 12:30
-
-- Sprint 2
-
-- - Planning meeting
-- - - 4/3 12:00 - 12:15
-
-- - Scrum 1
-- - - 4/5 12:00 - 12:15
-
-- - Scrum 2
-- - - 4/9 12:00 - 12:15
-
-- - Scrum 3
-- - - 4/11 12:00 - 12:15
-
-- - Retrospective
-- - - 4/14 12:00 - 12:30
+* Sprint 3 Meeting Minutes
+    * Planning meeting (4/16 12:00p - 12:15p)
+        * Meeting Minutes
+            * Agenda: Plans for Sprint 3
+                * Last Meeting Follow-Up
+                    * Need to clean up customer view functionality
+                    * Finishing touches on manager view
+                    * Cleaning everything up with styling
+                * New Business
+                    * Authentication API
+    * Scrum 1 (4/18 12:00p - 12:15p)
+        * Meeting Minutes
+            * Agenda: Progress on Sprint 3
+                * Last Meeting Follow-Up
+                    * Finishing accessibility
+                    * Authentication API
+                * New Business
+                    * Menu board needs to consist of many versions with a more comprehensive list of items on each version
+                    * Manager view reports
+    * Scrum 2 (4/23 12:00p - 12:15p)
+        * Meeting Minutes
+            * Agenda: Progress on Sprint 3
+                * Last Meeting Follow-Up
+                    * Manager view reports finished
+                    * Authentication API
+                    * Finishing accessibility
+                * New Business
+                    * Implementing NavBar across all pages
+                    * Allowing employees data to be modified in Manager view
+                    * Ordering ingredients inventory in manager restock
+    * Scrum 3 (4/25 12:00p - 12:15p)
+        * Meeting Minutes
+            * Agenda: Seeing Progress on Spring 3
+                * Last Meeting Follow-Up
+                    * Implementing NavBar across all pages
+                    * Allowing employees data to be modified in Manager view
+                    * Ordering ingredients inventory in manager restock
+                * New Business
+                    * Implementing Kitchen View (tracking order processing)
+    * Retrospective (4/27 12:00p - 12:30p)
+        * Meeting Minutes
+            * Agenda: Remaining Tasks for Sprint 3
+                * Last Meeting Follow-Up
+                    * NavBar is complete, need to apply to all pages
+                    * Manager functionality is complete, need styling
+                    * Authentication needs to be implemented
+                    * Menu board needs styling
+                    * Needs cohesive styling across the board
+                    * Kitchen view backend complete
+                * New Business
+                    * Demoing in class to ensure functionality completeness
