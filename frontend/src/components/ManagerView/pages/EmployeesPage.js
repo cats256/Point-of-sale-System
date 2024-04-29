@@ -1,13 +1,13 @@
 // EmployeesPage.js
 // tiles with name, id, orders completed
 // gravatar images?..
-import { getEmployees, updateSalary } from "../../../network/api";
+import { getEmployees, updateSalary, deleteEmployee, addEmployee } from "../../../network/api";
 // import { updateSalary } from "../../../network/api";
 
 /* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
   employee image (either on same list as names in dictionary form or gathered from name),
   all employee information for name (could also be from id if that's easier) */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import sha256 from "crypto-js/sha256";
 
 const EmployeesPage = () => {
@@ -20,6 +20,32 @@ const EmployeesPage = () => {
     const [employeeJob, setEmployeeJob] = useState("");
     const [employees, setEmployees] = useState([]);
     const [newSalary, setNewSalary] = useState();
+    const [reasonForDeletion, setReasonForDeletion] = useState("");
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [newEmployeeName, setNewEmployeeName] = useState("");
+    const [newEmployeeEmail, setNewEmployeeEmail] = useState("");
+    const [newEmployeeSalary, setNewEmployeeSalary] = useState("");
+    const [newEmployeeManager, setNewEmployeeManager] = useState(false);
+
+    const fetchData = async () => {
+        const employees_ = await getEmployees();
+        //console.log(employees);
+        const employee_names = [];
+        const employee_images = [];
+
+        employees_.forEach((employee) => {
+            employee_names.push(employee["name"]);
+            const imagelink =
+                "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
+            // console.log(imagelink);
+            employee_images.push(imagelink);
+            //console.log(employee["name"]);
+        });
+
+        setEmployeeNames(employee_names);
+        setEmployeeImages(employee_images);
+        setEmployees(employees_);
+    };
 
     // const CryptoJS = require('crypto-js');
 
@@ -63,35 +89,58 @@ const EmployeesPage = () => {
             } else {
                 alert("Please enter a valid number for the salary.");
             }
-        } else {
+        }
+        else{
             alert("Please enter a new salary.");
         }
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const employees_ = await getEmployees();
-            //console.log(employees);
-            const employee_names = [];
-            const employee_images = [];
+    const handleDeleteConfirmation = () => {
+        setShowDeleteConfirmation(true);
+    };
 
-            employees_.forEach((employee) => {
-                employee_names.push(employee["name"]);
-                const imagelink =
-                    "https://gravatar.com/avatar/" +
-                    hashEmail(employee["email"]);
-                // console.log(imagelink);
-                employee_images.push(imagelink);
-                //console.log(employee["name"]);
-            });
+    const handleDeleteEmployee = async () => {
+        if (reasonForDeletion !== "") {
+            const employeeId = employees[selectedEmployeeNum]["id"];
+            const deleted_employee = {
+                id: employeeId,
+              };
+            await deleteEmployee(deleted_employee);
+            // Assuming deleteEmployee is a function that deletes the employee with provided id and reason
+            // You can handle the deletion process according to your backend implementation
+            // After deletion, you may want to update the UI accordingly
+            setSelectedEmployee(null);
+            setSelectedEmployeeNum(null);
+            setShowDeleteConfirmation(false);
+            fetchData(); // Refresh employee data after deletion
+        } else {
+            alert("Please provide a reason for the deletion.");
+        }
+    };
 
-            setEmployeeNames(employee_names);
-            setEmployeeImages(employee_images);
-            setEmployees(employees_);
-        };
+    const handleAddEmployee = () => {
+        // Make sure all fields are filled
+        if (newEmployeeName && newEmployeeEmail && newEmployeeSalary) {
+            // Assuming you have a function to add an employee to the database
+            // You can call an API or use another method to send this data to the server
+            const newEmployeeId = employeeNames.length + 6;
+            const employeeData = {
+                id: newEmployeeId,
+                name: newEmployeeName,
+                email: newEmployeeEmail,
+                salary: newEmployeeSalary,
+                manager: newEmployeeManager,
+            };
+            addEmployee(employeeData);
+            setNewEmployeeName("");
+            setNewEmployeeEmail("");
+            setNewEmployeeSalary("");
+        } else {
+            alert("Please fill in all fields.");
+        }
+    };
 
-        fetchData();
-    }, []);
+    fetchData();
 
     return (
         <div style={{ marginLeft: "15%", display: "flex" }}>
@@ -125,16 +174,12 @@ const EmployeesPage = () => {
                     ))}
                 </div>
             </div>
-            <div
-                style={{
-                    flex: "1",
-                    marginLeft: "10%",
-                    position: "fixed",
-                    top: "10%",
-                    width: "30%",
-                    right: "10%",
-                }}
-            >
+            <div style={{ flex: "1", 
+                        marginLeft: "10%",
+                        position: "fixed",
+                        top: "10%",
+                        width: "30%",
+                        right: "10%",}}>
                 <h2>Employee Information</h2>
                 {selectedEmployee && (
                     <div
@@ -180,15 +225,11 @@ const EmployeesPage = () => {
                                         type="text"
                                         placeholder="Enter new salary"
                                         value={newSalary}
-                                        onChange={(e) =>
-                                            setNewSalary(e.target.value)
-                                        }
+                                        onChange={(e) => setNewSalary(e.target.value)}
                                         onKeyDown={(e) => {
                                             if (e.key === "Enter") {
                                                 handleUpdateSalary(
-                                                    employees[
-                                                        selectedEmployeeNum
-                                                    ]["id"],
+                                                    employees[selectedEmployeeNum]["id"],
                                                     newSalary
                                                 );
                                             }
@@ -198,9 +239,7 @@ const EmployeesPage = () => {
                                         style={{ marginLeft: "10px" }}
                                         onClick={() =>
                                             handleUpdateSalary(
-                                                employees[selectedEmployeeNum][
-                                                    "id"
-                                                ],
+                                                employees[selectedEmployeeNum]["id"],
                                                 newSalary
                                             )
                                         }
@@ -227,9 +266,99 @@ const EmployeesPage = () => {
                                 </span>{" "}
                                 {employeeJob}
                             </div>
+                            <div style={{ marginTop: "10px" }}>
+                                <button onClick={handleDeleteConfirmation}>Delete</button>
+                                {showDeleteConfirmation && (
+                                    <div style={{ marginTop: "10px" }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Reason for deletion"
+                                            value={reasonForDeletion}
+                                            onChange={(e) => setReasonForDeletion(e.target.value)}
+                                        />
+                                        <button onClick={handleDeleteEmployee}>Confirm Delete</button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}
+                <div
+                    style={{
+                        position: "fixed",
+                        width: "40%",
+                        bottom: "5%",
+                        height:"28%",
+                        right: "5%",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        backgroundColor: "#f0f0f0",
+                        padding: "1%",
+                        // borderRadius: "5px",
+                        // boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                    }}
+                >
+                    <h3>Add Employee</h3>
+                    <div
+                        style={{
+                            // marginBottom: "2%",
+                            // padding: "5%",
+                            marginTop: "1%",
+                        }}
+                    >
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            value={newEmployeeName}
+                            onChange={(e) => setNewEmployeeName(e.target.value)}
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={newEmployeeEmail}
+                            onChange={(e) => setNewEmployeeEmail(e.target.value)}
+                        />
+                        <input
+                            type="number"
+                            placeholder="Salary"
+                            value={newEmployeeSalary}
+                            onChange={(e) => setNewEmployeeSalary(e.target.value)}
+                        />
+                    </div>
+                    <div
+                        style={{
+                            // marginTop: "1%",
+                            // padding: "5%",
+                            marginBottom: "1%",
+                        }}
+                    >
+                        <label
+                            style={{
+                                // padding: "5%",
+                            }}
+                        >
+                            Are they a manager?
+                            <input
+                                type="checkbox"
+                                checked={newEmployeeManager}
+                                onChange={(e) => setNewEmployeeManager(e.target.checked)}
+                            />
+                        </label>
+                    </div>
+                    <div>
+                        <button
+                            onClick={handleAddEmployee}
+                            style={{
+                                backgroundColor: '#333', 
+                                color: '#fff',           
+                                padding: '10px 20px',    
+                                borderRadius: '5px', 
+                            }}
+                        >
+                            Add Employee
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

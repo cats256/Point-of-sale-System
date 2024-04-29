@@ -198,6 +198,61 @@ def get_employee_info():
     cur.close()
     return jsonify(menu_info)
 
+# API endpoint to add a new ingredient
+@app.route("/add_employee", methods=["POST"])
+def add_employee():
+    data = request.json
+
+    id = data.get("id")
+    name = data.get("name")
+    salary = data.get("salary")
+    email = data.get("email")
+    manager = data.get("manager")
+    password = "password"
+
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    query = sql.SQL("INSERT INTO employees (id, name, salary, sales, email, password, manager) VALUES (%s, %s, %s, 0, %s, %s, %s);")
+    cur.execute(query, (id, name, salary, email, password, manager))
+
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Employee added successfully",
+        }
+    )
+
+@app.route("/delete_employee", methods=["POST"])
+def delete_employee():
+    data = request.json
+
+    id = data.get("id")
+
+    try:
+        cur = conn.cursor()
+    except:
+        conn = psycopg2.connect(
+            host="csce-315-db.engr.tamu.edu", user="csce315_902_03_user", dbname="csce315_902_03_db", password=database_password, port=5432
+        )
+        cur = conn.cursor()
+
+    query = sql.SQL("DELETE FROM employees WHERE id = %s;")
+    cur.execute(query, (id,))
+
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Employee deleted successfully",
+        }
+    )
 
 # API endpoint to fetch orders
 # not sure we need this
