@@ -1,4 +1,4 @@
-// There just needed. Don't uncomment it.
+// This is here just in case. Eslint already works so don't uncomment it.
 // module.exports = {
 //   root: true,
 //   env: { browser: true, es2020: true },
