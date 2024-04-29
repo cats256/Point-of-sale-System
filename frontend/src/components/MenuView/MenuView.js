@@ -2,8 +2,6 @@ import { CircularProgress, Pagination } from "@mui/material";
 import { Clock } from "digital-clock-react";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { translate } from "../../network/api";
-import { formatItemName } from "../../utils/formatItemName";
 import ReactWeather from "react-open-weather";
 
 import "./MenuView.css";

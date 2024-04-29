@@ -22,11 +22,13 @@ import { getItemNameColor } from "../../utils/getItemNameColor";
 import { useBasket } from "../common/BasketContext";
 import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
+import NavBar from "../common/navBar";
 
 const CashierView = ({ menuItems, languages, language }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [zoom, setZoom] = useState(100);
 
     const {
         basket,
@@ -37,6 +39,16 @@ const CashierView = ({ menuItems, languages, language }) => {
         placeOrder,
         RemoveItemConfirmationDialog,
     } = useBasket();
+
+    const increaseZoom = () => {
+        setZoom(zoom + 25);
+    };
+
+    const decreaseZoom = () => {
+        if (zoom > 100) {
+            setZoom(zoom - 25);
+        }
+    };
 
     const PopulateMenuItems = () => {
         // sorting the beef & bean burgers to group by type
@@ -65,13 +77,6 @@ const CashierView = ({ menuItems, languages, language }) => {
             <>
                 {filteredItems.map((item, index) => {
                     let itemName = item.translatedName || formatItemName(item);
-                    let imgSrc;
-
-                    if (panel !== "Combos") {
-                        imgSrc = require(`../../img/${item.name}.png`);
-                    } else {
-                        imgSrc = require("../../img/temp_burger.jpeg");
-                    }
 
                     return (
                         <Button
@@ -92,7 +97,6 @@ const CashierView = ({ menuItems, languages, language }) => {
                             onClick={() => handleItemClick(item)}
                             className="menu-item"
                         >
-                            <img src={imgSrc} alt={itemName} />
                             <div>{itemName}</div>
                             <div>${parseFloat(item.price).toFixed(2)}</div>
                         </Button>
@@ -407,62 +411,66 @@ const CashierView = ({ menuItems, languages, language }) => {
 
     return (
         <div className="view">
-            <div className="right-panel">{DisplayBasket()}</div>
-            <div className="center-panel">
-                {PopulateMenuItems()}
-                {Accessibility()}
-                <Button
-                    variant="outlined"
-                    style={{
-                        backgroundColor: "#ecebed",
-                        color: "black",
-                        borderColor: "black",
-                        gridColumn: 1,
-                        gridRow: 8,
-                    }}
-                >
-                    Order
-                </Button>
-                <Button
-                    variant="outlined"
-                    style={{
-                        backgroundColor: "#ecebed",
-                        color: "black",
-                        borderColor: "black",
-                        gridColumn: 3,
-                        gridRow: 8,
-                    }}
-                    onClick={handleComboDialog}
-                >
-                    Make a Combo
-                </Button>
-                <Dialog open={openDialog} onClose={handleCloseDialog}>
-                    <DialogTitle>Combos</DialogTitle>
-                    <DialogContent>
-                        <Button onClick={() => handleMakeCombo("kettleChips")}>
-                            Kettle Chips
-                        </Button>
-                        <Button onClick={() => handleMakeCombo("frenchFries")}>
-                            Fries
-                        </Button>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseDialog}>Cancel</Button>
-                    </DialogActions>
-                </Dialog>
-                <RemoveItemConfirmationDialog />
-            </div>
-            <div className="left-panel">
-                {categories.map((category) => (
-                    <CategoryButton
-                        key={category}
-                        text={category}
-                        panel={category}
-                        setPanel={setPanel}
-                        setCurrType={setCurrType}
-                        currType={currType}
-                    />
-                ))}
+            <NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+
+            <div className="panels" style={{ transform: `scale(${zoom / 100})` }}>
+                <div className="right-panel">{DisplayBasket()}</div>
+                <div className="center-panel">
+                    {PopulateMenuItems()}
+                    {Accessibility()}
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            gridColumn: 1,
+                            gridRow: 8,
+                        }}
+                    >
+                        Order
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            gridColumn: 3,
+                            gridRow: 8,
+                        }}
+                        onClick={handleComboDialog}
+                    >
+                        Make a Combo
+                    </Button>
+                    <Dialog open={openDialog} onClose={handleCloseDialog}>
+                        <DialogTitle>Combos</DialogTitle>
+                        <DialogContent>
+                            <Button onClick={() => handleMakeCombo("kettleChips")}>
+                                Kettle Chips
+                            </Button>
+                            <Button onClick={() => handleMakeCombo("frenchFries")}>
+                                Fries
+                            </Button>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog}>Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <RemoveItemConfirmationDialog />
+                </div>
+                <div className="left-panel">
+                    {categories.map((category) => (
+                        <CategoryButton
+                            key={category}
+                            text={category}
+                            panel={category}
+                            setPanel={setPanel}
+                            setCurrType={setCurrType}
+                            currType={currType}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );
