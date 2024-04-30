@@ -438,6 +438,22 @@ def menu_item_edit():
         }
     )
 
+# API endpoint to update menu item information
+@app.route("/menu_item_delete", methods=["POST"])
+def menu_item_delete():
+    id = request.args.get("id")
+
+    cur = get_cursor()
+    query = sql.SQL("DELETE FROM menu_items WHERE id = %s;")
+    cur.execute(query, (id, ))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "menu item successfully deleted",
+        }
+    )
+
 # API endpoint to mark order completed 
 @app.route("/completed", methods=["POST"])
 def complete_order():

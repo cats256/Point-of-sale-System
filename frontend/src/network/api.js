@@ -159,6 +159,14 @@ export async function editMenuItems(formData) {
     });
 }
 
+export async function deleteMenuItems(formData) {
+    return request("/menu_item_delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
 export async function addMenuItem(formData) {
     return request("/menu_item_add", {
         method: "POST",

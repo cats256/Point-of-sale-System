@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, MenuItem } from "@mui/material";
-import { editMenuItems, getMenuItems, addMenuItem, getMenuItemTypes  } from "../../../network/api";
+import { editMenuItems, getMenuItems, addMenuItem, getMenuItemTypes, deleteMenuItems  } from "../../../network/api";
 
 // const types = ["Burger", "Sandwich", "Dessert"]; // List of types
 
@@ -49,6 +49,8 @@ const MenuPage = () => {
 
   const handleMenuItemClick = (index) => {
     setSelectedMenuItem(index);
+    console.log(menuItems[index]);
+    console.log(menuItems);
     setEditName(menuItems[index].name);
     setEditPrice(menuItems[index].price);
   };
@@ -103,6 +105,27 @@ const MenuPage = () => {
   const filteredMenuItems = menuItems.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleDeleteMenuItem = () => {
+    if (selectedMenuItem !== null) {
+      // Call API to delete menu item
+      deleteMenuItems(selectedMenuItem)
+        .then(() => {
+          // Filter out the deleted item from menuItems
+          const updatedMenuItems = menuItems.filter(
+            (item) => item.id !== selectedMenuItem
+          );
+          setMenuItems(updatedMenuItems);
+          // Reset selection after deletion
+          setSelectedMenuItem(null);
+        })
+        .catch((error) => {
+          console.error("Error deleting menu item:", error);
+          // Handle error if needed
+        });
+    }
+  };
+  
 
   return (
     <div style={{ marginLeft: "15%", display: "flex" }}>
@@ -203,6 +226,13 @@ const MenuPage = () => {
           disabled={selectedMenuItem === null}
         >
           Edit
+        </Button>
+        <Button
+        variant="contained"
+        onClick={handleDeleteMenuItem}
+        disabled={selectedMenuItem === null}
+        >
+          Delete
         </Button>
       </div>
     </div>
