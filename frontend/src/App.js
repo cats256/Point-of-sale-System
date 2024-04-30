@@ -5,6 +5,7 @@ import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
+import KitchenView from "./components/KitchenView/KitchenView";
 import { Login } from "./components/Authentication/login";
 import { Logout } from "./components/Authentication/logout";
 import { getLanguages, getMenuItems } from "./network/api";
@@ -148,7 +149,12 @@ function App() {
                         weatherErrorMessage={errorMessage}
                         translatedMenuItems={translatedMenuItems}
                     />
+
                 }
+            />
+            <Route 
+                path="/kitchen" 
+                element={<KitchenView />} 
             />
         </Routes>
     );

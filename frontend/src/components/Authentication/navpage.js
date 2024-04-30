@@ -67,6 +67,9 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                 <Link to="/menu">
                     <Button variant="outlined">Menu</Button>
                 </Link>
+                <Link to="/kitchen">
+                    <Button variant="outlined">Kitchen</Button>
+                </Link>
             </div>
     
             <div style={{ display: "none" }}>
