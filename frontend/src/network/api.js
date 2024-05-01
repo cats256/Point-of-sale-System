@@ -276,3 +276,11 @@ export async function completeOrder(formData) {
         body: JSON.stringify(formData),
     });
 }
+
+export async function deleteOrder(formData) {
+    return request("/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}

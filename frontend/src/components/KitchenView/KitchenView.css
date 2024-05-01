@@ -1,0 +1,168 @@
+/* Color Palette */
+:root {
+    --primary-color: #8B1D41; /* Burgundy */
+    --secondary-color: #F5F5F5; /* Cream */
+    --accent-color: #C2A061; /* Gold */
+    --neutral-dark: #323232; /* Charcoal */
+    --neutral-light: #D3D3D3; /* Light Gray */
+  }
+  
+  /* Typography */
+  body {
+      font-family: 'Open Sans', sans-serif;
+      color: var(--neutral-dark);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+      font-family: 'Roboto Slab', serif;
+      color: var(--primary-color);
+  }
+
+  .header-container {
+    margin-bottom: 20px; /* Adjust as needed to create space between header and buttons */
+  }
+
+  button, .button {
+      font-family: 'Roboto Slab', serif;
+  }
+  
+  /* UI Components */
+  /* Buttons */
+  .button-primary {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      padding: 16px 24px;
+      border: none;
+      cursor: pointer;
+  }
+  
+  .button-secondary {
+      background-color: var(--accent-color);
+      color: var(--neutral-dark);
+      padding: 16px 24px;
+      border: none;
+      cursor: pointer;
+  }
+  
+  .button-tertiary {
+      background-color: transparent;
+      color: var(--primary-color);
+      padding: 16px 24px;
+      border: 2px solid var(--primary-color);
+      cursor: pointer;
+  }
+  
+  .button-primary:hover, .button-secondary:hover, .button-tertiary:hover {
+      background-color: var(--accent-color);
+      color: var(--neutral-dark);
+  }
+  
+  /* Inputs and Forms */
+  input[type='text'],
+  input[type='email'],
+  input[type='password'] {
+      background-color: var(--secondary-color);
+      color: var(--neutral-dark);
+      border: 1px solid var(--neutral-dark);
+      padding: 8px;
+  }
+  
+  input::placeholder {
+      color: var(--neutral-light);
+  }
+  
+  label {
+      color: var(--neutral-dark);
+  }
+  
+  /* Side Bar */
+  .sidebar {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+  }
+  
+  .sidebar a.active {
+      border-bottom: 3px solid var(--accent-color);
+  }
+  
+  /* Links */
+  a {
+      color: var(--primary-color);
+      text-decoration: none;
+  }
+  
+  a:hover {
+      color: var(--accent-color);
+  }
+
+  .order-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 9999;
+  }
+  
+  .order-popup-content {
+    text-align: center;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .popup-title {
+    margin-top: 0;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .complete-button,
+  .cancel-button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .complete-button {
+    background-color:  #8B1D41;
+    color: #fff;
+  }
+  
+  .cancel-button {
+    background-color:  #C2A061;
+    color: #fff;
+  }
+  
+  .orders-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Align items horizontally in the center */
+  }
+  
+  .order-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center items horizontally */
+  }
+  
+  .order-item {
+    margin-right: 10px; /* Add space between buttons */
+    margin-bottom: 10px; /* Add space between rows of buttons */
+  }
+  

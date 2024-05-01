@@ -490,6 +490,26 @@ def cancel_order():
         }
     )
 
+@app.route("/delete", methods=["POST"])
+def delete_order():
+    data = request.json
+    order_id = data.get("id")
+
+    cur = conn.cursor()
+
+    query_delete_menu_items = sql.SQL("DELETE FROM order_menu_items WHERE order_id = %s;")
+    cur.execute(query_delete_menu_items, (order_id,))
+        
+    query_delete_order = sql.SQL("DELETE FROM orders WHERE id = %s;")
+    cur.execute(query_delete_order, (order_id,))
+      
+    conn.commit()
+    cur.close()
+    return jsonify({"message": "Order successfully deleted"})
+
+
+
+
 
 # API endpoint to add a menu item information
 @app.route("/menu_item_add", methods=["POST"])
