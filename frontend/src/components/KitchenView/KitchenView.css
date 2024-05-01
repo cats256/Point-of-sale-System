@@ -17,7 +17,11 @@
       font-family: 'Roboto Slab', serif;
       color: var(--primary-color);
   }
-  
+
+  .header-container {
+    margin-bottom: 20px; /* Adjust as needed to create space between header and buttons */
+  }
+
   button, .button {
       font-family: 'Roboto Slab', serif;
   }
@@ -143,5 +147,22 @@
   .cancel-button {
     background-color:  #C2A061;
     color: #fff;
+  }
+  
+  .orders-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Align items horizontally in the center */
+  }
+  
+  .order-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center items horizontally */
+  }
+  
+  .order-item {
+    margin-right: 10px; /* Add space between buttons */
+    margin-bottom: 10px; /* Add space between rows of buttons */
   }
   

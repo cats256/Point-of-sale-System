@@ -181,7 +181,7 @@ export const BasketProvider = ({ children }) => {
         }
         const orderID = orderIDResponse.order_id;
         if (orderID) {
-            alert("Success! Your order number is " + orderID);
+            alert("Success! Your order number is " + (parseInt(orderID) + 1));
             emptyBasket();
         } else {
             throw new Error("Failed to retrieve order ID");
