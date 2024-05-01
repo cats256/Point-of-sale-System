@@ -113,7 +113,7 @@ const InventoryPage = () => {
           style={{ marginBottom: "20px" }}
         />
         <Typography variant="h6">Inventory Stock</Typography>
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "20px", height: "80vh", overflowY: "auto"}}>
           {filteredIngredients.map((item, index) => (
             <div
               key={index}
