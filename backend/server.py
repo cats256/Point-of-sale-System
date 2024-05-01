@@ -446,6 +446,11 @@ def menu_item_delete():
     cur = get_cursor()
     query = sql.SQL("DELETE FROM menu_items WHERE id = %s;")
     cur.execute(query, (id, ))
+    try:
+        query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
+        cur.execute(query2, (id, ))
+    except psycopg2.Error as e:
+        print(f"menu item had not been ordered: {e}")
     conn.commit()
     cur.close()
     return jsonify(
