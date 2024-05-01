@@ -24,6 +24,13 @@ import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 import NavBar from "../common/navBar";
 
+/**
+ * Represents the main component for the cashier view interface.
+ *
+ * @param {Array} menuItems - An array containing the menu items available.
+ * @param {Array} languages - An array containing language options.
+ * @param {string} language - The selected language.
+ */
 const CashierView = ({ menuItems, languages, language }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
@@ -40,16 +47,25 @@ const CashierView = ({ menuItems, languages, language }) => {
         RemoveItemConfirmationDialog,
     } = useBasket();
 
+    /**
+     * Increases the zoom level by 25%.
+     */
     const increaseZoom = () => {
         setZoom(zoom + 25);
     };
 
+    /**
+     * Decreases the zoom level by 25%.
+     */
     const decreaseZoom = () => {
         if (zoom > 100) {
             setZoom(zoom - 25);
         }
     };
 
+    /**
+     * Populates the menu items based on the selected panel.
+     */
     const PopulateMenuItems = () => {
         // sorting the beef & bean burgers to group by type
         const customSort = (a, b) => {
@@ -69,6 +85,12 @@ const CashierView = ({ menuItems, languages, language }) => {
         console.log("filtered", filteredItems);
         filteredItems.sort(customSort);
 
+        /**
+         * Handles the click event for a menu item.
+         * Adds the selected item to the basket.
+         *
+         * @param {Object} item - The menu item to be added to the basket.
+         */
         const handleItemClick = (item) => {
             addItemToBasket(item);
         };
@@ -141,14 +163,25 @@ const CashierView = ({ menuItems, languages, language }) => {
         // </div>
     };
 
+    /**
+     * Opens the combo dialog to make a combo selection.
+     */
     const handleComboDialog = () => {
         setOpenDialog(true);
     };
 
+    /**
+     * Closes the combo dialog.
+     */
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
 
+    /**
+     * Handles the combo selection based on the choice made.
+     *
+     * @param {string} choice - A string representing the chosen combo option.
+     */
     const handleMakeCombo = (choice) => {
         setOpenDialog(false);
 
@@ -189,6 +222,9 @@ const CashierView = ({ menuItems, languages, language }) => {
         }
     };
 
+    /**
+     * Displays the basket items along with subtotal, tax, and total.
+     */
     const DisplayBasket = () => {
         // Subtotal, tax, & total
         const subtotal = basket.reduce(
@@ -359,6 +395,9 @@ const CashierView = ({ menuItems, languages, language }) => {
         );
     };
 
+    /**
+     * Renders the accessibility options panel.
+     */
     const Accessibility = () => {
         const [showAccessibilityPanel, setShowAccessibilityPanel] =
             useState(false);
