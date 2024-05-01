@@ -1,6 +1,18 @@
 import React from "react";
 import { Button } from "@mui/material";
 
+/**
+ * Represents a category button component.
+ *
+ * @param {string} text - The text to display on the button.
+ * @param {string} [panel=""] - The panel associated with the button.
+ * @param {string} [img=""] - The URL of the image to display (optional).
+ * @param {string} [alt=""] - The alt text for the image (optional).
+ * @param {Function} setPanel - The function to set the panel.
+ * @param {Function} setCurrType - The function to set the current type.
+ * @param {string} currType - The current type.
+ * @returns {JSX.Element} CategoryButton component JSX.
+ */
 const CategoryButton = ({
     text,
     panel = "",

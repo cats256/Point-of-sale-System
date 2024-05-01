@@ -1,3 +1,6 @@
+/**
+ * Styles for the navigation bar.
+ */
 .navBar {
     width: 100%;
     background-color: var(--primary-color);
@@ -10,10 +13,16 @@
     position: relative;
 }
 
+/**
+ * Styles for the navigation sidebar.
+ */
 .navSide {
     position: static; 
 }
 
+/**
+ * Styles for the navigation header.
+ */
 .navHeader {
     display: flex;
     align-items: center;
@@ -21,22 +30,34 @@
     margin-inline: 10px;
 }
 
+/**
+ * Styles for the Reveille logo.
+ */
 .reveilleLogo {
     width: 50px;
     height: 45px;
     margin-right: 5px;
 }
 
+/**
+ * Styles for the navigation title.
+ */
 .navTitle {
     color: #C2A061;
     font-weight: bold;
     font-size: 2rem;
 }
 
+/**
+ * Styles for links without underlines.
+ */
 .linkWithoutUnderline {
     text-decoration: none;
 }
 
+/**
+ * Styles for the accessibility button.
+ */
 .accessibilityBtn {
     scale: 1.3;
     border-radius: 50%;
@@ -46,6 +67,9 @@
     transform: scale(1);
 }
 
+/**
+ * Styles for the accessibility close button.
+ */
 .accessibilityCloseBtn {
     scale: 0.9;
     background-color: var(--close);
@@ -53,16 +77,25 @@
     float: left;
 }
 
+/**
+ * Styles for the accessibility title.
+ */
 .accessibilityTitle {
     padding: 10px;
     font-weight: bold;
     font-size: inherit;
 }
 
+/**
+ * Styles for the accessibility icon.
+ */
 .accessibilityIcon {
     transform: none;
 }
 
+/**
+ * Styles for the accessibility options container.
+ */
 .accessibilityOptions {
     display: flex;
     flex-direction: column;
@@ -70,6 +103,9 @@
     margin-top: 10px;
 }
 
+/**
+ * Styles for the accessibility option buttons.
+ */
 .accessibilityOptionBtn {
     background-color: var(--neutral-medium);
     color: black;
@@ -78,13 +114,19 @@
     margin-bottom: 10px;
     width: 100%;
     font-size: inherit;
-} 
+}
 
+/**
+ * Styles for the active accessibility option buttons.
+ */
 .accessibilityOptionBtnActive {
     background-color: var(--neutral-dark);
     color: white;
 }
 
+/**
+ * Styles for the accessibility container.
+ */
 .accessibilityContainer {
     position: fixed;
     background: white;
@@ -96,6 +138,9 @@
     font-size: 30px;
 }
 
+/**
+ * Styles for the close button.
+ */
 .closeBtn {
     scale: 0.9;
     background-color: var(--close);
