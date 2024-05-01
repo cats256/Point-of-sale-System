@@ -138,7 +138,7 @@ const MenuPage = () => {
           fullWidth
           style={{ marginBottom: "20px" }}
         />
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "20px", height: "80vh", overflowY: "auto", }}>
           {filteredMenuItems.map((item, index) => (
             <div
               key={index}
