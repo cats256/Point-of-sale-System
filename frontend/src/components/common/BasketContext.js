@@ -8,15 +8,29 @@ import {
 } from "../../network/api";
 import { formatItemName } from "../../utils/formatItemName";
 
+/**
+ * Context for managing the shopping basket state and related actions.
+ */
 export const BasketContext = createContext();
 
+/**
+ * Provider component for the BasketContext.
+ * Manages the shopping basket state and provides functions for modifying it.
+ *
+ * @param {React.ReactNode} children - The child components wrapped by the provider.
+ * @returns {JSX.Element} BasketProvider component JSX.
+ */
 export const BasketProvider = ({ children }) => {
     const [basket, setBasket] = useState([]);
     const [showItemInfoPopup, setShowItemInfoPopup] = useState(false);
     const [isCombo, setIsCombo] = useState(false);
     const [itemToRemove, setItemToRemove] = useState(null);
 
-    // makeshift code. not very clean but it works
+    /**
+     * Dialog component for confirming item removal.
+     *
+     * @returns {JSX.Element} RemoveItemConfirmationDialog component JSX.
+     */
     const RemoveItemConfirmationDialog = () => (
         <Dialog open={!!itemToRemove} onClose={() => setItemToRemove(null)}>
             <DialogTitle>
@@ -52,12 +66,20 @@ export const BasketProvider = ({ children }) => {
         </Dialog>
     );
 
+    /**
+     * Toggles the combo flag state.
+     */
     const handleMakeCombo = () => {
         console.log(isCombo)
         setIsCombo(!isCombo);
         console.log(isCombo)
     };
 
+    /**
+     * Adds an item to the basket, possibly as part of a combo.
+     *
+     * @param {Object} item - The item to add to the basket.
+     */
     const addItemToBasketWithCombo = (item) => {
         if (!isCombo) { // to not add duplicates
             addItemToBasket(item);
@@ -87,6 +109,11 @@ export const BasketProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Adds an item to the basket.
+     *
+     * @param {Object} itemToAdd - The item to add to the basket.
+     */
     const addItemToBasket = (itemToAdd) => {
         setBasket((currentBasket) => {
             const exists = currentBasket.find(
@@ -108,6 +135,11 @@ export const BasketProvider = ({ children }) => {
         }, 700);
     };
 
+    /**
+     * Increases the quantity of a specific item in the basket.
+     *
+     * @param {string} itemName - The name of the item to increase quantity.
+     */
     const increaseItemQuantity = (itemName) => {
         setBasket((currentBasket) =>
             currentBasket.map((item) =>
@@ -118,6 +150,11 @@ export const BasketProvider = ({ children }) => {
         );
     };
 
+    /**
+     * Decreases the quantity of a specific item in the basket.
+     *
+     * @param {string} itemName - The name of the item to decrease quantity.
+     */
     const decreaseItemQuantity = (itemName) => {
         setBasket((currentBasket) => {
             const itemIndex = currentBasket.findIndex(
@@ -140,16 +177,27 @@ export const BasketProvider = ({ children }) => {
         });
     };
 
+    /**
+     * Removes an item from the basket.
+     *
+     * @param {string} itemName - The name of the item to remove from the basket.
+     */
     const removeItemFromBasket = (itemName) => {
         setBasket((currentBasket) =>
             currentBasket.filter((item) => item.name !== itemName)
         );
     };
 
+    /**
+     * Empties the basket by removing all items.
+     */
     const emptyBasket = () => {
         setBasket([]);
     };
 
+    /**
+     * Places an order by submitting the basket contents to the server.
+     */
     const placeOrder = async () => {
         const orderData = {
             name: "kiosk",
@@ -188,6 +236,12 @@ export const BasketProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Calculates the total cost of all items in the basket.
+     *
+     * @param {Array} basket - The array containing the basket items.
+     * @returns {number} The total cost of all items in the basket.
+     */
     const totalCost = basket.reduce((total, item) => {
         return total + parseFloat(item.price) * item.quantity;
     }, 0);
@@ -217,6 +271,12 @@ export const BasketProvider = ({ children }) => {
     );
 };
 
+/**
+ * Calculates the total cost of all items in the basket.
+ *
+ * @param {Array} basket - The array containing the basket items.
+ * @returns {number} The total cost of all items in the basket.
+ */
 const calculateTotalPrice = (basket) => {
     let totalPrice = 0;
     for (const item of basket) {
@@ -225,4 +285,9 @@ const calculateTotalPrice = (basket) => {
     return totalPrice;
 };
 
+/**
+ * Custom hook for accessing the basket context.
+ *
+ * @returns {Object} The basket context.
+ */
 export const useBasket = () => useContext(BasketContext);

@@ -7,6 +7,13 @@ import classNames from 'classnames';
 import { Link } from "react-router-dom";
 import "./navBar.css";
 
+/**
+ * Component for managing accessibility options.
+ * 
+ * @param {function} increaseZoom Function to increase zoom level.
+ * @param {function} decreaseZoom Function to decrease zoom level.
+ * @returns {JSX.Element} Accessibility component JSX.
+ */
 const Accessibility = ({ increaseZoom, decreaseZoom }) => {
     const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
     const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
@@ -97,6 +104,14 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
     );
 };
 
+/**
+ * Component for rendering the navigation bar.
+ * 
+ * @param {function} increaseZoom Function to increase zoom level.
+ * @param {function} decreaseZoom Function to decrease zoom level.
+ * @param {number} zoom The current zoom level.
+ * @returns {JSX.Element} NavBar component JSX.
+ */
 const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
     return (
         <nav className="navBar">
