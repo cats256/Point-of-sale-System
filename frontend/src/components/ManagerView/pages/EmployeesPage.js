@@ -73,7 +73,6 @@ const EmployeesPage = () => {
     };
 
     const handleUpdateSalary = (employeeId, newSalary) => {
-        // const newSalary = prompt("Enter the new salary:");
         if (newSalary !== null) {
             const parsedNewSalary = parseInt(newSalary);
             setNewSalary("");
@@ -84,17 +83,15 @@ const EmployeesPage = () => {
                     salary: parsedNewSalary,
                 };
                 // Update salary
-                // console.log(employeeData);
                 updateSalary(employeeData)
                     .then(() => {
                         setNewSalary("");
+                        fetchData();
                     })
                     .catch((error) => {
                         console.error("Error:", error);
                         // Handle error if needed
                     });
-                console.log("update salary");
-                fetchData();
             } 
             else {
                 alert("Please enter a valid number for the salary.");
@@ -143,21 +140,23 @@ const EmployeesPage = () => {
                 salary: newEmployeeSalary,
                 manager: newEmployeeManager,
             };
-            addEmployee(employeeData);
-            setNewEmployeeName("");
-            setNewEmployeeEmail("");
-            setNewEmployeeSalary("");
-        } else {
+            addEmployee(employeeData).then(() => {
+                fetchData();
+                setNewEmployeeName("");
+                setNewEmployeeEmail("");
+                setNewEmployeeSalary("");
+            });
+        } 
+        else {
             alert("Please fill in all fields.");
         }
-        fetchData();
     };
 
     return (
         <div style={{ marginLeft: "15%", display: "flex" }}>
-            <div style={{ flex: "1" }}>
+            <div style={{ flex: "1"  }}>
                 <h1>Employees Page</h1>
-                <div className="employee-tiles">
+                <div className="employee-tiles" style={{ overflowY: "auto", maxHeight: "80vh"  }}>
                     {employeeNames.map((employee, index) => (
                         <div
                             key={index}
