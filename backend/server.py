@@ -1,7 +1,7 @@
 # import eventlet
 
 # eventlet.monkey_patch()
-
+import pydoc
 import os
 import deepl
 import psycopg2
@@ -24,6 +24,15 @@ conn = psycopg2.connect(
 
 
 def get_cursor():
+    """
+    Retrieve a cursor object for database operations.
+
+    If a cursor object already exists, it is returned. If not, a new connection
+    to the database is established, and a cursor object is created and returned.
+
+    Returns:
+        psycopg2.extensions.cursor: Cursor object for database operations.
+    """
     global conn
     try:
         cur = conn.cursor()
@@ -40,6 +49,14 @@ def get_cursor():
 # API endpoint to fetch ingredients
 @app.route("/ingredients_info", methods=["GET"])
 def get_ingredients_info():
+    """
+    Retrieve all ingredients from database.
+
+    This is used to display ingredients in our inventory page. 
+
+    Returns:
+        jsonify: JSON response containing information about ingredients in alphabetical order.
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT * FROM ingredients ORDER BY name ASC")
     cur.execute(query)
@@ -53,6 +70,15 @@ def get_ingredients_info():
 # API endpoint to fetch menu items
 @app.route("/menu_item_info", methods=["GET"])
 def get_menu_item_info():
+    """
+    Retrieve all menu items from database.
+
+    This is used on the menu page for the manager, as well as the cashier & customer views for 
+    placing orders and the menu board.
+
+    Returns:
+        jsonify: JSON response containing information about menu items in alphabetical order.
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT * FROM menu_items ORDER BY id ASC")
     cur.execute(query)
@@ -66,6 +92,15 @@ def get_menu_item_info():
 # API endpoint to fetch ordered menu items
 @app.route("/order_menu_item_info", methods=["GET"])
 def get_order_menu_item_info():
+    """
+    Retrieve information about menu items within a specified range of order IDs.
+
+    It counts the occurrences of each menu item and groups them by menu item ID. This is used in the manager
+    reports. qqq
+
+    Returns:
+        jsonify: JSON response containing information about ordered menu items.
+    """
     cur = get_cursor()
     start_id = request.args.get("start_id")
     finish_id = request.args.get("finsih_id")
@@ -90,6 +125,14 @@ def get_order_menu_item_info():
 # API endpoint to fetch menu items
 @app.route("/menu_item_types", methods=["GET"])
 def get_menu_item_types():
+    """
+    Retrieve list of categories for menu items.
+
+    This is used to create the drop down list for the menu page in manager view. 
+
+    Returns:
+        jsonify: JSON response containing the different menu item categories.
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT DISTINCT type FROM menu_items")
     cur.execute(query)
@@ -102,6 +145,14 @@ def get_menu_item_types():
 # API endpoint to fetch suppliers
 @app.route("/suppliers", methods=["GET"])
 def get_suppliers():
+    """
+    Retrieve list of suppliers for ingredients.
+
+    This is used to create the drop down list for the inventory page in manager view.  
+
+    Returns:
+        jsonify: JSON response containing the different ingredient suppliers.
+    """
     try:
         cur = conn.cursor()
     except:
@@ -121,6 +172,12 @@ def get_suppliers():
 # API endpoint to fetch menu items
 @app.route("/restock_info", methods=["GET"])
 def get_restock_info():
+    """
+    Retrieve all restock orders from database.
+
+    Returns:
+        jsonify: JSON response containing information about restock orders.
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT * FROM restock_order")
     cur.execute(query)
@@ -133,6 +190,14 @@ def get_restock_info():
 # API endpoint to fetch orders in progress 
 @app.route("/in_progress", methods=["GET"])
 def get_current_orders():
+    """
+    Retrieve all orders with status "in progress".
+
+    It is used to display current items in the kitchen view. 
+
+    Returns:
+        jsonify: JSON response containing information about current orders.
+    """
     cur = conn.cursor()
     query = sql.SQL("SELECT id FROM orders WHERE status='in progress';")
     cur.execute(query)
@@ -144,6 +209,14 @@ def get_current_orders():
 
 @app.route("/order_menu_item", methods=["GET"])
 def get_order_menu_item():
+    """
+    Retrieve information about menu items not within a specified range of order IDs.
+
+    It counts the occurrences of each menu item and groups them by menu item ID. 
+
+    Returns:
+        jsonify: JSON response containing information about ordered menu items.
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY menu_item_id ASC")
     cur.execute(query)
@@ -156,6 +229,14 @@ def get_order_menu_item():
 
 @app.route("/order_menu_item_from_id", methods=["GET"])
 def get_order_menu_item_from_id():
+    """
+    Retrieve information about menu items given an order id.
+
+    It counts the occurrences of each menu item and groups them by menu item ID. 
+
+    Returns:
+        jsonify: JSON response containing information about ordered menu items.
+    """
     start_id = request.args.get("start_id")
     end_id = request.args.get("end_id")
 
@@ -173,6 +254,14 @@ def get_order_menu_item_from_id():
 
 @app.route("/orders_ids", methods=["GET"])
 def get_orders_ids():
+    """
+    Retrieve all order ids from a specified time range.
+
+    It finds the order ids that were created on a certain date. This is used for the manager reports. 
+
+    Returns:
+        list of order ids.
+    """
     cur = get_cursor()
 
     start_date = request.args.get("start_date")
@@ -189,6 +278,12 @@ def get_orders_ids():
 # API endpoint to fetch employees
 @app.route("/employee_info", methods=["GET"])
 def get_employee_info():
+    """
+    Retrieve information of each employee.
+
+    Returns:
+        jsonify: JSON response containing name, salary, position, and email for each employee.
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT * FROM employees ORDER BY name ASC")
     cur.execute(query)
@@ -201,6 +296,14 @@ def get_employee_info():
 # API endpoint to add a new ingredient
 @app.route("/add_employee", methods=["POST"])
 def add_employee():
+    """
+    Adds a new row in the employee database.
+
+    Given a name, email, salary, position, and password, it creates a new instance of employee. 
+
+    Returns:
+        jsonify: JSON message signaling success
+    """
     data = request.json
 
     id = data.get("id")
@@ -231,6 +334,14 @@ def add_employee():
 
 @app.route("/delete_employee", methods=["POST"])
 def delete_employee():
+    """
+    Deletes an employee from the database.
+
+    Given an employee id, it removes their informatinon from the database. 
+
+    Returns:
+        jsonify: JSON message signaling success
+    """
     data = request.json
 
     id = data.get("id")
@@ -258,6 +369,12 @@ def delete_employee():
 # not sure we need this
 @app.route("/orders_info", methods=["GET"])
 def get_orders_info():
+    """
+    Retrieves all order information from specified time range. 
+
+    Returns:
+        list of order ids. 
+    """
     cur = get_cursor()
 
     start_date = request.args.get("start_date")
@@ -274,6 +391,12 @@ def get_orders_info():
 # API endpoint to return order id
 @app.route("/order_id", methods=["GET"])
 def order_id():
+    """
+    Retrieves the current order id. 
+
+    Returns:
+        jsonify: JSON response with current id. 
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT id FROM orders WHERE id=(SELECT max(id) FROM orders);")
     cur.execute(query)
@@ -284,6 +407,14 @@ def order_id():
 
 @app.route("/menu_item_id", methods=["GET"])
 def menu_item_id():
+    """
+    Retrieves menu item id. 
+
+    Given the name of a menu item, it returns the id associated with that item.  
+
+    Returns:
+        jsonify: JSON response with item id. 
+    """
     item_name = request.args.get("name")
 
     cur = get_cursor()
@@ -296,6 +427,14 @@ def menu_item_id():
 
 @app.route("/menu_item_name", methods=["GET"])
 def menu_item_name():
+    """
+    Retrieves menu item name. 
+
+    Given the id of a menu item, it returns the name associated with that id.  
+
+    Returns:
+        jsonify: JSON response with menu item name. 
+    """
     item_id = request.args.get("id")
 
     cur = get_cursor()
@@ -309,6 +448,15 @@ def menu_item_name():
 # API endpoint for ingredient usage report
 @app.route("/ingredient_usage", methods=["GET"])
 def ingredient_usage():
+    """
+    Retrieve information about ingredient usage within a specified date range.
+
+    It calculates the total count of each ingredient used in menu items ordered during that period, 
+    sorted in descending order. 
+
+    Returns:
+        list containing id, name, ingredient usage count, and current quanity for each ingredient.
+    """
     cur = get_cursor()
 
     start_date = request.args.get("start_date")
@@ -407,6 +555,15 @@ def what_sells_together():
 # API endpoint for order trends report
 @app.route("/order_trends", methods=["GET"])
 def order_trends():
+    """
+    Retrieve information about what sells well together.
+
+    It calculates the count of pairs of menu items ordered together, sorted by count in descending order.
+
+    Returns:
+        list with the 2 ids of the menu items in the pair, the number of orders they were included together, 
+        and the date of the orders for each pair.  
+    """
     cur = get_cursor()
 
     start_date = request.args.get("start_date")
@@ -430,6 +587,12 @@ def order_trends():
 
 @app.route("/attach_menu_items", methods=["POST"])
 def attach_menu_items():
+    """
+    Associates an order id to the menu item id of the item that was ordered.
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     order_id = data.get("order_id")
@@ -450,6 +613,15 @@ def attach_menu_items():
 # API endpoint to submit an order
 @app.route("/submit_order", methods=["POST"])
 def submit_order():
+    """
+    Adds a new order to the database. 
+
+    Given the name, price, date, and assigned employee, a new row is created in the orders table 
+    with the automatically calculated next order id and status "in progress".
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     name = data.get("name")
@@ -480,6 +652,14 @@ def submit_order():
 # API endpoint to update menu item information
 @app.route("/menu_item_edit", methods=["POST"])
 def menu_item_edit():
+    """
+    Updates the name and price of menu item. 
+
+    Given a new name and price, it changes the values associated with that menu item id in the menu item table. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     id = data.get("id")
@@ -502,11 +682,24 @@ def menu_item_edit():
 # API endpoint to update menu item information
 @app.route("/menu_item_delete", methods=["POST"])
 def menu_item_delete():
+    """
+    Deletes a menu item from the database. 
+
+    Given a menu item id, it removes that row from the database. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     id = request.args.get("id")
 
     cur = get_cursor()
     query = sql.SQL("DELETE FROM menu_items WHERE id = %s;")
     cur.execute(query, (id, ))
+    try:
+        query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
+        cur.execute(query2, (id, ))
+    except psycopg2.Error as e:
+        print(f"menu item had not been ordered: {e}")
     conn.commit()
     cur.close()
     return jsonify(
@@ -518,6 +711,14 @@ def menu_item_delete():
 # API endpoint to mark order completed 
 @app.route("/completed", methods=["POST"])
 def complete_order():
+    """
+    Updates status of order in database to completed. 
+
+    Given an order id, it changes the status of the order to "completed". 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     id = data.get("id")
@@ -536,6 +737,14 @@ def complete_order():
 # API endpoint to mark order cancelled 
 @app.route("/cancelled", methods=["POST"])
 def cancel_order():
+    """
+    Updates status of order in database to cancelled. 
+
+    Given an order id, it changes the status of the order to "cancelled". 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     id = data.get("id")
@@ -553,6 +762,15 @@ def cancel_order():
 
 @app.route("/delete", methods=["POST"])
 def delete_order():
+    """
+    Removes order from database. 
+
+    Given an order id, it removes that row from the database. It also removes the corresponding entries in the 
+    menu item orders table. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
     order_id = data.get("id")
 
@@ -575,6 +793,14 @@ def delete_order():
 # API endpoint to add a menu item information
 @app.route("/menu_item_add", methods=["POST"])
 def menu_item_add():
+    """
+    Adds new row to menu items table. 
+
+    Given a name, price, and type, a new menu item is created in the database. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     name = data.get("name")
@@ -597,6 +823,15 @@ def menu_item_add():
 # API endpoint to add a new ingredient
 @app.route("/add_ingredient", methods=["POST"])
 def add_ingredient():
+    """
+    Adds new row to ingredients table. 
+
+    Given a name, price, and supplier, a new ingredient is created in the database. Quantity is automatically 
+    set to 0.
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     name = data.get("name")
@@ -625,6 +860,14 @@ def add_ingredient():
 # API endpoint to fetch 10 most sold menu items
 @app.route("/top_ten", methods=["GET"])
 def top_ten():
+    """
+    Retrieves the 10 most sold menu items. 
+
+    It searches the order menu items table to find the top 10 most ordered menu items.  
+
+    Returns:
+        jsonify: JSON response with item ids and counts for the 10 menu items. 
+    """
     cur = get_cursor()
     query = sql.SQL(
         "SELECT menu_item_id, COUNT(*) AS category_count FROM order_menu_items GROUP BY menu_item_id ORDER BY category_count DESC LIMIT 10"
@@ -639,6 +882,12 @@ def top_ten():
 # API endpoint to fetch 10 most sold menu items
 @app.route("/highest_employee_id", methods=["GET"])
 def highest_employee_id():
+    """
+    Retrieves the largest employee id
+
+    Returns:
+        jsonify: JSON response with employee id
+    """
     cur = get_cursor()
     query = sql.SQL("SELECT MAX(id) AS max_id FROM employees;")
     cur.execute(query)
@@ -650,6 +899,14 @@ def highest_employee_id():
 # API endpoint to update an employee's salary
 @app.route("/salary", methods=["POST"])
 def salary():
+    """
+    Updates the salary of an employee in the database.  
+
+    Given an employee id and a new salary, it changes the salary of the employee in the employee table. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     id = data.get("id")
@@ -670,6 +927,15 @@ def salary():
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])
 def restock_order():
+    """
+    Adds new restock order to database. 
+
+    Given an ingredient name, id, quantity to order, and price, it creates a new instance of restock order in the
+    restock table. The quantity is updated by adding the current quantity to the quantity of restock. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
     data = request.json
 
     print("end")
@@ -708,6 +974,15 @@ translator = deepl.Translator(deepl_auth_key)
 
 @app.route("/translate", methods=["POST"])
 def translate_text():
+    """
+    Translate text from one language to another.
+
+    It uses the DeepL API to translate the text from the source language (English) 
+    to the specified target language.
+
+    Returns:
+        jsonify: JSON response containing the translated text.
+    """
     request_json = request.json
 
     result = translator.translate_text(request_json["text"], source_lang="EN", target_lang=request_json["targetLanguage"])
@@ -716,6 +991,15 @@ def translate_text():
 
 @app.route("/languages", methods=["GET"])
 def get_languages():
+    """
+    Retrieve a list of supported target languages for translation.
+
+    This function retrieves a list of supported target languages for translation 
+    from the DeepL translation service.
+
+    Returns:
+        jsonify: JSON response with language names and their corresponding language codes.
+    """
     languages = {}
     for lang in translator.get_target_languages():
         languages[lang.name] = lang.code
@@ -728,3 +1012,5 @@ if __name__ == "__main__":
         app.run(debug=False, host="0.0.0.0")
     else:
         app.run(debug=True)
+
+pydoc.writedoc("server")
