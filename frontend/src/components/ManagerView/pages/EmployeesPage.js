@@ -73,7 +73,6 @@ const EmployeesPage = () => {
     };
 
     const handleUpdateSalary = (employeeId, newSalary) => {
-        // const newSalary = prompt("Enter the new salary:");
         if (newSalary !== null) {
             const parsedNewSalary = parseInt(newSalary);
             setNewSalary("");
@@ -84,7 +83,6 @@ const EmployeesPage = () => {
                     salary: parsedNewSalary,
                 };
                 // Update salary
-                // console.log(employeeData);
                 updateSalary(employeeData)
                     .then(() => {
                         setNewSalary("");
@@ -94,7 +92,6 @@ const EmployeesPage = () => {
                         console.error("Error:", error);
                         // Handle error if needed
                     });
-                // console.log("update salary");
             } 
             else {
                 alert("Please enter a valid number for the salary.");
@@ -102,7 +99,6 @@ const EmployeesPage = () => {
         } else {
             alert("Please enter a new salary.");
         }
-        // fetchData();
     };
 
     const handleDeleteConfirmation = () => {
