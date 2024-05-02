@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/CashierView/CashierView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/CashierView/CashierView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import RemoveIcon from "@mui/icons-material/Remove";
+import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import { Box } from "@mui/system";
+import { useState } from "react";
+import { categories } from "../../utils/const";
+import { formatItemName } from "../../utils/formatItemName";
+import { getItemNameColor } from "../../utils/getItemNameColor";
+import { useBasket } from "../common/BasketContext";
+import { CategoryButton } from "../common/CategoryButton";
+import "./CashierView.css";
+import NavBar from "../common/navBar";
+
+/**
+ * Represents the main component for the cashier view interface.
+ *
+ * @param {Array} menuItems - An array containing the menu items available.
+ * @param {Array} languages - An array containing language options.
+ * @param {string} language - The selected language.
+ */
+const CashierView = ({ menuItems, languages, language }) => {
+    const [panel, setPanel] = useState(null);
+    const [currType, setCurrType] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [zoom, setZoom] = useState(100);
+
+    const {
+        basket,
+        addItemToBasket,
+        increaseItemQuantity,
+        decreaseItemQuantity,
+        emptyBasket,
+        placeOrder,
+        RemoveItemConfirmationDialog,
+    } = useBasket();
+
+    /**
+     * Increases the zoom level by 25%.
+     */
+    const increaseZoom = () => {
+        setZoom(zoom + 25);
+    };
+
+    /**
+     * Decreases the zoom level by 25%.
+     */
+    const decreaseZoom = () => {
+        if (zoom > 100) {
+            setZoom(zoom - 25);
+        }
+    };
+
+    /**
+     * Populates the menu items based on the selected panel.
+     */
+    const PopulateMenuItems = () => {
+        // sorting the beef &amp; bean burgers to group by type
+        const customSort = (a, b) => {
+            if (a.name.includes("beef") &amp;&amp; !b.name.includes("beef")) return -1;
+            if (!a.name.includes("beef") &amp;&amp; b.name.includes("beef")) return 1;
+            if (a.name.includes("bean") &amp;&amp; !b.name.includes("bean")) return 1;
+            if (!a.name.includes("bean") &amp;&amp; b.name.includes("bean")) return -1;
+            return 0;
+        };
+
+        let filteredItems =
+            menuItems &amp;&amp; Object.keys(menuItems).length !== 0 &amp;&amp; panel
+                ? menuItems[panel]
+                : [];
+
+        console.log("menu items", menuItems);
+        console.log("filtered", filteredItems);
+        filteredItems.sort(customSort);
+
+        /**
+         * Handles the click event for a menu item.
+         * Adds the selected item to the basket.
+         *
+         * @param {Object} item - The menu item to be added to the basket.
+         */
+        const handleItemClick = (item) => {
+            addItemToBasket(item);
+        };
+
+        return (
+            &lt;>
+                {filteredItems.map((item, index) => {
+                    let itemName = item.translatedName || formatItemName(item);
+
+                    return (
+                        &lt;Button
+                            key={item.id}
+                            variant="outlined"
+                            style={{
+                                flexGrow: 1,
+                                borderRadius: 0,
+                                color: "black",
+                                backgroundColor: getItemNameColor(
+                                    formatItemName(item)
+                                ),
+                                border: "1px solid black",
+                                borderLeftWidth: 0,
+                                borderTopWidth: 0,
+                                borderRightWidth: index % 3 === 2 ? 0 : "1px",
+                            }}
+                            onClick={() => handleItemClick(item)}
+                            className="menu-item"
+                        >
+                            &lt;div>{itemName}&lt;/div>
+                            &lt;div>${parseFloat(item.price).toFixed(2)}&lt;/div>
+                        &lt;/Button>
+                    );
+                })}
+            &lt;/>
+        );
+        // &lt;div
+        //     style={{
+        //         display: "flex",
+        //         flexDirection: "row",
+        //         flexWrap: "wrap",
+        //         backgroundColor: "white",
+        //     }}
+        // >
+        //     {filteredItems.map((item, index) => {
+        //         let itemName = formatItemName(item);
+
+        //         return (
+        //             &lt;div key={index}>
+        //                 {/* menu item buttons */}
+        //                 &lt;button
+        //                     variant="outlined"
+        //                     onClick={() => handleItemClick(item)}
+        //                     style={{
+        //                         width: "135px",
+        //                         height: "135px",
+        //                         margin: "8px",
+        //                         fontSize: "16px",
+        //                         borderRadius: 5,
+        //                         backgroundColor: getItemNameColor(itemName),
+        //                     }}
+        //                 >
+        //                     &lt;div style={{ paddingBottom: "15px" }}>
+        //                         {itemName}
+        //                     &lt;/div>
+        //                     ${item.price}
+        //                 &lt;/button>
+        //             &lt;/div>
+        //         );
+        //     })}
+        // &lt;/div>
+    };
+
+    /**
+     * Opens the combo dialog to make a combo selection.
+     */
+    const handleComboDialog = () => {
+        setOpenDialog(true);
+    };
+
+    /**
+     * Closes the combo dialog.
+     */
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    /**
+     * Handles the combo selection based on the choice made.
+     *
+     * @param {string} choice - A string representing the chosen combo option.
+     */
+    const handleMakeCombo = (choice) => {
+        setOpenDialog(false);
+
+        if (choice === "kettleChips") {
+            const kettleChipsItem = menuItems.find((item) =>
+                item.name.toLowerCase().includes("kettle")
+            );
+            const smallDrinkItem = menuItems.find((item) =>
+                item.name.toLowerCase().includes("drink")
+            );
+
+            const modifiedChipsItem = kettleChipsItem
+                ? { ...kettleChipsItem, price: 1.0 }
+                : null;
+            const modifiedDrinkItem = smallDrinkItem
+                ? { ...smallDrinkItem, price: 0.99 }
+                : null;
+
+            addItemToBasket(modifiedChipsItem);
+            addItemToBasket(modifiedDrinkItem);
+        } else if (choice === "frenchFries") {
+            const frenchFriesItem = menuItems.find((item) =>
+                item.name.toLowerCase().startsWith("fries")
+            );
+            const smallDrinkItem = menuItems.find((item) =>
+                item.name.toLowerCase().includes("drink")
+            );
+
+            const modifiedFriesItem = frenchFriesItem
+                ? { ...frenchFriesItem, price: 1.0 }
+                : null;
+            const modifiedDrinkItem = smallDrinkItem
+                ? { ...smallDrinkItem, price: 0.99 }
+                : null;
+
+            addItemToBasket(modifiedFriesItem);
+            addItemToBasket(modifiedDrinkItem);
+        }
+    };
+
+    /**
+     * Displays the basket items along with subtotal, tax, and total.
+     */
+    const DisplayBasket = () => {
+        // Subtotal, tax, &amp; total
+        const subtotal = basket.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+        );
+        const rate = 0.08;
+        const tax = subtotal * rate;
+        const total = subtotal + tax;
+
+        return (
+            &lt;div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: "100%",
+                    overflow: "auto",
+                }}
+            >
+                &lt;Card
+                    variant="outlined"
+                    sx={{ mb: 2, flex: 1, overflow: "auto" }}
+                >
+                    &lt;CardContent>
+                        &lt;Grid container alignItems="center" spacing={2}>
+                            &lt;Grid item xs={12}>
+                                &lt;Typography variant="h6" gutterBottom>
+                                    Order
+                                &lt;/Typography>
+                            &lt;/Grid>
+                            {basket.map((item, index) => (
+                                &lt;Grid key={item} item xs={12} spacing={2}>
+                                    &lt;Card>
+                                        &lt;CardContent>
+                                            &lt;Grid item xs={12}>
+                                                &lt;Typography variant="subtitle1">
+                                                    {formatItemName(item)}
+                                                &lt;/Typography>
+                                            &lt;/Grid>
+                                            &lt;Grid item xs={12}>
+                                                &lt;Grid
+                                                    container
+                                                    alignItems="center"
+                                                    justifyContent="flex-start"
+                                                    spacing={1}
+                                                >
+                                                    &lt;Grid item>
+                                                        &lt;IconButton size="small">
+                                                            &lt;RemoveIcon
+                                                                onClick={() =>
+                                                                    decreaseItemQuantity(
+                                                                        item.name
+                                                                    )
+                                                                }
+                                                                aria-label="Decrease item"
+                                                            />
+                                                        &lt;/IconButton>
+                                                    &lt;/Grid>
+                                                    &lt;Grid item>
+                                                        &lt;Typography>
+                                                            {item.quantity}
+                                                        &lt;/Typography>
+                                                    &lt;/Grid>
+                                                    &lt;Grid item>
+                                                        &lt;IconButton size="small">
+                                                            &lt;AddIcon
+                                                                onClick={() =>
+                                                                    increaseItemQuantity(
+                                                                        item.name
+                                                                    )
+                                                                }
+                                                                aria-label="Increase item"
+                                                            />
+                                                        &lt;/IconButton>
+                                                    &lt;/Grid>
+                                                    &lt;Grid
+                                                        item
+                                                        xs
+                                                        style={{
+                                                            textAlign: "right",
+                                                        }}
+                                                    >
+                                                        &lt;Typography variant="subtitle1">
+                                                            $
+                                                            {parseFloat(
+                                                                item.price *
+                                                                    item.quantity
+                                                            ).toFixed(2)}
+                                                        &lt;/Typography>
+                                                    &lt;/Grid>
+                                                &lt;/Grid>
+                                            &lt;/Grid>
+                                        &lt;/CardContent>
+                                    &lt;/Card>
+                                &lt;/Grid>
+                            ))}
+                        &lt;/Grid>
+                    &lt;/CardContent>
+                &lt;/Card>
+
+                {/* Display subtotal, tax, and total */}
+                &lt;Card variant="outlined">
+                    &lt;CardContent>
+                        &lt;Typography variant="h6" gutterBottom>
+                            Order Summary
+                        &lt;/Typography>
+                        &lt;Grid container>
+                            &lt;Grid item xs={6}>
+                                &lt;Typography color="textSecondary">
+                                    Subtotal
+                                &lt;/Typography>
+                            &lt;/Grid>
+                            &lt;Grid item xs={6} style={{ textAlign: "right" }}>
+                                &lt;Typography color="textSecondary">
+                                    ${subtotal.toFixed(2)}
+                                &lt;/Typography>
+                            &lt;/Grid>
+                            &lt;Grid item xs={6}>
+                                &lt;Typography color="textSecondary">
+                                    Tax (8%)
+                                &lt;/Typography>
+                            &lt;/Grid>
+                            &lt;Grid item xs={6} style={{ textAlign: "right" }}>
+                                &lt;Typography color="textSecondary">
+                                    ${tax.toFixed(2)}
+                                &lt;/Typography>
+                            &lt;/Grid>
+                            &lt;Grid item xs={6}>
+                                &lt;Typography variant="subtitle1">
+                                    Total
+                                &lt;/Typography>
+                            &lt;/Grid>
+                            &lt;Grid item xs={6} style={{ textAlign: "right" }}>
+                                &lt;Typography variant="subtitle1">
+                                    ${total.toFixed(2)}
+                                &lt;/Typography>
+                            &lt;/Grid>
+                        &lt;/Grid>
+                    &lt;/CardContent>
+                    &lt;Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            p: 2,
+                        }}
+                    >
+                        &lt;Button
+                            variant="outlined"
+                            color="primary"
+                            size="small"
+                            onClick={emptyBasket}
+                        >
+                            Clear Order
+                        &lt;/Button>
+                        &lt;Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={placeOrder}
+                            disabled={basket.length === 0}
+                        >
+                            Place Order
+                        &lt;/Button>
+                    &lt;/Box>
+                &lt;/Card>
+            &lt;/div>
+        );
+    };
+
+    /**
+     * Renders the accessibility options panel.
+     */
+    const Accessibility = () => {
+        const [showAccessibilityPanel, setShowAccessibilityPanel] =
+            useState(false);
+
+        return (
+            &lt;>
+                &lt;button
+                    style={{
+                        gridRow: 8,
+                        gridColumn: 2,
+                    }}
+                    aria-label="accessibility options"
+                    onClick={() =>
+                        setShowAccessibilityPanel((prevState) => !prevState)
+                    } // Adjusted to call the toggle function
+                >
+                    &lt;SettingsAccessibilityIcon />
+                &lt;/button>
+                {showAccessibilityPanel &amp;&amp; (
+                    &lt;div
+                        style={{
+                            position: "fixed",
+                            bottom: "50%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            background: "white",
+                            padding: "20px",
+                            borderRadius: "8px",
+                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "16px",
+                        }}
+                    >
+                        &lt;button
+                            onClick={() =>
+                                setShowAccessibilityPanel(
+                                    (prevState) => !prevState
+                                )
+                            }
+                        >
+                            &lt;CloseIcon />
+                        &lt;/button>
+                        &lt;span>Accessibility Options&lt;/span>
+                    &lt;/div>
+                )}
+            &lt;/>
+        );
+    };
+
+    return (
+        &lt;div className="view">
+            &lt;NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+
+            &lt;div className="panels" style={{ transform: `scale(${zoom / 100})` }}>
+                &lt;div className="right-panel">{DisplayBasket()}&lt;/div>
+                &lt;div className="center-panel">
+                    {PopulateMenuItems()}
+                    {Accessibility()}
+                    &lt;Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            gridColumn: 1,
+                            gridRow: 8,
+                        }}
+                    >
+                        Order
+                    &lt;/Button>
+                    &lt;Button
+                        variant="outlined"
+                        style={{
+                            backgroundColor: "#ecebed",
+                            color: "black",
+                            borderColor: "black",
+                            gridColumn: 3,
+                            gridRow: 8,
+                        }}
+                        onClick={handleComboDialog}
+                    >
+                        Make a Combo
+                    &lt;/Button>
+                    &lt;Dialog open={openDialog} onClose={handleCloseDialog}>
+                        &lt;DialogTitle>Combos&lt;/DialogTitle>
+                        &lt;DialogContent>
+                            &lt;Button onClick={() => handleMakeCombo("kettleChips")}>
+                                Kettle Chips
+                            &lt;/Button>
+                            &lt;Button onClick={() => handleMakeCombo("frenchFries")}>
+                                Fries
+                            &lt;/Button>
+                        &lt;/DialogContent>
+                        &lt;DialogActions>
+                            &lt;Button onClick={handleCloseDialog}>Cancel&lt;/Button>
+                        &lt;/DialogActions>
+                    &lt;/Dialog>
+                    &lt;RemoveItemConfirmationDialog />
+                &lt;/div>
+                &lt;div className="left-panel">
+                    {categories.map((category) => (
+                        &lt;CategoryButton
+                            key={category}
+                            text={category}
+                            panel={category}
+                            setPanel={setPanel}
+                            setCurrType={setCurrType}
+                            currType={currType}
+                        />
+                    ))}
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export { CashierView };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:13:45 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

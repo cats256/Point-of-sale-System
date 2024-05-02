@@ -21,6 +21,13 @@ const clientID =
     "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
 
 function App() {
+    /**
+     * Repeat <tt>str</tt> several times.
+     * @param {string} str The string to repeat.
+     * @param {number} [times=1] How many times to repeat the string.
+     * @returns {string}
+     */
+
     const [menuItems, setMenuItems] = useState([]);
     const [translatedMenuItems, setTranslatedMenuItems] = useState(null);
     const [languages, setLanguages] = useState({});
@@ -149,13 +156,9 @@ function App() {
                         weatherErrorMessage={errorMessage}
                         translatedMenuItems={translatedMenuItems}
                     />
-
                 }
             />
-            <Route 
-                path="/kitchen" 
-                element={<KitchenView />} 
-            />
+            <Route path="/kitchen" element={<KitchenView />} />
         </Routes>
     );
 }

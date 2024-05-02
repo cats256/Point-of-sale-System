@@ -1,8 +1,20 @@
-// PopularProductsHistogram.js
-import React, { useState, useEffect } from "react";
-
+/**
+ * Represents a histogram component for displaying popular products.
+ * @module PopularProductsHistogram
+ * @param {Object} props - The props object.
+ * @param {Date} props.date - The date for filtering popular products.
+ */
 const PopularProductsHistogram = ({ date }) => {
+    /**
+     * State to store the data for the popular products histogram.
+     * @type {[Array, function]}
+     */
     const [popularProductsData, setPopularProductsData] = useState([]);
+
+    /**
+     * Fetches data for the popular products histogram based on the provided date.
+     * @function fetchData
+     */
 
     useEffect(() => {
         const fetchData = async () => {

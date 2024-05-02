@@ -1,3 +1,21 @@
+/**
+ * Navigation page component for Rev's American Grill. This component handles user navigation and language selection.
+ * It initializes the Google API client and displays different navigation buttons based on user roles,
+ * along with a language selection dropdown. It also includes hidden login functionality.
+ *
+ * @component
+ * @param {Object} props - The props passed to the component.
+ * @param {Object} props.languages - Available languages for the user to select.
+ * @param {Function} props.setCurrLanguage - Function to set the current language.
+ * @param {string} props.currLanguage - Currently selected language.
+ * @example
+ * const languages = { English: 'en', Spanish: 'es' };
+ * const [currLanguage, setCurrLanguage] = useState('en');
+ * return (
+ *   <Nav languages={languages} setCurrLanguage={setCurrLanguage} currLanguage={currLanguage} />
+ * )
+ */
+
 import { Button } from "@mui/material";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { useEffect } from "react";
@@ -6,7 +24,7 @@ import { Logout } from "./logout";
 import { gapi } from "gapi-script";
 import { Login } from "./login";
 import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
-import './navpage.css';
+import "./navpage.css";
 
 const clientID =
     "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
@@ -15,6 +33,9 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
     sessionStorage.setItem("user_email", "");
 
     useEffect(() => {
+        /**
+         * Initializes Google API client.
+         */
         function start() {
             gapi.client.init({
                 clientID: clientID,
@@ -24,6 +45,13 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
 
         gapi.load("client:auth2", start);
     }, []);
+
+    /**
+     * Handles the change event for language selection.
+     * Updates the current language state.
+     *
+     * @param {Object} event - The event object from the select input.
+     */
 
     const handleChange = (event) => {
         setCurrLanguage(event.target.value);
@@ -53,7 +81,7 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                 </FormControl>
                 <Logout />
             </div>
-    
+
             <div className="nav-container" style={{ margin: 10 }}>
                 <Link to="/manager">
                     <Button variant="outlined">Manager</Button>
@@ -62,7 +90,8 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                     <Button variant="outlined">Cashier</Button>
                 </Link>
                 <Link to="/customer">
-                    <Button variant="outlined">Kiosk</Button>  {/* New button for Kiosk */}
+                    <Button variant="outlined">Kiosk</Button>{" "}
+                    {/* New button for Kiosk */}
                 </Link>
                 <Link to="/menu">
                     <Button variant="outlined">Menu</Button>
@@ -71,7 +100,7 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                     <Button variant="outlined">Kitchen</Button>
                 </Link>
             </div>
-    
+
             <div style={{ display: "none" }}>
                 <Login />
             </div>

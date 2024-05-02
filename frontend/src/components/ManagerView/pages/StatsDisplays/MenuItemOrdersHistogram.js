@@ -6,11 +6,42 @@ import {
     getOrders,
 } from "../../../../network/api";
 
+/**
+ * Represents a histogram component for displaying menu item orders.
+ * @module MenuItemOrdersHistogram
+ * @param {Object} props - The props object.
+ * @param {Date} props.start_date - The start date for filtering orders.
+ * @param {Date} props.end_date - The end date for filtering orders.
+ */
 const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
+    /**
+     * State to store the labels for the histogram.
+     * @type {[Array, function]}
+     */
     const [itemLabels, setLabels] = useState([]);
+
+    /**
+     * State to store the data for the histogram.
+     * @type {[Array, function]}
+     */
     const [itemData, setData] = useState({});
+
+    /**
+     * State to store the background colors for the histogram bars.
+     * @type {[Array, function]}
+     */
     const [backgroundColors, setBackgroundColors] = useState([]);
+
+    /**
+     * State to store the border colors for the histogram bars.
+     * @type {[Array, function]}
+     */
     const [borderColors, setBorderColors] = useState({});
+
+    /**
+     * Fetches data for the histogram based on the provided start and end dates.
+     * @function fetchData
+     */
 
     useEffect(() => {
         // Fetch ingredient usage data when component mounts
@@ -101,6 +132,10 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
         fetchData();
     }, [start_date, end_date]);
 
+    /**
+     * Represents the data configuration for the histogram.
+     * @type {Object}
+     */
     const data = {
         labels: itemLabels,
         datasets: [
@@ -113,6 +148,11 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
             },
         ],
     };
+
+    /**
+     * Renders the menu item orders histogram component.
+     * @returns {JSX.Element} The menu item orders histogram component.
+     */
 
     return (
         <div>

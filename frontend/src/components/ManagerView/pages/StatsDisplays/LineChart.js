@@ -1,8 +1,20 @@
+/**
+ * Represents a line chart component.
+ * @module LineChart
+ * @param {Object} props - The props object.
+ * @param {Object} props.chartData - The data for the line chart.
+ */
+
 // components/LineChart.js
 import React from "react";
 import { Line } from "react-chartjs-2";
 
 function LineChart({ chartData }) {
+    /**
+     * Renders the line chart component.
+     * @returns {JSX.Element} The line chart component.
+     */
+
     return (
         <div className="chart-container">
             <h2 style={{ textAlign: "center" }}>Line Chart</h2>

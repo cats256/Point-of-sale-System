@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/common/navBar.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/common/navBar.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
+import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
+import { useFontSize } from "../../utils/FontSizeProvider";
+import CloseIcon from "@mui/icons-material/Close";
+import React, { useState } from "react";
+import classNames from 'classnames';
+import { Link } from "react-router-dom";
+import "./navBar.css";
+
+/**
+ * Component for managing accessibility options.
+ * 
+ * @param {function} increaseZoom Function to increase zoom level.
+ * @param {function} decreaseZoom Function to decrease zoom level.
+ * @returns {JSX.Element} Accessibility component JSX.
+ */
+const Accessibility = ({ increaseZoom, decreaseZoom }) => {
+    const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+    const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
+    const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
+    const [highContrastEnabled, setHighContrastEnabled] = useState(false);
+    const { toggleFontSize, toggleIconScale, fontSizeMultiplier } = useFontSize();
+    
+    return (
+        &lt;>
+            &lt;button
+                aria-label="accessibility options"
+                onClick={() =>
+                    setShowAccessibilityPanel(!showAccessibilityPanel)
+                }
+                className="accessibilityBtn"
+            >
+                &lt;SettingsAccessibilityIcon className="icon accessibilityIcon" style={{fill: "white"}}/>
+            &lt;/button>
+            {showAccessibilityPanel &amp;&amp; (
+                &lt;div className="accessibilityContainer">
+                    &lt;button
+                        onClick={() => setShowAccessibilityPanel(!showAccessibilityPanel)}
+                        className="closeBtn"
+                    >
+                        &lt;CloseIcon />
+                    &lt;/button>
+
+                    &lt;span className="accessibilityTitle">
+                        Accessibility Options
+                    &lt;/span>
+
+                    &lt;div className="accessibilityOptions">
+                        &lt;button
+                            className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': screenReaderEnabled })}
+                            onClick={() =>setScreenReaderEnabled(!screenReaderEnabled)}
+                            variant="contained"
+                        >
+                            {screenReaderEnabled ? 'Disable Screen Reader' : 'Enable Screen Reader'}
+                        &lt;/button>
+
+                        &lt;button
+                            className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': fontSizeMultiplier !== 1 })}
+                            onClick={ () => {
+                                toggleFontSize()
+                                toggleIconScale()
+                            }}
+                            variant="contained"
+                        >
+                            {fontSizeMultiplier !== 1 ? 'Disable Large Text' : 'Enable Large Text'}
+                        &lt;/button>
+
+                        &lt;button
+                            className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': longPressBtnEnabled })}
+                            onClick={() =>setLongPressBtnEnabled(!longPressBtnEnabled)}
+                            variant="contained"
+                        >
+                            {longPressBtnEnabled ? 'Disable Long Press Buttons' : 'Enable Long Press Buttons'}
+                        &lt;/button>
+
+                        &lt;button
+                            className={classNames('accessibilityOptionBtn', { 'accessibilityOptionBtnActive': highContrastEnabled })}
+                            onClick={() =>setHighContrastEnabled(!highContrastEnabled)}
+                            variant="contained"
+                        >
+                            {highContrastEnabled ? 'Disable High Contrast' : 'Enable High Contrast'}
+                        &lt;/button>
+
+                        &lt;button
+                            className="accessibilityOptionBtn"
+                            aria-label="Increase Zoom"
+                            onClick={increaseZoom}
+                            variant="contained"
+                        >
+                            Zoom In (+)
+                        &lt;/button>
+                        &lt;button
+                            className="accessibilityOptionBtn"
+                            aria-label="Decrease Zoom"
+                            onClick={decreaseZoom}
+                            variant="contained"
+                        >
+                            Zoom Out (-)
+                        &lt;/button>
+                    &lt;/div>
+                &lt;/div>
+            )}
+        &lt;/>
+    );
+};
+
+/**
+ * Component for rendering the navigation bar.
+ * 
+ * @param {function} increaseZoom Function to increase zoom level.
+ * @param {function} decreaseZoom Function to decrease zoom level.
+ * @param {number} zoom The current zoom level.
+ * @returns {JSX.Element} NavBar component JSX.
+ */
+const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
+    return (
+        &lt;nav className="navBar">
+            &lt;div className="navSide">
+                &lt;Accessibility increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+            &lt;/div>
+            
+            &lt;Link to="/nav" className="linkWithoutUnderline">
+                &lt;header className="navHeader">
+                    &lt;ReveilleLogo className="reveilleLogo" />
+                    &lt;h1 className="navTitle">
+                        Rev's American Grill
+                    &lt;/h1>
+                &lt;/header>
+            &lt;/Link>
+            
+            &lt;div className="navSide">
+                {/* TODO: add content */}
+            &lt;/div>
+        &lt;/nav>
+    )
+};
+
+export default NavBar;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:13:45 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

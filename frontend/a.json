@@ -1,0 +1,14 @@
+{
+  "plugins": ["better-docs/component"],
+  "recurseDepth": 10,
+  "source": {
+    "include": ["src/"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "templates": {
+    "betterDocs": {
+      "name": "MyReactAppDocs"
+    }
+  }
+}
