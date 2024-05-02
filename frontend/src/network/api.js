@@ -167,6 +167,22 @@ export async function deleteMenuItems(formData) {
     });
 }
 
+export async function editIngredient(formData) {
+    return request("/ingredient_edit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function deleteIngredient(formData) {
+    return request("/ingredient_delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
 export async function addMenuItem(formData) {
     return request("/menu_item_add", {
         method: "POST",
