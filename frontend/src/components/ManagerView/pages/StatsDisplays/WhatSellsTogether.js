@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getWhatSellsTogether } from "../../../../network/api";
+import { getWhatSellsTogether, getItemName } from "../../../../network/api";
 
 const WhatSellsTogether = ({ start_date, end_date }) => {
     const [whatSellsTogether, setWhatSellsTogether] = useState([]);
@@ -8,6 +8,16 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
         const fetchWhatSellsTogether = async () => {
             try {
                 const data = await getWhatSellsTogether(start_date, end_date);
+                // const newdata = [];
+                // for (let i = 0; i < data.length; i++){
+                //     // console.log(data[i][1]);
+                //     const cnt = data[i][2];
+                //     const id_1 = await getItemName(data[i][0]).item_id;
+                //     console.log(id_1);
+                //     const id_2 = await getItemName(data[i][1]).item_id;
+                //     newdata.push([cnt, id_1, id_2]);
+                // }
+                // console.log(newdata);
                 setWhatSellsTogether(data);
             } catch (error) {
                 console.error("Error fetching sales report:", error);
@@ -19,7 +29,7 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
     }, [start_date, end_date]); // Include start_date and end_date in the dependency array to fetch data when they change
     return (
         <div>
-            <h2>Menu Item ID</h2>
+            <h2>What Sells Together</h2>
             <table
                 style={{
                     borderCollapse: "collapse",
@@ -34,7 +44,7 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Menu Item Name
+                            Menu Item 1
                         </th>
                         <th
                             style={{
@@ -42,7 +52,7 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Total Sales Count
+                            Menu Item 2
                         </th>
                         <th
                             style={{
@@ -50,20 +60,12 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Total Ingredients Used
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Total Sales Amount
+                            Count
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {salesReport.map((sale, index) => (
+                    {whatSellsTogether.map((sale, index) => (
                         <tr key={index} style={{ border: "1px solid black" }}>
                             <td
                                 style={{
@@ -88,14 +90,6 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
                                 }}
                             >
                                 {sale[2]}
-                            </td>
-                            <td
-                                style={{
-                                    border: "1px solid black",
-                                    padding: "8px",
-                                }}
-                            >
-                                {sale[3]}
                             </td>
                         </tr>
                     ))}

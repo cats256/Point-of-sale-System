@@ -15,7 +15,7 @@ import TotalOrdersGraph from "./StatsDisplays/TotalOrdersGraph";
 import MenuItemOrdersHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
 import IngredientUsageTable from "./StatsDisplays/IngredientUsageTable";
 import SalesReport from "./StatsDisplays/SalesReport";
-import WhatSellsTogether from "./StatsDisplays/SalesReport";
+import WhatSellsTogether from "./StatsDisplays/WhatSellsTogether";
 // import OrderTrendsTable from "./StatsDisplays/OrderTrendsTable";
 
 const StatsPage = () => {
@@ -99,16 +99,21 @@ const StatsPage = () => {
                     start_date={startDate}
                     end_date={endDate}
                 />
-            ) : (
+            ) : displayGraph === "IngredientUsageTable" ? (
                 <IngredientUsageTable 
                     start_date={startDate}
                     end_date={endDate}
                 />
-            // ) : (
-            //     <OrderTrendsTable
-            //         start_date={startDate}
-            //         end_date={endDate}
-            //     />
+            ) : displayGraph === "SalesReport" ? (
+                <SalesReport
+                    start_date={startDate}
+                    end_date={endDate}
+                />
+            ) : (
+                <WhatSellsTogether
+                    start_date={startDate}
+                    end_date={endDate}
+                />
             )}
         </div>
     );

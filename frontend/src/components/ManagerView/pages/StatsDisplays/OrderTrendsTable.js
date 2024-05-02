@@ -12,7 +12,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
     const fetchOrderTrends = async () => {
         try {
             const data = await getOrderTrends(start_date, end_date);
-            console.log(data);
+            // console.log(data);
             setOrderTrends(data);
         } catch (error) {
             console.error("Error fetching ingredient usage:", error);
