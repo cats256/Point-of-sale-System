@@ -92,8 +92,7 @@ const EmployeesPage = () => {
                         console.error("Error:", error);
                         // Handle error if needed
                     });
-            } 
-            else {
+            } else {
                 alert("Please enter a valid number for the salary.");
             }
         } else {
@@ -132,7 +131,7 @@ const EmployeesPage = () => {
             // You can call an API or use another method to send this data to the server
             const newEmployeeIdAwait = await getHighestEmployeeId();
             console.log(newEmployeeIdAwait.highest_id);
-            const newEmployeeId = parseInt(newEmployeeIdAwait.highest_id) +1;
+            const newEmployeeId = parseInt(newEmployeeIdAwait.highest_id) + 1;
             const employeeData = {
                 id: newEmployeeId,
                 name: newEmployeeName,
@@ -146,17 +145,19 @@ const EmployeesPage = () => {
                 setNewEmployeeEmail("");
                 setNewEmployeeSalary("");
             });
-        } 
-        else {
+        } else {
             alert("Please fill in all fields.");
         }
     };
 
     return (
         <div style={{ marginLeft: "15%", display: "flex" }}>
-            <div style={{ flex: "1"  }}>
+            <div style={{ flex: "1" }}>
                 <h1>Employees Page</h1>
-                <div className="employee-tiles" style={{ overflowY: "auto", maxHeight: "80vh"  }}>
+                <div
+                    className="employee-tiles"
+                    style={{ overflowY: "auto", maxHeight: "80vh" }}
+                >
                     {employeeNames.map((employee, index) => (
                         <div
                             key={index}

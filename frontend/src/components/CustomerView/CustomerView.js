@@ -7,32 +7,9 @@ import { useBasket } from "../common/BasketContext";
 import "./CustomerView.css";
 import NavBar from "../common/navBar";
 
-/**
- * Represents the customer view component.
- * @module CustomerView
- * @param {Object} props - The props object.
- * @param {Array} props.menuItems - The array of menu items.
- */
-
 const CustomerView = ({ menuItems }) => {
-    /**
-     * State to manage the currently active panel.
-     * @type {[string|null, function]}
-     */
-
     const [panel, setPanel] = useState(null);
-    /**
-     * State to manage the currently selected item type.
-     * @type {[string|null, function]}
-     */
-
     const [currType, setCurrType] = useState(null);
-
-    /**
-     * State to manage the zoom level of the view.
-     * @type {[number, function]}
-     */
-
     const [zoom, setZoom] = useState(100);
 
     const {
@@ -51,33 +28,15 @@ const CustomerView = ({ menuItems }) => {
     } = useBasket();
     const [popupContent, setPopupContent] = useState("");
 
-    /**
-     * Handles the increase in zoom level.
-     * @function increaseZoom
-     */
-
     const increaseZoom = () => {
         setZoom(zoom + 25);
     };
-
-    /**
-     * Handles the decrease in zoom level.
-     * @function decreaseZoom
-     */
 
     const decreaseZoom = () => {
         if (zoom > 100) {
             setZoom(zoom - 25);
         }
     };
-
-    /**
-     * Generates a button for selecting an item type.
-     * @function typeButton
-     * @param {string} text - The text displayed on the button.
-     * @param {string} [panel=""] - The panel associated with the button.
-     * @returns {JSX.Element} The button element.
-     */
 
     const typeButton = (text, panel = "") => (
         <button
@@ -92,15 +51,6 @@ const CustomerView = ({ menuItems }) => {
             {text}
         </button>
     );
-
-    /**
-     * Represents the popup for displaying menu item details.
-     * @function MenuItemPopUp
-     * @param {Object} props - The props object.
-     * @param {Object} props.item - The menu item object.
-     * @param {Function} props.onClose - The function to close the popup.
-     * @returns {JSX.Element} The popup component.
-     */
 
     const MenuItemPopUp = ({ item, onClose }) => {
         let itemName = formatItemName(item);
@@ -153,12 +103,6 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
-    /**
-     * Displays the menu items in the selected panel.
-     * @function PopulateMenuItems
-     * @returns {JSX.Element} The menu items component.
-     */
-
     const PopulateMenuItems = () => {
         if (!menuItems || !panel) {
             return <div>Loading...</div>;
@@ -202,12 +146,6 @@ const CustomerView = ({ menuItems }) => {
             </section>
         );
     };
-
-    /**
-     * Displays the basket content.
-     * @function DisplayBasket
-     * @returns {JSX.Element} The basket component.
-     */
 
     const DisplayBasket = () => (
         <aside className="basket">

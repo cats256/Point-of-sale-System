@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/KitchenView/KitchenView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/KitchenView/KitchenView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import {
+    cancelOrder,
+    completeOrder,
+    getCurrent,
+    deleteOrder,
+} from "../../network/api";
+import "./KitchenView.css";
+import NavBar from "../common/navBar";
+import CloseIcon from "@mui/icons-material/Close";
+/**
+ * Represents the kitchen view component.
+ * @module KitchenView
+ */
+
+const KitchenView = () => {
+    /**
+     * State to store the current orders.
+     * @type {[Array, function]}
+     */
+
+    const [currentOrders, setCurrentOrders] = useState([]);
+    /**
+     * State to store the selected order.
+     * @type {[number|null, function]}
+     */
+
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    /**
+     * State to manage the visibility of the order popup.
+     * @type {[boolean, function]}
+     */
+
+    const [isOrderPopUpOpen, setIsOrderPopUpOpen] = useState(false);
+    /**
+     * Fetches the current orders from the server.
+     * @function fetchOrders
+     */
+
+    const fetchOrders = async () => {
+        try {
+            const orders = await getCurrent();
+            setCurrentOrders(orders);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    /**
+     * Handles the click event on an order item.
+     * @function handleOrderClick
+     * @param {number} orderId - The ID of the clicked order.
+     */
+
+    const handleOrderClick = (orderId) => {
+        setSelectedOrder(orderId);
+        setIsOrderPopUpOpen(true);
+    };
+
+    /**
+     * Handles the close event of the order popup.
+     * @function handleClosePopUp
+     */
+
+    const handleClosePopUp = () => {
+        setIsOrderPopUpOpen(false);
+    };
+
+    /**
+     * Represents the order popup component.
+     * @function OrderPopUp
+     * @param {Object} props - The props object.
+     * @param {number} props.orderNumber - The order number.
+     * @param {Function} props.onClose - The function to close the popup.
+     * @param {Function} props.onComplete - The function to mark the order as complete.
+     * @param {Function} props.onCancel - The function to cancel the order.
+     * @param {Function} props.onDelete - The function to delete the order.
+     * @returns {JSX.Element} The order popup component.
+     */
+
+    const OrderPopUp = ({
+        orderNumber,
+        onClose,
+        onComplete,
+        onCancel,
+        onDelete,
+    }) => {
+        return (
+            &lt;section className="order-popup">
+                &lt;div className="order-popup-content">
+                    &lt;button className="close-button" onClick={onClose}>
+                        &lt;CloseIcon />
+                    &lt;/button>
+                    &lt;h3 className="popup-title">Order {orderNumber}&lt;/h3>
+                    &lt;div className="button-container">
+                        &lt;button
+                            className="complete-button"
+                            onClick={onComplete}
+                        >
+                            Mark order complete
+                        &lt;/button>
+                        &lt;button className="cancel-button" onClick={onCancel}>
+                            Cancel order
+                        &lt;/button>
+                        &lt;button className="delete-button" onClick={onDelete}>
+                            Delete order
+                        &lt;/button>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/section>
+        );
+    };
+
+    /**
+     * Handles marking an order as complete.
+     * @function handleCompleteOrder
+     */
+
+    const handleCompleteOrder = async () => {
+        try {
+            const formData = { id: selectedOrder };
+            const response = await completeOrder(formData);
+            alert(response.message);
+            // Refresh orders after completion
+            await fetchOrders();
+        } catch (error) {
+            console.error("Error completing order:", error);
+        }
+        setSelectedOrder(null);
+        setIsOrderPopUpOpen(false); // Close the order popup
+    };
+
+    /**
+     * Handles canceling an order.
+     * @function handleCancelOrder
+     */
+
+    const handleCancelOrder = async () => {
+        try {
+            const formData = { id: selectedOrder };
+            const response = await cancelOrder(formData);
+            alert(response.message);
+            // Refresh orders after cancellation
+            await fetchOrders();
+        } catch (error) {
+            console.error("Error canceling order:", error);
+        }
+        setSelectedOrder(null);
+        setIsOrderPopUpOpen(false); // Close the order popup
+    };
+
+    /**
+     * Handles deleting an order.
+     * @function handleDeleteOrder
+     */
+
+    const handleDeleteOrder = async () => {
+        try {
+            const formData = { id: selectedOrder };
+            const response = await deleteOrder(formData);
+            alert(response.message);
+            await fetchOrders();
+        } catch (error) {
+            console.error("Error deleting order:", error);
+        }
+        setSelectedOrder(null);
+        setIsOrderPopUpOpen(false);
+    };
+
+    return (
+        &lt;div>
+            &lt;NavBar />
+            &lt;div className="orders-container">
+                &lt;div className="header-container">
+                    &lt;h1>Current Orders&lt;/h1>
+                &lt;/div>
+                &lt;div className="order-list">
+                    {currentOrders.map((order) => (
+                        &lt;div key={order.id} className="order-item">
+                            &lt;button
+                                className="button-primary" // Apply button-secondary class here
+                                onClick={() => handleOrderClick(order.id)}
+                            >
+                                Order {order.id}
+                            &lt;/button>
+                        &lt;/div>
+                    ))}
+                &lt;/div>
+            &lt;/div>
+            {isOrderPopUpOpen &amp;&amp; (
+                &lt;OrderPopUp
+                    orderNumber={selectedOrder}
+                    onClose={handleClosePopUp}
+                    onComplete={handleCompleteOrder}
+                    onCancel={handleCancelOrder}
+                    onDelete={handleDeleteOrder}
+                />
+            )}
+        &lt;/div>
+    );
+};
+
+export default KitchenView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AverageOrderPriceChart.html">AverageOrderPriceChart</a></li><li><a href="module-IngredientUsageTable.html">IngredientUsageTable</a></li><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-KitchenView.html">KitchenView</a></li><li><a href="module-LineChart.html">LineChart</a></li><li><a href="module-MenuItemOrdersHistogram.html">MenuItemOrdersHistogram</a></li><li><a href="module-OrderTrendsTable.html">OrderTrendsTable</a></li><li><a href="module-PopularProductsHistogram.html">PopularProductsHistogram</a></li><li><a href="module-TotalOrdersGraph.html">TotalOrdersGraph</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:35:50 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

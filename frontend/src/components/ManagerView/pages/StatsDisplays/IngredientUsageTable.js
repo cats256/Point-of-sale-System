@@ -1,26 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getIngredientUsage } from "../../../../network/api";
 
-/**
- * Represents a table component for displaying ingredient usage.
- * @module IngredientUsageTable
- * @param {Object} props - The props object.
- * @param {Date} props.start_date - The start date for filtering ingredient usage.
- * @param {Date} props.end_date - The end date for filtering ingredient usage.
- */
-
 const IngredientUsageTable = ({ start_date, end_date }) => {
-    /**
-     * State to store the ingredient usage data.
-     * @type {[Array, function]}
-     */
-
     const [ingredientUsage, setIngredientUsage] = useState([]);
-
-    /**
-     * Fetches ingredient usage data based on the provided start and end dates.
-     * @function fetchIngredientUsage
-     */
 
     useEffect(() => {
         const fetchIngredientUsage = async () => {

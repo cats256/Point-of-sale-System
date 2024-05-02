@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { getOrderTrends } from "../../../../network/api";
 
-/**
- * Represents a table component for displaying order trends.
- * @module OrderTrendsTable
- * @param {Object} props - The props object.
- * @param {Date} props.start_date - The start date for filtering order trends.
- * @param {Date} props.end_date - The end date for filtering order trends.
- */
 const OrderTrendsTable = ({ start_date, end_date }) => {
-    /**
-     * State to store the order trends data.
-     * @type {[Array, function]}
-     */
     const [orderTrends, setOrderTrends] = useState([]);
 
-    /**
-     * Fetches data for the order trends based on the provided start and end dates.
-     * @function fetchOrderTrends
-     */
+    useEffect(() => {
+        // Fetch ingredient usage data when component mounts
+        fetchOrderTrends();
+    }, [start_date, end_date]); // Include start_date and end_date in the dependency array to fetch data when they change
+
+    const fetchOrderTrends = async () => {
+        try {
+            const data = await getOrderTrends(start_date, end_date);
+            console.log(data);
+            setOrderTrends(data);
+        } catch (error) {
+            console.error("Error fetching ingredient usage:", error);
+        }
+    };
 
     return (
         <div>

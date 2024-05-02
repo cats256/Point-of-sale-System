@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/common/ZoomContext.js</title>
+    <title>JSDoc: Source: components/Authentication/login.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/common/ZoomContext.js</h1>
+    <h1 class="page-title">Source: components/Authentication/login.js</h1>
 
     
 
@@ -26,45 +26,74 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React, { createContext, useContext, useState } from 'react';
-
-/**
- * Context for managing zoom level state and functions.
- */
-const ZoomContext = createContext();
-
-/**
- * Custom hook for accessing zoom context values.
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents a login component using Google's OAuth service.
+ * This component provides a Google login button and handles the authentication flow,
+ * redirecting to a navigation page upon successful login.
  *
- * @returns {object} Zoom context values.
+ * @component
+ * @example
+ * return (
+ *   &lt;Login />
+ * )
  */
-export const useZoom = () => useContext(ZoomContext);
 
-/**
- * Provider component for managing zoom level state and functions.
- *
- * @param {object} children The child components to be wrapped by the provider.
- * @returns {JSX.Element} ZoomProvider component JSX.
- */
-export const ZoomProvider = ({ children }) => {
-    const [zoom, setZoom] = useState(100);
+import { GoogleLogin } from "@leecheuk/react-google-login";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+const clientID =
+    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+
+function Login() {
+    /**
+     * State to track if the user is logged in.
+     * @type {boolean}
+     */
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+    const navigate = useNavigate();
 
     /**
-     * Function to increase the zoom level by 25%.
+     * Handles the success event from GoogleLogin.
+     * Stores the user's email in sessionStorage and navigates to '/nav'.
+     *
+     * @param {Object} res - The response object returned from the GoogleLogin component.
      */
-    const increaseZoom = () => setZoom(zoom + 25);
+
+    const onSuccess = (res) => {
+        console.log("Login Successful!");
+        sessionStorage.setItem("user_email", res.profileObj.email);
+        setIsLoggedIn(true);
+        navigate("/nav");
+    };
 
     /**
-     * Function to decrease the zoom level by 25%, with a minimum zoom level of 100%.
+     * Handles the failure event from GoogleLogin.
+     * Logs a failure message to the console.
+     *
+     * @param {Object} res - The response object returned from the GoogleLogin component.
      */
-    const decreaseZoom = () => setZoom(zoom > 100 ? zoom - 25 : 100);
+
+    const onFailure = (res) => {
+        console.log("Login Failed!");
+    };
 
     return (
-        &lt;ZoomContext.Provider value={{ zoom, increaseZoom, decreaseZoom }}>
-            {children}
-        &lt;/ZoomContext.Provider>
+        &lt;div id="signInButton">
+            &lt;GoogleLogin
+                clientId={clientID}
+                buttonText="Login with Google"
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                cookiePolicy={"single_host_origin"}
+                isSignedIn={false}
+            />
+        &lt;/div>
     );
-};</code></pre>
+}
+
+export { Login };
+</code></pre>
         </article>
     </section>
 

@@ -8,34 +8,11 @@ import {
 import "./KitchenView.css";
 import NavBar from "../common/navBar";
 import CloseIcon from "@mui/icons-material/Close";
-/**
- * Represents the kitchen view component.
- * @module KitchenView
- */
 
 const KitchenView = () => {
-    /**
-     * State to store the current orders.
-     * @type {[Array, function]}
-     */
-
     const [currentOrders, setCurrentOrders] = useState([]);
-    /**
-     * State to store the selected order.
-     * @type {[number|null, function]}
-     */
-
     const [selectedOrder, setSelectedOrder] = useState(null);
-    /**
-     * State to manage the visibility of the order popup.
-     * @type {[boolean, function]}
-     */
-
     const [isOrderPopUpOpen, setIsOrderPopUpOpen] = useState(false);
-    /**
-     * Fetches the current orders from the server.
-     * @function fetchOrders
-     */
 
     const fetchOrders = async () => {
         try {
@@ -50,37 +27,14 @@ const KitchenView = () => {
         fetchOrders();
     }, []);
 
-    /**
-     * Handles the click event on an order item.
-     * @function handleOrderClick
-     * @param {number} orderId - The ID of the clicked order.
-     */
-
     const handleOrderClick = (orderId) => {
         setSelectedOrder(orderId);
         setIsOrderPopUpOpen(true);
     };
 
-    /**
-     * Handles the close event of the order popup.
-     * @function handleClosePopUp
-     */
-
     const handleClosePopUp = () => {
         setIsOrderPopUpOpen(false);
     };
-
-    /**
-     * Represents the order popup component.
-     * @function OrderPopUp
-     * @param {Object} props - The props object.
-     * @param {number} props.orderNumber - The order number.
-     * @param {Function} props.onClose - The function to close the popup.
-     * @param {Function} props.onComplete - The function to mark the order as complete.
-     * @param {Function} props.onCancel - The function to cancel the order.
-     * @param {Function} props.onDelete - The function to delete the order.
-     * @returns {JSX.Element} The order popup component.
-     */
 
     const OrderPopUp = ({
         orderNumber,
@@ -115,11 +69,6 @@ const KitchenView = () => {
         );
     };
 
-    /**
-     * Handles marking an order as complete.
-     * @function handleCompleteOrder
-     */
-
     const handleCompleteOrder = async () => {
         try {
             const formData = { id: selectedOrder };
@@ -134,11 +83,6 @@ const KitchenView = () => {
         setIsOrderPopUpOpen(false); // Close the order popup
     };
 
-    /**
-     * Handles canceling an order.
-     * @function handleCancelOrder
-     */
-
     const handleCancelOrder = async () => {
         try {
             const formData = { id: selectedOrder };
@@ -152,11 +96,6 @@ const KitchenView = () => {
         setSelectedOrder(null);
         setIsOrderPopUpOpen(false); // Close the order popup
     };
-
-    /**
-     * Handles deleting an order.
-     * @function handleDeleteOrder
-     */
 
     const handleDeleteOrder = async () => {
         try {

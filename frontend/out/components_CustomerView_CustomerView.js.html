@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/CustomerView/CustomerView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/CustomerView/CustomerView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import React, { useState } from "react";
+import { formatItemName } from "../../utils/formatItemName";
+import { useBasket } from "../common/BasketContext";
+import "./CustomerView.css";
+import NavBar from "../common/navBar";
+
+/**
+ * Represents the customer view component.
+ * @module CustomerView
+ * @param {Object} props - The props object.
+ * @param {Array} props.menuItems - The array of menu items.
+ */
+
+const CustomerView = ({ menuItems }) => {
+    /**
+     * State to manage the currently active panel.
+     * @type {[string|null, function]}
+     */
+
+    const [panel, setPanel] = useState(null);
+    /**
+     * State to manage the currently selected item type.
+     * @type {[string|null, function]}
+     */
+
+    const [currType, setCurrType] = useState(null);
+
+    /**
+     * State to manage the zoom level of the view.
+     * @type {[number, function]}
+     */
+
+    const [zoom, setZoom] = useState(100);
+
+    const {
+        basket,
+        increaseItemQuantity,
+        decreaseItemQuantity,
+        removeItemFromBasket,
+        emptyBasket,
+        placeOrder,
+        totalCost,
+        setShowItemInfoPopup,
+        showItemInfoPopup,
+        isCombo,
+        handleMakeCombo,
+        addItemToBasketWithCombo,
+    } = useBasket();
+    const [popupContent, setPopupContent] = useState("");
+
+    /**
+     * Handles the increase in zoom level.
+     * @function increaseZoom
+     */
+
+    const increaseZoom = () => {
+        setZoom(zoom + 25);
+    };
+
+    /**
+     * Handles the decrease in zoom level.
+     * @function decreaseZoom
+     */
+
+    const decreaseZoom = () => {
+        if (zoom > 100) {
+            setZoom(zoom - 25);
+        }
+    };
+
+    /**
+     * Generates a button for selecting an item type.
+     * @function typeButton
+     * @param {string} text - The text displayed on the button.
+     * @param {string} [panel=""] - The panel associated with the button.
+     * @returns {JSX.Element} The button element.
+     */
+
+    const typeButton = (text, panel = "") => (
+        &lt;button
+            variant="outlined"
+            onClick={() => {
+                setPanel(panel || text);
+                setCurrType(text);
+            }}
+            className={`typeBtn ${currType === text ? "typeBtnActive" : ""}`}
+            aria-pressed={true}
+        >
+            {text}
+        &lt;/button>
+    );
+
+    /**
+     * Represents the popup for displaying menu item details.
+     * @function MenuItemPopUp
+     * @param {Object} props - The props object.
+     * @param {Object} props.item - The menu item object.
+     * @param {Function} props.onClose - The function to close the popup.
+     * @returns {JSX.Element} The popup component.
+     */
+
+    const MenuItemPopUp = ({ item, onClose }) => {
+        let itemName = formatItemName(item);
+        let imgSrc = require(`../../img/${item.name}.png`);
+
+        return (
+            &lt;section
+                aria-label="Item details popup"
+                className="menuItemPopUp evenSpacing"
+            >
+                {/* Close button */}
+                &lt;button
+                    onClick={onClose}
+                    aria-pressed="true"
+                    aria-label="Close"
+                    className="closeBtn icon"
+                >
+                    &lt;CloseIcon />
+                &lt;/button>
+
+                {/* Image of the menu item */}
+                &lt;img src={imgSrc} alt={itemName} className="fullWidthImage" />
+
+                {/* Name of the menu item */}
+                &lt;div className="popUpItemNameTxt">{itemName}&lt;/div>
+
+                {/* Combo and Add to Order buttons */}
+                &lt;footer>
+                    {["Burgers", "Baskets", "Sandwiches"].includes(
+                        item.type
+                    ) &amp;&amp; (
+                        &lt;button
+                            onClick={handleMakeCombo}
+                            className={isCombo ? "comboBtnActive" : "comboBtn"}
+                            aria-pressed={isCombo}
+                        >
+                            {isCombo ? "Combo Selected" : "Make it a Combo"}
+                        &lt;/button>
+                    )}
+
+                    &lt;button
+                        onClick={() => addItemToBasketWithCombo(item)}
+                        className="addToOrderBtn"
+                        aria-pressed={true}
+                    >
+                        Add to Basket
+                    &lt;/button>
+                &lt;/footer>
+            &lt;/section>
+        );
+    };
+
+    /**
+     * Displays the menu items in the selected panel.
+     * @function PopulateMenuItems
+     * @returns {JSX.Element} The menu items component.
+     */
+
+    const PopulateMenuItems = () => {
+        if (!menuItems || !panel) {
+            return &lt;div>Loading...&lt;/div>;
+        }
+
+        let filteredItems = menuItems[panel];
+
+        return (
+            &lt;section className="menuItemsContainer">
+                {filteredItems.map((item, index) => {
+                    let itemName = item.translatedName || formatItemName(item);
+                    let imgSrc = require(`../../img/${item.name}.png`);
+
+                    return (
+                        &lt;button
+                            key={index}
+                            className="menuItemBtn"
+                            onClick={() => {
+                                setShowItemInfoPopup(true);
+                                setPopupContent(item);
+                            }}
+                        >
+                            &lt;img
+                                src={imgSrc}
+                                alt={itemName}
+                                className="menuItemImg"
+                            />
+                            &lt;div className="menuItemNameTxt">{itemName}&lt;/div>
+                            &lt;div className="menuItemPriceTxt">
+                                ${item.price}
+                            &lt;/div>
+                        &lt;/button>
+                    );
+                })}
+                {showItemInfoPopup &amp;&amp; (
+                    &lt;MenuItemPopUp
+                        item={popupContent}
+                        onClose={() => setShowItemInfoPopup(false)}
+                    />
+                )}
+            &lt;/section>
+        );
+    };
+
+    /**
+     * Displays the basket content.
+     * @function DisplayBasket
+     * @returns {JSX.Element} The basket component.
+     */
+
+    const DisplayBasket = () => (
+        &lt;aside className="basket">
+            &lt;h1>My Basket&lt;/h1>
+
+            {/* Clear Cart button */}
+            &lt;div className="flexBox">
+                &lt;button
+                    className="basketClearBtn"
+                    onClick={() => {
+                        emptyBasket();
+                    }}
+                    disabled={basket.length === 0}
+                >
+                    Clear Basket
+                &lt;/button>
+            &lt;/div>
+
+            {basket.map((item, index) => (
+                &lt;div key={index} className="basketItem">
+                    &lt;div>
+                        &lt;span className="basketItemName">
+                            {formatItemName(item)}{" "}
+                        &lt;/span>
+                        ${parseFloat(item.price * item.quantity).toFixed(2)}
+                        {/* Quantity modification buttons */}
+                        &lt;div className="basketItemQuantity">
+                            &lt;IconButton
+                                onClick={() => decreaseItemQuantity(item.name)}
+                                aria-label="Decrease item"
+                                className="icon"
+                            >
+                                -
+                            &lt;/IconButton>
+                            {item.quantity}
+                            &lt;IconButton
+                                onClick={() => increaseItemQuantity(item.name)}
+                                aria-label="Increase item"
+                                className="icon"
+                            >
+                                +
+                            &lt;/IconButton>
+                        &lt;/div>
+                    &lt;/div>
+
+                    {/* Delete button */}
+                    &lt;IconButton
+                        aria-label="Delete"
+                        onClick={() => removeItemFromBasket(item.name)}
+                        className="icon"
+                    >
+                        &lt;DeleteIcon />
+                    &lt;/IconButton>
+                &lt;/div>
+            ))}
+
+            &lt;footer className="basketFooter">
+                Total: ${totalCost.toFixed(2)}
+                &lt;button
+                    onClick={() => placeOrder()}
+                    disabled={basket.length === 0}
+                    className="basketPlaceOrderBtn"
+                >
+                    Place Order
+                &lt;/button>
+            &lt;/footer>
+        &lt;/aside>
+    );
+
+    return (
+        &lt;main>
+            &lt;NavBar
+                increaseZoom={increaseZoom}
+                decreaseZoom={decreaseZoom}
+                zoom={zoom}
+            />
+
+            &lt;div
+                className="bodyPanel"
+                style={{
+                    transform: `scale(${zoom / 100})`,
+                    transformOrigin: "center center",
+                }}
+            >
+                &lt;aside className="typeMenu">
+                    {typeButton("Burgers")}
+                    {typeButton("Baskets")}
+                    {typeButton("Sandwiches")}
+                    {typeButton("Drinks")}
+                    {typeButton("Desserts")}
+                    {typeButton("Sides")}
+                    {typeButton("Sauces")}
+                &lt;/aside>
+
+                &lt;article className="centerPanel">{PopulateMenuItems()}&lt;/article>
+
+                &lt;article className="basketPanel">{DisplayBasket()}&lt;/article>
+            &lt;/div>
+        &lt;/main>
+    );
+};
+
+export { CustomerView };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AverageOrderPriceChart.html">AverageOrderPriceChart</a></li><li><a href="module-CustomerView.html">CustomerView</a></li><li><a href="module-IngredientUsageTable.html">IngredientUsageTable</a></li><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-KitchenView.html">KitchenView</a></li><li><a href="module-LineChart.html">LineChart</a></li><li><a href="module-MenuItemOrdersHistogram.html">MenuItemOrdersHistogram</a></li><li><a href="module-OrderTrendsTable.html">OrderTrendsTable</a></li><li><a href="module-PopularProductsHistogram.html">PopularProductsHistogram</a></li><li><a href="module-TotalOrdersGraph.html">TotalOrdersGraph</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:35:15 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

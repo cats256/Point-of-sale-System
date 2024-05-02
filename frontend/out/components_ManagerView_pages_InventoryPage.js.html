@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ManagerView/pages/InventoryPage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ManagerView/pages/InventoryPage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, MenuItem } from "@mui/material";
 import {
     submitRestockOrder,
@@ -141,18 +169,18 @@ const InventoryPage = () => {
     );
 
     return (
-        <div style={{ marginLeft: "15%", display: "flex" }}>
-            <div style={{ width: "50%", padding: "20px" }}>
-                <Typography variant="h6">Ingredients</Typography>
-                <TextField
+        &lt;div style={{ marginLeft: "15%", display: "flex" }}>
+            &lt;div style={{ width: "50%", padding: "20px" }}>
+                &lt;Typography variant="h6">Ingredients&lt;/Typography>
+                &lt;TextField
                     label="Search"
                     value={searchQuery}
                     onChange={handleSearch}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                <Typography variant="h6">Inventory Stock</Typography>
-                <div
+                &lt;Typography variant="h6">Inventory Stock&lt;/Typography>
+                &lt;div
                     style={{
                         marginTop: "20px",
                         height: "80vh",
@@ -160,7 +188,7 @@ const InventoryPage = () => {
                     }}
                 >
                     {filteredIngredients.map((item, index) => (
-                        <div
+                        &lt;div
                             key={index}
                             style={{
                                 cursor: "pointer",
@@ -169,16 +197,16 @@ const InventoryPage = () => {
                                     index === selectedIngredient
                                         ? "#f0f0f0"
                                         : "transparent",
-                                color: item.quantity < 1005 ? "red" : "inherit",
+                                color: item.quantity &lt; 1005 ? "red" : "inherit",
                             }}
                             onClick={() => handleIngredientClick(item.id)}
                         >
                             {item.name}: {item.quantity}
-                        </div>
+                        &lt;/div>
                     ))}
-                </div>
-            </div>
-            <div
+                &lt;/div>
+            &lt;/div>
+            &lt;div
                 style={{
                     position: "fixed",
                     top: 0,
@@ -190,22 +218,22 @@ const InventoryPage = () => {
                     alignItems: "flex-start",
                 }}
             >
-                <Typography variant="h6">Add Ingredient</Typography>
-                <TextField
+                &lt;Typography variant="h6">Add Ingredient&lt;/Typography>
+                &lt;TextField
                     label="Name"
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                <TextField
+                &lt;TextField
                     label="Price"
                     value={newItemPrice}
                     onChange={(e) => setNewItemPrice(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                <TextField
+                &lt;TextField
                     select
                     label="Supplier"
                     value={newSupplier}
@@ -214,50 +242,73 @@ const InventoryPage = () => {
                     style={{ marginBottom: "20px" }}
                 >
                     {suppliers.map((supplier) => (
-                        <MenuItem key={supplier} value={supplier}>
+                        &lt;MenuItem key={supplier} value={supplier}>
                             {supplier}
-                        </MenuItem>
+                        &lt;/MenuItem>
                     ))}
-                </TextField>
-                <Button
+                &lt;/TextField>
+                &lt;Button
                     variant="contained"
                     onClick={handleAddIngredient}
                     style={{ marginBottom: "20px" }}
                 >
                     Add
-                </Button>
-                <Typography variant="h6">Restock Ingredient</Typography>
-                <TextField
+                &lt;/Button>
+                &lt;Typography variant="h6">Restock Ingredient&lt;/Typography>
+                &lt;TextField
                     label="Name"
                     value={restockName}
                     onChange={(e) => setRestockName(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                <TextField
+                &lt;TextField
                     label="Quantity"
                     value={restockQuantity}
                     onChange={(e) => setRestockQuantity(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                <TextField
+                &lt;TextField
                     label="Unit Price"
                     value={restockPrice}
                     onChange={(e) => setRestockPrice(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                <Button
+                &lt;Button
                     variant="contained"
                     onClick={handleRestockIngredient}
                     disabled={selectedIngredient === null}
                 >
                     Restock
-                </Button>
-            </div>
-        </div>
+                &lt;/Button>
+            &lt;/div>
+        &lt;/div>
     );
 };
 
 export default InventoryPage;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-LineChart.html">LineChart</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#AverageOrderPriceChart">AverageOrderPriceChart</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:38:38 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

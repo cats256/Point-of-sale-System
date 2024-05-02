@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Authentication/navpage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Authentication/navpage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Navigation page component for Rev's American Grill. This component handles user navigation and language selection.
+ * It initializes the Google API client and displays different navigation buttons based on user roles,
+ * along with a language selection dropdown. It also includes hidden login functionality.
+ *
+ * @component
+ * @param {Object} props - The props passed to the component.
+ * @param {Object} props.languages - Available languages for the user to select.
+ * @param {Function} props.setCurrLanguage - Function to set the current language.
+ * @param {string} props.currLanguage - Currently selected language.
+ * @example
+ * const languages = { English: 'en', Spanish: 'es' };
+ * const [currLanguage, setCurrLanguage] = useState('en');
+ * return (
+ *   &lt;Nav languages={languages} setCurrLanguage={setCurrLanguage} currLanguage={currLanguage} />
+ * )
+ */
+
+import { Button } from "@mui/material";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Logout } from "./logout";
+import { gapi } from "gapi-script";
+import { Login } from "./login";
+import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
+import "./navpage.css";
+
+const clientID =
+    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+
+function Nav({ languages, setCurrLanguage, currLanguage }) {
+    sessionStorage.setItem("user_email", "");
+
+    useEffect(() => {
+        /**
+         * Initializes Google API client.
+         */
+        function start() {
+            gapi.client.init({
+                clientID: clientID,
+                scope: "",
+            });
+        }
+
+        gapi.load("client:auth2", start);
+    }, []);
+
+    /**
+     * Handles the change event for language selection.
+     * Updates the current language state.
+     *
+     * @param {Object} event - The event object from the select input.
+     */
+
+    const handleChange = (event) => {
+        setCurrLanguage(event.target.value);
+    };
+
+    return (
+        &lt;div className="navigation-page">
+            &lt;div className="page-header">
+                &lt;ReveilleLogo className="logo" />
+                &lt;h1>Welcome To Rev's American Grill&lt;/h1>
+            &lt;/div>
+
+            &lt;div className="control-panel">
+                &lt;FormControl variant="outlined" className="custom-select">
+                    &lt;InputLabel>Language&lt;/InputLabel>
+                    &lt;Select
+                        value={currLanguage}
+                        label="Language"
+                        onChange={handleChange}
+                    >
+                        {Object.keys(languages).map((lang) => (
+                            &lt;MenuItem key={lang} value={lang}>
+                                {lang}
+                            &lt;/MenuItem>
+                        ))}
+                    &lt;/Select>
+                &lt;/FormControl>
+                &lt;Logout />
+            &lt;/div>
+
+            &lt;div className="nav-container" style={{ margin: 10 }}>
+                &lt;Link to="/manager">
+                    &lt;Button variant="outlined">Manager&lt;/Button>
+                &lt;/Link>
+                &lt;Link to="/cashier">
+                    &lt;Button variant="outlined">Cashier&lt;/Button>
+                &lt;/Link>
+                &lt;Link to="/customer">
+                    &lt;Button variant="outlined">Kiosk&lt;/Button>{" "}
+                    {/* New button for Kiosk */}
+                &lt;/Link>
+                &lt;Link to="/menu">
+                    &lt;Button variant="outlined">Menu&lt;/Button>
+                &lt;/Link>
+                &lt;Link to="/kitchen">
+                    &lt;Button variant="outlined">Kitchen&lt;/Button>
+                &lt;/Link>
+            &lt;/div>
+
+            &lt;div style={{ display: "none" }}>
+                &lt;Login />
+            &lt;/div>
+        &lt;/div>
+    );
+}
+
+export { Nav };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-LineChart.html">LineChart</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#AverageOrderPriceChart">AverageOrderPriceChart</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:38:38 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

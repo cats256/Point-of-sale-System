@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: network/errors.js</title>
+    <title>JSDoc: Source: components/ManagerView/pages/StatsDisplays/LineChart.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: network/errors.js</h1>
+    <h1 class="page-title">Source: components/ManagerView/pages/StatsDisplays/LineChart.js</h1>
 
     
 
@@ -26,22 +26,44 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>class HttpError extends Error {
-    constructor(message = "") {
-        super(message);
-        this.name = this.constructor.name;
-    }
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents a line chart component.
+ * @module LineChart
+ * @param {Object} props - The props object.
+ * @param {Object} props.chartData - The data for the line chart.
+ */
+
+// components/LineChart.js
+import React from "react";
+import { Line } from "react-chartjs-2";
+
+function LineChart({ chartData }) {
+    /**
+     * Renders the line chart component.
+     * @returns {JSX.Element} The line chart component.
+     */
+
+    return (
+        &lt;div className="chart-container">
+            &lt;h2 style={{ textAlign: "center" }}>Line Chart&lt;/h2>
+            &lt;Line
+                data={chartData}
+                options={{
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Users Gained between 2016-2020",
+                        },
+                        legend: {
+                            display: false,
+                        },
+                    },
+                }}
+            />
+        &lt;/div>
+    );
 }
-
-/**
- * Status code: 401
- */
-export class UnauthorizedError extends HttpError {}
-
-/**
- * Status code: 409
- */
-export class ConflictError extends HttpError {}
+export default LineChart;
 </code></pre>
         </article>
     </section>

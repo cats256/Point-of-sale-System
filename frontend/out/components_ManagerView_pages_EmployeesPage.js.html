@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ManagerView/pages/EmployeesPage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ManagerView/pages/EmployeesPage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import lowess from "@stdlib/stats-lowess";
+import { Chart, registerables } from "chart.js";
+import { sgg } from "ml-savitzky-golay-generalized";
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import { getOrders } from "../../../../network/api";
+
+Chart.register(...registerables);
+
+/**
+ * Represents a component for displaying a graph of total orders.
+ * @module TotalOrdersGraph
+ * @param {Object} props - The props object.
+ * @param {Date} props.start_date - The start date for filtering orders.
+ * @param {Date} props.end_date - The end date for filtering orders.
+ * @param {string} props.smoothingOption - The option for applying a smoothing filter to the data.
+ */
+const TotalOrdersGraph = ({ start_date, end_date, smoothingOption }) => {
+    /**
+     * State to store the data for the order graph.
+     * @type {[Object, function]}
+     */
+    const [orderData, setOrderData] = useState({ labels: [], datasets: [] });
+
+    /**
+     * Fetches data for the order graph based on the provided dates and smoothing option.
+     * @function fetchData
+     */
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const orders = await getOrders(start_date, end_date);
+                const ordersPerDay = {};
+
+                orders.forEach((order) => {
+                    const orderDate = order[3].split(",")[1].trim();
+                    if (!ordersPerDay[orderDate]) {
+                        ordersPerDay[orderDate] = 0;
+                    }
+                    ordersPerDay[orderDate]++;
+                });
+
+                const orderDates = Object.keys(ordersPerDay);
+                const orderCounts = Object.values(ordersPerDay);
+
+                let yData;
+
+                switch (smoothingOption) {
+                    case "Savitzky-Golay Filter":
+                        yData = sgg(orderCounts, 1, {
+                            windowSize:
+                                Math.floor(orderCounts.length / 20) % 2 === 0
+                                    ? Math.floor(orderCounts.length / 20) + 1
+                                    : Math.floor(orderCounts.length / 20),
+                            derivative: 0,
+                            polynomial: 3,
+                        });
+                        break;
+                    case "LOWESS":
+                        yData = lowess(
+                            Array.from(
+                                { length: orderCounts.length },
+                                (_, i) => i + 1
+                            ),
+                            orderCounts,
+                            { f: 0.1, nsteps: 10 }
+                        ).y;
+                        break;
+                    default:
+                        yData = orderCounts;
+                        break;
+                }
+
+                const newOrderData = {
+                    labels: orderDates,
+                    datasets: [
+                        {
+                            label: "Number of Orders",
+                            data: yData,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                        },
+                    ],
+                };
+
+                setOrderData(newOrderData);
+            } catch (error) {
+                console.error("Error fetching order data:", error);
+            }
+        };
+
+        // Fetch order data when component mounts or when start_date, end_date, or smoothingOption changes
+        fetchData();
+    }, [start_date, end_date, smoothingOption]);
+
+    return (
+        &lt;div>
+            &lt;div className="chart-container">
+                &lt;h3>Orders Line Chart&lt;/h3>
+                &lt;Line
+                    data={orderData}
+                    options={{
+                        scales: {
+                            x: {
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    maxTicksLimit: 5,
+                                },
+                            },
+                        },
+                    }}
+                />
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default TotalOrdersGraph;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AverageOrderPriceChart.html">AverageOrderPriceChart</a></li><li><a href="module-IngredientUsageTable.html">IngredientUsageTable</a></li><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-LineChart.html">LineChart</a></li><li><a href="module-MenuItemOrdersHistogram.html">MenuItemOrdersHistogram</a></li><li><a href="module-OrderTrendsTable.html">OrderTrendsTable</a></li><li><a href="module-PopularProductsHistogram.html">PopularProductsHistogram</a></li><li><a href="module-TotalOrdersGraph.html">TotalOrdersGraph</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:36:46 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,26 +1,28 @@
 /**
  * Represents a component for displaying the average order price chart.
- * @module AverageOrderPriceChart
- * @param {Object} props - The props object.
- * @param {Date} props.date - The date for which the average order price is calculated.
+ * @param {Object} props - The props object containing the date.
+ * @param {Date} props.date - The date for which the average order price data is fetched.
+ * @returns {JSX.Element} The JSX element representing the average order price chart component.
  */
-
-// AverageOrderPriceChart.js
-import React, { useState, useEffect } from "react";
-
 const AverageOrderPriceChart = ({ date }) => {
     /**
-     * State to store the data for the average order price.
-     * @type {[Array, function]}
+     * State hook for storing the average order price data.
+     * @type {Array}
      */
-
     const [averageOrderPriceData, setAverageOrderPriceData] = useState([]);
-    /**
-     * Fetches data for the average order price based on the provided date.
-     * @function fetchData
-     */
 
+    /**
+     * Effect hook for fetching average order price data from the server.
+     * @function
+     * @param {Date} date - The date for which data is fetched.
+     */
     useEffect(() => {
+        /**
+         * Fetches average order price data from the server.
+         * @async
+         * @function
+         * @returns {Promise<void>} A promise that resolves when data is fetched successfully.
+         */
         const fetchData = async () => {
             try {
                 const response = await fetch(
