@@ -14,6 +14,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TotalOrdersGraph from "./StatsDisplays/TotalOrdersGraph";
 import MenuItemOrdersHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
 import IngredientUsageTable from "./StatsDisplays/IngredientUsageTable";
+import SalesReport from "./StatsDisplays/SalesReport";
+import WhatSellsTogether from "./StatsDisplays/SalesReport";
 // import OrderTrendsTable from "./StatsDisplays/OrderTrendsTable";
 
 const StatsPage = () => {
@@ -47,12 +49,12 @@ const StatsPage = () => {
                 >
                     Ingredient Usage Table
                 </Button>
-                {/* <Button
-                    variant={displayGraph === "OrderTrendsTable" ? "contained" : "outlined"}
-                    onClick={() => setDisplayGraph("OrderTrendsTable")}
+                <Button
+                    variant={displayGraph === "WhatSellsTogether" ? "contained" : "outlined"}
+                    onClick={() => setDisplayGraph("WhatSellsTogether")}
                 >
-                    Order Trends Table
-                </Button> */}
+                    What Sells Together
+                </Button>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker

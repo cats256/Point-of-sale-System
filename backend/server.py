@@ -342,6 +342,67 @@ def ingredient_usage():
 
     return ingredients_info
 
+# API endpoint for sales report
+@app.route("/sales_report", methods=["GET"])
+def sales_report():
+    cur = get_cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL(
+        """
+        SELECT
+            mi.id AS menu_item_id,
+            mi.name AS menu_item_name,
+            COUNT(omi.menu_item_id) AS total_sales_count,
+            SUM(o.price) AS total_sales_amount
+        FROM
+            orders o
+            JOIN order_menu_items omi ON o.id = omi.order_id
+            JOIN menu_items mi ON omi.menu_item_id = mi.id
+        WHERE
+            o.date >= %s
+            AND o.date <= %s
+        GROUP BY
+            mi.id
+        ORDER BY
+            total_sales_count DESC
+        """
+    )
+    cur.execute(query, (start_date, end_date))
+    sales = cur.fetchall()
+    cur.close()
+
+    return sales
+
+# API endpoint for sales report
+@app.route("/what_sells_together", methods=["GET"])
+def what_sells_together():
+    cur = get_cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL(
+        """
+        SELECT om1.menu_item_id AS menu_item_id_1, om2.menu_item_id AS menu_item_id_2, COUNT(*) AS count, o.date "
+        +
+        "FROM order_menu_items om1 " +
+        "JOIN order_menu_items om2 ON om1.order_id = om2.order_id AND om1.menu_item_id < om2.menu_item_id "
+        +
+        "JOIN orders o ON om1.order_id = o.id " +
+        "WHERE o.date BETWEEN CAST(%s AS TIMESTAMP) AND CAST(%s AS TIMESTAMP) " +
+        "GROUP BY om1.menu_item_id, om2.menu_item_id, o.date " +
+        "ORDER BY count DESC, o.date ASC;
+        """
+    )
+    cur.execute(query, (start_date, end_date))
+    sales = cur.fetchall()
+    cur.close()
+
+    return sales
+
 
 # API endpoint for order trends report
 @app.route("/order_trends", methods=["GET"])

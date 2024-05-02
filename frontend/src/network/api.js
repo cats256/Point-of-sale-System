@@ -222,6 +222,17 @@ export async function getIngredientUsage(start_date, end_date) {
     return response.data;
 }
 
+export async function getSalesReport(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/sales_report`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
 export async function getOrderTrends(start_date, end_date) {
     const response = await axios.get(`${API_BASE}/order_trends`, {
         params: {
