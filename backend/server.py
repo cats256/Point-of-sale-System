@@ -694,6 +694,8 @@ def ingredient_delete():
     id = request.args.get("id")
 
     cur = get_cursor()
+    query0 = sql.SQL("DELETE FROM restock_order WHERE id = %s;")
+    cur.execute(query0, (id, ))
     query = sql.SQL("DELETE FROM ingredients WHERE id = %s;")
     cur.execute(query, (id, ))
     query2 = sql.SQL("DELETE FROM menu_item_ingredients WHERE ingredient_id = %s;")

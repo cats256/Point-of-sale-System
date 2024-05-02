@@ -17,15 +17,16 @@ const InventoryPage = () => {
   const [editPrice, setEditPrice] = useState("");
   const [editSupplier, setEditSupplier] = useState("");
 
-  useEffect(() => {
-    async function fetchIngredients() {
-      try {
-        const ingredients = await getIngredients();
-        setIngredients(ingredients);
-      } catch (error) {
-        console.error("Error fetching ingredient list:", error);
-      }
+  async function fetchIngredients() {
+    try {
+      const ingredients = await getIngredients();
+      setIngredients(ingredients);
+    } catch (error) {
+      console.error("Error fetching ingredient list:", error);
     }
+  }
+
+  useEffect(() => {
     fetchIngredients();  
     
     async function fetchSuppliers() {
@@ -79,6 +80,9 @@ const InventoryPage = () => {
           setRestockName('');
           setRestockQuantity('');
           setRestockPrice('');
+          setEditName('');
+          setEditPrice('');
+          setEditSupplier('');
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -118,7 +122,13 @@ const InventoryPage = () => {
                 name: editName,
                 supplier: editSupplier,
                 };
-                setIngredients(updatedIngredients); 
+                setEditName('');
+                setEditPrice('');
+                setEditSupplier('');
+                setRestockName('');
+                setRestockQuantity('');
+                setRestockPrice('');
+                fetchIngredients();
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -129,7 +139,7 @@ const InventoryPage = () => {
 
   const handleDeleteIngredient = () => {
     if (selectedIngredient !== null) {
-      // Call API to delete menu item
+
       deleteIngredient(selectedIngredient)
         .then(() => {
           const updatedIngredients = ingredients.filter(
@@ -138,6 +148,12 @@ const InventoryPage = () => {
           setIngredients(updatedIngredients);
           // Reset selection after deletion
           setSelectedIngredient(null);
+          setEditName('');
+          setEditPrice('');
+          setEditSupplier('');
+          setRestockName('');
+          setRestockQuantity('');
+          setRestockPrice('');
         })
         .catch((error) => {
           console.error("Error deleting ingredient:", error);
@@ -155,7 +171,7 @@ const InventoryPage = () => {
   );
 
   return (
-    <div style={{ marginLeft: "15%", display: "flex", overflowY: "auto" }}>
+    <div style={{ marginLeft: "15%", display: "flex", overflow: "auto" }}>
       <div style={{ width: "50%", padding: "20px" }}>
         <Typography variant="h6">Ingredients</Typography>
         <TextField
