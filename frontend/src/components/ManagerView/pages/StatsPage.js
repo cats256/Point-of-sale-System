@@ -1,4 +1,12 @@
-// statspage.js
+/**
+ * Represents a component for displaying statistics.
+ * Allows users to select different types of statistics to view,
+ * including total orders graph, menu item orders histogram, and ingredient usage table.
+ * Users can also choose the start and end dates for the statistics display,
+ * as well as a smoothing option for the graphs.
+ * @module StatsPage
+ */
+
 import React, { useState } from "react";
 import {
     FormControl,
@@ -16,10 +24,14 @@ import MenuItemOrdersHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
 import IngredientUsageTable from "./StatsDisplays/IngredientUsageTable";
 // import OrderTrendsTable from "./StatsDisplays/OrderTrendsTable";
 
+/**
+ * A React component for displaying statistics.
+ * @returns {JSX.Element} The rendered component.
+ */
 const StatsPage = () => {
+    // State hooks for managing component data
     const defaultStartDate = new Date(2024, 0, 1);
     const defaultEndDate = new Date(2024, 3, 15);
-
     const [startDate, setStartDate] = useState(defaultStartDate);
     const [endDate, setEndDate] = useState(defaultEndDate);
     const [smoothingOption, setSmoothingOption] = useState("None");
@@ -30,19 +42,29 @@ const StatsPage = () => {
         <div style={{ marginLeft: "15%" }}>
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
                 <Button
-                    variant={displayGraph === "TotalOrdersGraph" ? "contained" : "outlined"}
+                    variant={
+                        displayGraph === "TotalOrdersGraph"
+                            ? "contained"
+                            : "outlined"
+                    }
                     onClick={() => setDisplayGraph("TotalOrdersGraph")}
                 >
                     Total Orders Graph
                 </Button>
                 <Button
-                    variant={displayGraph === "Histogram" ? "contained" : "outlined"}
+                    variant={
+                        displayGraph === "Histogram" ? "contained" : "outlined"
+                    }
                     onClick={() => setDisplayGraph("Histogram")}
                 >
                     Menu Item Orders Histogram
                 </Button>
                 <Button
-                    variant={displayGraph === "IngredientUsageTable" ? "contained" : "outlined"}
+                    variant={
+                        displayGraph === "IngredientUsageTable"
+                            ? "contained"
+                            : "outlined"
+                    }
                     onClick={() => setDisplayGraph("IngredientUsageTable")}
                 >
                     Ingredient Usage Table
@@ -65,9 +87,7 @@ const StatsPage = () => {
                 <DatePicker
                     label="End Date"
                     value={dayjs(endDate)}
-                    onChange={(currentDate) =>
-                        setEndDate(currentDate.toDate())
-                    }
+                    onChange={(currentDate) => setEndDate(currentDate.toDate())}
                 />
                 <FormControl style={{ width: "200px" }}>
                     <InputLabel>Smoothing Option</InputLabel>
@@ -93,20 +113,20 @@ const StatsPage = () => {
                     smoothingOption={smoothingOption}
                 />
             ) : displayGraph === "Histogram" ? (
-                <MenuItemOrdersHistogram 
+                <MenuItemOrdersHistogram
                     start_date={startDate}
                     end_date={endDate}
                 />
             ) : (
-                <IngredientUsageTable 
+                <IngredientUsageTable
                     start_date={startDate}
                     end_date={endDate}
                 />
-            // ) : (
-            //     <OrderTrendsTable
-            //         start_date={startDate}
-            //         end_date={endDate}
-            //     />
+                // ) : (
+                //     <OrderTrendsTable
+                //         start_date={startDate}
+                //         end_date={endDate}
+                //     />
             )}
         </div>
     );

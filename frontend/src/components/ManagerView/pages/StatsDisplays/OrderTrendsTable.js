@@ -1,27 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { getOrderTrends } from "../../../../network/api";
-
+/**
+ * Represents a component for displaying order trends in a table.
+ * @param {Object} props - The props object containing the start and end dates.
+ * @param {Date} props.start_date - The start date for the period of analysis.
+ * @param {Date} props.end_date - The end date for the period of analysis.
+ * @returns {JSX.Element} The JSX element representing the order trends table component.
+ */
 const OrderTrendsTable = ({ start_date, end_date }) => {
+    /**
+     * State hook for storing the order trends data.
+     * @type {Array}
+     */
     const [orderTrends, setOrderTrends] = useState([]);
 
+    /**
+     * Effect hook for fetching order trends data from the server.
+     * @function
+     * @param {Date} start_date - The start date for the period of analysis.
+     * @param {Date} end_date - The end date for the period of analysis.
+     */
     useEffect(() => {
-        // Fetch ingredient usage data when component mounts
+        /**
+         * Fetches order trends data from the server.
+         * @async
+         * @function
+         * @returns {Promise<void>} A promise that resolves when data is fetched successfully.
+         */
+        const fetchOrderTrends = async () => {
+            try {
+                const data = await getOrderTrends(start_date, end_date);
+                setOrderTrends(data);
+            } catch (error) {
+                console.error("Error fetching order trends:", error);
+            }
+        };
+
+        // Fetch order trends data when component mounts or when start_date or end_date changes
         fetchOrderTrends();
-    }, [start_date, end_date]); // Include start_date and end_date in the dependency array to fetch data when they change
+    }, [start_date, end_date]);
 
-    const fetchOrderTrends = async () => {
-        try {
-            const data = await getOrderTrends(start_date, end_date);
-            console.log(data);
-            setOrderTrends(data);
-        } catch (error) {
-            console.error("Error fetching ingredient usage:", error);
-        }
-    };
-
+    // Render the table component
     return (
         <div>
-            <h2>Ingredient Usage</h2>
+            <h2>Order Trends</h2>
             <table
                 style={{
                     borderCollapse: "collapse",

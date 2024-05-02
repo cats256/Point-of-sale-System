@@ -26,126 +26,431 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import lowess from "@stdlib/stats-lowess";
-import { Chart, registerables } from "chart.js";
-import { sgg } from "ml-savitzky-golay-generalized";
-import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-import { getOrders } from "../../../../network/api";
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents a component for managing employees.
+ * Displays tiles with employee name, ID, and orders completed.
+ * Gravatar images are used for employee avatars.
+ * Provides functionality for updating employee salary, deleting employees,
+ * adding new employees, and fetching employee data.
+ * @module EmployeesPage
+ */
 
-Chart.register(...registerables);
+import React, { useEffect, useState, useCallback } from "react";
+import sha256 from "crypto-js/sha256";
+import {
+    getEmployees,
+    updateSalary,
+    deleteEmployee,
+    addEmployee,
+    getHighestEmployeeId,
+} from "../../../network/api";
 
 /**
- * Represents a component for displaying a graph of total orders.
- * @module TotalOrdersGraph
- * @param {Object} props - The props object.
- * @param {Date} props.start_date - The start date for filtering orders.
- * @param {Date} props.end_date - The end date for filtering orders.
- * @param {string} props.smoothingOption - The option for applying a smoothing filter to the data.
+ * Generates a hash of the provided email address using SHA-256 algorithm.
+ * @param {string} email - The email address to be hashed.
+ * @returns {string} The hashed email.
  */
-const TotalOrdersGraph = ({ start_date, end_date, smoothingOption }) => {
-    /**
-     * State to store the data for the order graph.
-     * @type {[Object, function]}
-     */
-    const [orderData, setOrderData] = useState({ labels: [], datasets: [] });
+const hashEmail = (email) => {
+    const trimmedEmail = email.trim().toLowerCase();
+    const hashedEmail = sha256(trimmedEmail).toString();
+    return hashedEmail;
+};
+
+/**
+ * A React component for managing employees.
+ * @returns {JSX.Element} The rendered component.
+ */
+const EmployeesPage = () => {
+    // State hooks for managing component data
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [selectedEmployeeNum, setSelectedEmployeeNum] = useState(null);
+    const [employeeNames, setEmployeeNames] = useState([]);
+    const [employeeImages, setEmployeeImages] = useState([]);
+    const [employeeJob, setEmployeeJob] = useState("");
+    const [employees, setEmployees] = useState([]);
+    const [newSalary, setNewSalary] = useState();
+    const [reasonForDeletion, setReasonForDeletion] = useState("");
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [newEmployeeName, setNewEmployeeName] = useState("");
+    const [newEmployeeEmail, setNewEmployeeEmail] = useState("");
+    const [newEmployeeSalary, setNewEmployeeSalary] = useState("");
+    const [newEmployeeManager, setNewEmployeeManager] = useState(false);
 
     /**
-     * Fetches data for the order graph based on the provided dates and smoothing option.
-     * @function fetchData
+     * Fetches employee data from the server.
      */
+    const fetchData = useCallback(async () => {
+        const employees_ = await getEmployees();
+        const employee_names = [];
+        const employee_images = [];
+
+        employees_.forEach((employee) => {
+            employee_names.push(employee["name"]);
+            const imagelink =
+                "https://gravatar.com/avatar/" + hashEmail(employee["email"]);
+            employee_images.push(imagelink);
+        });
+
+        setEmployeeNames(employee_names);
+        setEmployeeImages(employee_images);
+        setEmployees(employees_);
+    }, []);
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const orders = await getOrders(start_date, end_date);
-                const ordersPerDay = {};
-
-                orders.forEach((order) => {
-                    const orderDate = order[3].split(",")[1].trim();
-                    if (!ordersPerDay[orderDate]) {
-                        ordersPerDay[orderDate] = 0;
-                    }
-                    ordersPerDay[orderDate]++;
-                });
-
-                const orderDates = Object.keys(ordersPerDay);
-                const orderCounts = Object.values(ordersPerDay);
-
-                let yData;
-
-                switch (smoothingOption) {
-                    case "Savitzky-Golay Filter":
-                        yData = sgg(orderCounts, 1, {
-                            windowSize:
-                                Math.floor(orderCounts.length / 20) % 2 === 0
-                                    ? Math.floor(orderCounts.length / 20) + 1
-                                    : Math.floor(orderCounts.length / 20),
-                            derivative: 0,
-                            polynomial: 3,
-                        });
-                        break;
-                    case "LOWESS":
-                        yData = lowess(
-                            Array.from(
-                                { length: orderCounts.length },
-                                (_, i) => i + 1
-                            ),
-                            orderCounts,
-                            { f: 0.1, nsteps: 10 }
-                        ).y;
-                        break;
-                    default:
-                        yData = orderCounts;
-                        break;
-                }
-
-                const newOrderData = {
-                    labels: orderDates,
-                    datasets: [
-                        {
-                            label: "Number of Orders",
-                            data: yData,
-                            fill: false,
-                            borderColor: "rgb(75, 192, 192)",
-                        },
-                    ],
-                };
-
-                setOrderData(newOrderData);
-            } catch (error) {
-                console.error("Error fetching order data:", error);
-            }
-        };
-
-        // Fetch order data when component mounts or when start_date, end_date, or smoothingOption changes
         fetchData();
-    }, [start_date, end_date, smoothingOption]);
+    }, [fetchData]);
+
+    /**
+     * Handles the click event on an employee tile.
+     * Sets the selected employee and updates the displayed job title.
+     * @param {object} employee - The selected employee object.
+     * @param {number} num - The index of the selected employee in the list.
+     */
+    const handleEmployeeClick = (employee, num) => {
+        setSelectedEmployee(employee);
+        setSelectedEmployeeNum(num);
+        if (employees[num]["manager"]) {
+            setEmployeeJob("Manager");
+        } else {
+            setEmployeeJob("Employee");
+        }
+    };
+
+    /**
+     * Updates the salary of the specified employee.
+     * @param {number} employeeId - The ID of the employee whose salary is to be updated.
+     * @param {string} newSalary - The new salary value.
+     */
+    const handleUpdateSalary = (employeeId, newSalary) => {
+        if (newSalary !== null) {
+            const parsedNewSalary = parseInt(newSalary);
+            setNewSalary("");
+            if (!isNaN(parsedNewSalary)) {
+                // Construct employee data
+                const employeeData = {
+                    id: employeeId,
+                    salary: parsedNewSalary,
+                };
+                // Update salary
+                updateSalary(employeeData)
+                    .then(() => {
+                        setNewSalary("");
+                        fetchData();
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        // Handle error if needed
+                    });
+            } else {
+                alert("Please enter a valid number for the salary.");
+            }
+        } else {
+            alert("Please enter a new salary.");
+        }
+    };
+
+    const handleDeleteConfirmation = () => {
+        setShowDeleteConfirmation(true);
+    };
+
+    const handleDeleteEmployee = async () => {
+        if (reasonForDeletion !== "") {
+            const employeeId = employees[selectedEmployeeNum]["id"];
+            const deleted_employee = {
+                id: employeeId,
+            };
+            await deleteEmployee(deleted_employee);
+            // Assuming deleteEmployee is a function that deletes the employee with provided id and reason
+            // You can handle the deletion process according to your backend implementation
+            // After deletion, you may want to update the UI accordingly
+            setSelectedEmployee(null);
+            setSelectedEmployeeNum(null);
+            setShowDeleteConfirmation(false);
+            setReasonForDeletion("");
+            fetchData();
+        } else {
+            alert("Please provide a reason for the deletion.");
+        }
+    };
+
+    const handleAddEmployee = async () => {
+        // Make sure all fields are filled
+        if (newEmployeeName &amp;&amp; newEmployeeEmail &amp;&amp; newEmployeeSalary) {
+            // Assuming you have a function to add an employee to the database
+            // You can call an API or use another method to send this data to the server
+            const newEmployeeIdAwait = await getHighestEmployeeId();
+            console.log(newEmployeeIdAwait.highest_id);
+            const newEmployeeId = parseInt(newEmployeeIdAwait.highest_id) + 1;
+            const employeeData = {
+                id: newEmployeeId,
+                name: newEmployeeName,
+                email: newEmployeeEmail,
+                salary: newEmployeeSalary,
+                manager: newEmployeeManager,
+            };
+            addEmployee(employeeData).then(() => {
+                fetchData();
+                setNewEmployeeName("");
+                setNewEmployeeEmail("");
+                setNewEmployeeSalary("");
+            });
+        } else {
+            alert("Please fill in all fields.");
+        }
+    };
 
     return (
-        &lt;div>
-            &lt;div className="chart-container">
-                &lt;h3>Orders Line Chart&lt;/h3>
-                &lt;Line
-                    data={orderData}
-                    options={{
-                        scales: {
-                            x: {
-                                ticks: {
-                                    autoSkip: true,
-                                    maxRotation: 0,
-                                    minRotation: 0,
-                                    maxTicksLimit: 5,
-                                },
-                            },
-                        },
+        &lt;div style={{ marginLeft: "15%", display: "flex" }}>
+            &lt;div style={{ flex: "1" }}>
+                &lt;h1>Employees Page&lt;/h1>
+                &lt;div
+                    className="employee-tiles"
+                    style={{ overflowY: "auto", maxHeight: "80vh" }}
+                >
+                    {employeeNames.map((employee, index) => (
+                        &lt;div
+                            key={index}
+                            className="employee-tile"
+                            style={{
+                                width: "40%",
+                                marginBottom: "20px",
+                                cursor: "pointer",
+                                border: "1px solid #ccc",
+                                padding: "1%",
+                            }}
+                            onClick={() => handleEmployeeClick(employee, index)}
+                        >
+                            &lt;img
+                                src={employeeImages[index]}
+                                alt="Employee"
+                                style={{
+                                    width: "20%",
+                                    height: "20%",
+                                    marginBottom: "10px",
+                                }}
+                            />
+                            &lt;div>{employee}&lt;/div>
+                        &lt;/div>
+                    ))}
+                &lt;/div>
+            &lt;/div>
+            &lt;div
+                style={{
+                    flex: "1",
+                    marginLeft: "10%",
+                    position: "fixed",
+                    top: "10%",
+                    width: "30%",
+                    right: "10%",
+                }}
+            >
+                &lt;h2>Employee Information&lt;/h2>
+                {selectedEmployee &amp;&amp; (
+                    &lt;div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            border: "1px solid #ccc",
+                            borderRadius: "10px",
+                            padding: "5%",
+                        }}
+                    >
+                        &lt;div style={{ display: "flex", alignItems: "left" }}>
+                            &lt;img
+                                src={employeeImages[selectedEmployeeNum]}
+                                alt="Employee"
+                                style={{
+                                    width: "100px",
+                                    height: "100px",
+                                    borderRadius: "50%",
+                                    marginRight: "20px",
+                                }}
+                            />
+                            &lt;h3 style={{ margin: 0, textAlign: "center" }}>
+                                {selectedEmployee}
+                            &lt;/h3>
+                        &lt;/div>
+                        &lt;div style={{ marginTop: "10px" }}>
+                            &lt;div
+                                style={{
+                                    marginBottom: "10px",
+                                    borderBottom: "1px solid #ccc",
+                                    paddingBottom: "5px",
+                                }}
+                            >
+                                &lt;span style={{ fontWeight: "bold" }}>
+                                    Salary:
+                                &lt;/span>{" "}
+                                {employees[selectedEmployeeNum]["salary"]}
+                                {/* &lt;button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update&lt;/button> */}
+                                &lt;div style={{ marginBottom: "10px" }}>
+                                    &lt;input
+                                        type="text"
+                                        placeholder="Enter new salary"
+                                        value={newSalary}
+                                        onChange={(e) =>
+                                            setNewSalary(e.target.value)
+                                        }
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                handleUpdateSalary(
+                                                    employees[
+                                                        selectedEmployeeNum
+                                                    ]["id"],
+                                                    newSalary
+                                                );
+                                            }
+                                        }}
+                                    />
+                                    &lt;button
+                                        style={{ marginLeft: "10px" }}
+                                        onClick={() =>
+                                            handleUpdateSalary(
+                                                employees[selectedEmployeeNum][
+                                                    "id"
+                                                ],
+                                                newSalary
+                                            )
+                                        }
+                                    >
+                                        Update
+                                    &lt;/button>
+                                &lt;/div>
+                            &lt;/div>
+                            &lt;div
+                                style={{
+                                    marginBottom: "10px",
+                                    borderBottom: "1px solid #ccc",
+                                    paddingBottom: "5px",
+                                }}
+                            >
+                                &lt;span style={{ fontWeight: "bold" }}>
+                                    Email:
+                                &lt;/span>{" "}
+                                {employees[selectedEmployeeNum]["email"]}
+                            &lt;/div>
+                            &lt;div>
+                                &lt;span style={{ fontWeight: "bold" }}>
+                                    Position:{" "}
+                                &lt;/span>{" "}
+                                {employeeJob}
+                            &lt;/div>
+                            &lt;div style={{ marginTop: "10px" }}>
+                                &lt;button onClick={handleDeleteConfirmation}>
+                                    Delete
+                                &lt;/button>
+                                {showDeleteConfirmation &amp;&amp; (
+                                    &lt;div style={{ marginTop: "10px" }}>
+                                        &lt;input
+                                            type="text"
+                                            placeholder="Reason for deletion"
+                                            value={reasonForDeletion}
+                                            onChange={(e) =>
+                                                setReasonForDeletion(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        &lt;button onClick={handleDeleteEmployee}>
+                                            Confirm Delete
+                                        &lt;/button>
+                                    &lt;/div>
+                                )}
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                )}
+                &lt;div
+                    style={{
+                        position: "fixed",
+                        width: "40%",
+                        bottom: "5%",
+                        height: "28%",
+                        right: "5%",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        backgroundColor: "#f0f0f0",
+                        padding: "1%",
+                        // borderRadius: "5px",
+                        // boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
                     }}
-                />
+                >
+                    &lt;h3>Add Employee&lt;/h3>
+                    &lt;div
+                        style={{
+                            // marginBottom: "2%",
+                            // padding: "5%",
+                            marginTop: "1%",
+                        }}
+                    >
+                        &lt;input
+                            type="text"
+                            placeholder="Name"
+                            value={newEmployeeName}
+                            onChange={(e) => setNewEmployeeName(e.target.value)}
+                        />
+                        &lt;input
+                            type="email"
+                            placeholder="Email"
+                            value={newEmployeeEmail}
+                            onChange={(e) =>
+                                setNewEmployeeEmail(e.target.value)
+                            }
+                        />
+                        &lt;input
+                            type="number"
+                            placeholder="Salary"
+                            value={newEmployeeSalary}
+                            onChange={(e) =>
+                                setNewEmployeeSalary(e.target.value)
+                            }
+                        />
+                    &lt;/div>
+                    &lt;div
+                        style={{
+                            // marginTop: "1%",
+                            // padding: "5%",
+                            marginBottom: "1%",
+                        }}
+                    >
+                        &lt;label
+                            style={
+                                {
+                                    // padding: "5%",
+                                }
+                            }
+                        >
+                            Are they a manager?
+                            &lt;input
+                                type="checkbox"
+                                checked={newEmployeeManager}
+                                onChange={(e) =>
+                                    setNewEmployeeManager(e.target.checked)
+                                }
+                            />
+                        &lt;/label>
+                    &lt;/div>
+                    &lt;div>
+                        &lt;button
+                            onClick={handleAddEmployee}
+                            style={{
+                                backgroundColor: "#333",
+                                color: "#fff",
+                                padding: "10px 20px",
+                                borderRadius: "5px",
+                            }}
+                        >
+                            Add Employee
+                        &lt;/button>
+                    &lt;/div>
+                &lt;/div>
             &lt;/div>
         &lt;/div>
     );
 };
 
-export default TotalOrdersGraph;
+export default EmployeesPage;
 </code></pre>
         </article>
     </section>
@@ -156,13 +461,13 @@ export default TotalOrdersGraph;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-AverageOrderPriceChart.html">AverageOrderPriceChart</a></li><li><a href="module-IngredientUsageTable.html">IngredientUsageTable</a></li><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-LineChart.html">LineChart</a></li><li><a href="module-MenuItemOrdersHistogram.html">MenuItemOrdersHistogram</a></li><li><a href="module-OrderTrendsTable.html">OrderTrendsTable</a></li><li><a href="module-PopularProductsHistogram.html">PopularProductsHistogram</a></li><li><a href="module-TotalOrdersGraph.html">TotalOrdersGraph</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-API.html">API</a></li><li><a href="module-EmployeesPage.html">EmployeesPage</a></li><li><a href="module-InventoryPage.html">InventoryPage</a></li><li><a href="module-LineChart.html">LineChart</a></li><li><a href="module-ManagerView.html">ManagerView</a></li><li><a href="module-MenuPage.html">MenuPage</a></li><li><a href="module-MenuView.html">MenuView</a></li><li><a href="module-Sidebar.html">Sidebar</a></li><li><a href="module-StatsPage.html">StatsPage</a></li></ul><h3>Classes</h3><ul><li><a href="ConflictError.html">ConflictError</a></li><li><a href="HttpError.html">HttpError</a></li><li><a href="UnauthorizedError.html">UnauthorizedError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accessibility">Accessibility</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#AverageOrderPriceChart">AverageOrderPriceChart</a></li><li><a href="global.html#BasketContext">BasketContext</a></li><li><a href="global.html#BasketProvider">BasketProvider</a></li><li><a href="global.html#CashierView">CashierView</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#FontSizeContext">FontSizeContext</a></li><li><a href="global.html#FontSizeProvider">FontSizeProvider</a></li><li><a href="global.html#IngredientUsageTable">IngredientUsageTable</a></li><li><a href="global.html#MenuItemOrdersHistogram">MenuItemOrdersHistogram</a></li><li><a href="global.html#NavBar">NavBar</a></li><li><a href="global.html#NavigationBar">NavigationBar</a></li><li><a href="global.html#OrderTrendsTable">OrderTrendsTable</a></li><li><a href="global.html#PopularProductsHistogram">PopularProductsHistogram</a></li><li><a href="global.html#TotalOrdersGraph">TotalOrdersGraph</a></li><li><a href="global.html#ZoomContext">ZoomContext</a></li><li><a href="global.html#ZoomProvider">ZoomProvider</a></li><li><a href="global.html#calculateTotalPrice">calculateTotalPrice</a></li><li><a href="global.html#categories">categories</a></li><li><a href="global.html#formatItemName">formatItemName</a></li><li><a href="global.html#getItemNameColor">getItemNameColor</a></li><li><a href="global.html#root">root</a></li><li><a href="global.html#useBasket">useBasket</a></li><li><a href="global.html#useZoom">useZoom</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:36:46 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:59:26 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

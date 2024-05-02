@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/Authentication/logout.js</title>
+    <title>JSDoc: Source: components/ManagerView/Sidebar.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/Authentication/logout.js</h1>
+    <h1 class="page-title">Source: components/ManagerView/Sidebar.js</h1>
 
     
 
@@ -27,63 +27,102 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Represents a logout component using Google's OAuth service.
- * This component provides a logout button and handles the logout flow,
- * clearing the user's session and redirecting to the home page upon successful logout.
- *
- * @component
- * @example
- * return (
- *   &lt;Logout />
- * )
+ * Represents a sidebar component for navigation.
+ * Provides buttons for navigating to different pages in the manager dashboard.
+ * @module Sidebar
  */
 
-import { GoogleLogout } from "@leecheuk/react-google-login";
-import { Button } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import Button from "@mui/material/Button";
 
-const clientID =
-    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
-
-function Logout() {
-    /**
-     * State to track if the user is logged in.
-     * @type {boolean}
-     */
-
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
-    const navigate = useNavigate();
-
-    /**
-     * Handles the logout event.
-     * Clears the user's email from sessionStorage and updates the logged-in state,
-     * then navigates to the root page '/'.
-     *
-     * @param {Object} res - The response object returned from the logout event.
-     */
-
-    const onSuccess = (res) => {
-        console.log("Logout Successful!");
-        sessionStorage.setItem("user_email", "");
-        setIsLoggedIn(false);
-        navigate("/");
-    };
-
+/**
+ * A React component representing the sidebar for navigation.
+ * @param {Object} props - The component properties.
+ * @param {Function} props.setPage - Function to set the currently displayed page.
+ * @returns {JSX.Element} The rendered component.
+ */
+const Sidebar = ({ setPage }) => {
     return (
-        &lt;div id="signOutButton">
+        &lt;div
+            className="sidebar"
+            style={{
+                position: "fixed",
+                display: "flex",
+                flexDirection: "column",
+                width: "15vw",
+                justifyContent: "space-between",
+                minHeight: "100vh",
+            }}
+        >
+            {/* Button for navigating to Employee Information page */}
             &lt;Button
                 variant="outlined"
-                onClick={onSuccess}
-                className="logout-button"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("employees")}
             >
-                Logout
+                Employee Information
+            &lt;/Button>
+            {/* Button for navigating to Inventory Display page */}
+            &lt;Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("inventory")}
+            >
+                Inventory Display
+            &lt;/Button>
+            {/* Button for navigating to POS Information page */}
+            &lt;Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("stats")}
+            >
+                POS Information
+            &lt;/Button>
+            {/* Button for navigating to Menu page */}
+            &lt;Button
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                    borderRadius: 0,
+                    color: "black",
+                    border: "1px solid black",
+                    borderLeftWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: "1px",
+                }}
+                onClick={() => setPage("menu")}
+            >
+                Menu
             &lt;/Button>
         &lt;/div>
     );
-}
+};
 
-export { Logout };
+export default Sidebar;
 </code></pre>
         </article>
     </section>

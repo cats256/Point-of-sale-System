@@ -1,7 +1,18 @@
-// Sidebar.js
+/**
+ * Represents a sidebar component for navigation.
+ * Provides buttons for navigating to different pages in the manager dashboard.
+ * @module Sidebar
+ */
+
 import React from "react";
 import Button from "@mui/material/Button";
 
+/**
+ * A React component representing the sidebar for navigation.
+ * @param {Object} props - The component properties.
+ * @param {Function} props.setPage - Function to set the currently displayed page.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Sidebar = ({ setPage }) => {
     return (
         <div
@@ -15,6 +26,7 @@ const Sidebar = ({ setPage }) => {
                 minHeight: "100vh",
             }}
         >
+            {/* Button for navigating to Employee Information page */}
             <Button
                 variant="outlined"
                 style={{
@@ -30,6 +42,7 @@ const Sidebar = ({ setPage }) => {
             >
                 Employee Information
             </Button>
+            {/* Button for navigating to Inventory Display page */}
             <Button
                 variant="outlined"
                 style={{
@@ -45,6 +58,7 @@ const Sidebar = ({ setPage }) => {
             >
                 Inventory Display
             </Button>
+            {/* Button for navigating to POS Information page */}
             <Button
                 variant="outlined"
                 style={{
@@ -60,6 +74,7 @@ const Sidebar = ({ setPage }) => {
             >
                 POS Information
             </Button>
+            {/* Button for navigating to Menu page */}
             <Button
                 variant="outlined"
                 style={{

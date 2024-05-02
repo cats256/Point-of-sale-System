@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/Authentication/logout.js</title>
+    <title>JSDoc: Source: index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/Authentication/logout.js</h1>
+    <h1 class="page-title">Source: index.js</h1>
 
     
 
@@ -26,64 +26,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Represents a logout component using Google's OAuth service.
- * This component provides a logout button and handles the logout flow,
- * clearing the user's session and redirecting to the home page upon successful logout.
- *
- * @component
- * @example
- * return (
- *   &lt;Logout />
- * )
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
+import { BasketProvider } from "./components/common/BasketContext";
+import { FontSizeProvider } from "../src/utils/FontSizeProvider";
+
+/**
+ * Renders the &lt;App> component into the DOM using ReactDOM.createRoot.
  */
 
-import { GoogleLogout } from "@leecheuk/react-google-login";
-import { Button } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
-const clientID =
-    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
-
-function Logout() {
-    /**
-     * State to track if the user is logged in.
-     * @type {boolean}
-     */
-
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
-    const navigate = useNavigate();
-
-    /**
-     * Handles the logout event.
-     * Clears the user's email from sessionStorage and updates the logged-in state,
-     * then navigates to the root page '/'.
-     *
-     * @param {Object} res - The response object returned from the logout event.
-     */
-
-    const onSuccess = (res) => {
-        console.log("Logout Successful!");
-        sessionStorage.setItem("user_email", "");
-        setIsLoggedIn(false);
-        navigate("/");
-    };
-
-    return (
-        &lt;div id="signOutButton">
-            &lt;Button
-                variant="outlined"
-                onClick={onSuccess}
-                className="logout-button"
-            >
-                Logout
-            &lt;/Button>
-        &lt;/div>
-    );
-}
-
-export { Logout };
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+    &lt;React.StrictMode>
+        &lt;BrowserRouter>
+            &lt;FontSizeProvider>
+                &lt;BasketProvider>
+                    &lt;App />
+                &lt;/BasketProvider>
+            &lt;/FontSizeProvider>
+        &lt;/BrowserRouter>
+    &lt;/React.StrictMode>
+);
 </code></pre>
         </article>
     </section>

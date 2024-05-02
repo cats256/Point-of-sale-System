@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/Authentication/logout.js</title>
+    <title>JSDoc: Class: HttpError</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,76 +17,221 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/Authentication/logout.js</h1>
+    <h1 class="page-title">Class: HttpError</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Represents a logout component using Google's OAuth service.
- * This component provides a logout button and handles the logout flow,
- * clearing the user's session and redirecting to the home page upon successful logout.
- *
- * @component
- * @example
- * return (
- *   &lt;Logout />
- * )
- */
+        <h2><span class="attribs"><span class="type-signature"></span></span>HttpError<span class="signature">(message<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Represents an HTTP error.</div>
+        
+    
+</header>
 
-import { GoogleLogout } from "@leecheuk/react-google-login";
-import { Button } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+<article>
+    <div class="container-overview">
+    
+        
 
-const clientID =
-    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+    
+    <h2>Constructor</h2>
+    
 
-function Logout() {
-    /**
-     * State to track if the user is logged in.
-     * @type {boolean}
-     */
+    
+    <h4 class="name" id="HttpError"><span class="type-signature"></span>new HttpError<span class="signature">(message<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
-    const navigate = useNavigate();
+    
 
-    /**
-     * Handles the logout event.
-     * Clears the user's email from sessionStorage and updates the logged-in state,
-     * then navigates to the root page '/'.
-     *
-     * @param {Object} res - The response object returned from the logout event.
-     */
 
-    const onSuccess = (res) => {
-        console.log("Logout Successful!");
-        sessionStorage.setItem("user_email", "");
-        setIsLoggedIn(false);
-        navigate("/");
-    };
 
-    return (
-        &lt;div id="signOutButton">
-            &lt;Button
-                variant="outlined"
-                onClick={onSuccess}
-                className="logout-button"
-            >
-                Logout
-            &lt;/Button>
-        &lt;/div>
-    );
-}
+<div class="description">
+    Constructs a new HttpError instance.
+</div>
 
-export { Logout };
-</code></pre>
-        </article>
-    </section>
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    ""
+                
+                </td>
+            
+
+            <td class="description last">The error message.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="network_errors.js.html">network/errors.js</a>, <a href="network_errors.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>Error</li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

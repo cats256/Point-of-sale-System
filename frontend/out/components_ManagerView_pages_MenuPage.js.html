@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/ManagerView/pages/InventoryPage.js</title>
+    <title>JSDoc: Source: components/ManagerView/pages/MenuPage.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/ManagerView/pages/InventoryPage.js</h1>
+    <h1 class="page-title">Source: components/ManagerView/pages/MenuPage.js</h1>
 
     
 
@@ -26,152 +26,146 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents a component for managing menu items.
+ * Allows users to view, search, add, edit, and delete menu items.
+ * @module MenuPage
+ */
+
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, MenuItem } from "@mui/material";
 import {
-    submitRestockOrder,
-    getIngredients,
-    addIngredient,
-    getSuppliers,
+    editMenuItems,
+    getMenuItems,
+    addMenuItem,
+    getMenuItemTypes,
+    deleteMenuItems,
 } from "../../../network/api";
 
 /**
- * Represents a component for managing inventory.
- * @module InventoryPage
+ * A React component for managing menu items.
+ * @returns {JSX.Element} The rendered component.
  */
-const InventoryPage = () => {
-    /**
-     * State variables for managing ingredient data.
-     */
-    const [ingredients, setIngredients] = useState([]);
-    const [selectedIngredient, setSelectedIngredient] = useState(null);
+const MenuPage = () => {
+    // State hooks for managing component data
+    const [menuItems, setMenuItems] = useState([]);
+    const [menuItemTypes, setMenuItemTypes] = useState([]);
+    const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+    const [editName, setEditName] = useState("");
+    const [editPrice, setEditPrice] = useState("");
     const [newItemName, setNewItemName] = useState("");
     const [newItemPrice, setNewItemPrice] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
-    const [restockName, setRestockName] = useState("");
-    const [restockPrice, setRestockPrice] = useState("");
-    const [restockQuantity, setRestockQuantity] = useState("");
-    const [newSupplier, setNewSupplier] = useState("");
-    const [suppliers, setSuppliers] = useState([]);
+    const [newItemType, setNewItemType] = useState("");
 
-    /**
-     * Fetches ingredients and suppliers data on component mount.
-     */
     useEffect(() => {
-        async function fetchIngredients() {
+        // Fetch menu items and types from API
+        async function fetchData() {
             try {
-                const ingredients = await getIngredients();
-                setIngredients(ingredients);
-            } catch (error) {
-                console.error("Error fetching ingredient list:", error);
-            }
-        }
-        fetchIngredients();
+                const items = await getMenuItems();
+                setMenuItems(items);
 
-        async function fetchSuppliers() {
-            try {
-                const suppliers = await getSuppliers();
-                const suppliersList = suppliers.map(
-                    (supplier) => supplier.supplier
-                );
-                setSuppliers(suppliersList);
-                if (suppliersList.length > 0) {
-                    setNewSupplier(suppliersList[0]);
+                const types = await getMenuItemTypes();
+                const typesList = types.map((type) => type.type);
+                setMenuItemTypes(typesList);
+                if (typesList.length > 0) {
+                    setNewItemType(typesList[0]); // Set initial value for newItemType
                 }
             } catch (error) {
-                console.error("Error fetching suppliers:", error);
+                console.error("Error fetching data:", error);
             }
         }
-        fetchSuppliers();
+        fetchData();
     }, []);
 
     /**
-     * Handles the click event for selecting an ingredient.
-     * @param {number} ingredientId - The ID of the selected ingredient.
+     * Handles the click event on a menu item.
+     * Sets the selected menu item and updates the edit fields.
+     * @param {number} index - The index of the selected menu item.
      */
-    const handleIngredientClick = (ingredientId) => {
-        const ingredientIndex = ingredients.findIndex(
-            (ingredient) => ingredient.id === ingredientId
-        );
-
-        if (ingredientIndex !== -1) {
-            setSelectedIngredient(ingredientId);
-
-            setRestockName(ingredients[ingredientIndex].name);
-            setRestockPrice(ingredients[ingredientIndex].price);
-        }
+    const handleMenuItemClick = (index) => {
+        setSelectedMenuItem(index);
+        const selectedItem = menuItems[index];
+        setEditName(selectedItem.name);
+        setEditPrice(selectedItem.price);
     };
 
-    /**
-     * Handles the restocking of an ingredient.
-     */
-    const handleRestockIngredient = () => {
-        if (selectedIngredient !== null) {
-            const restockData = {
-                name: restockName,
-                price: restockPrice * restockQuantity,
-                quantity: restockQuantity,
-                ingredient_id: selectedIngredient,
+    const handleEditMenuItem = () => {
+        if (selectedMenuItem !== null) {
+            const editData = {
+                id: selectedMenuItem,
+                name: editName,
+                price: editPrice,
             };
-
-            submitRestockOrder(restockData)
+            editMenuItems(editData)
                 .then(() => {
-                    alert(
-                        "Your restock order was successful. Total cost: $" +
-                            restockData.price
-                    );
-                    const updatedIngredients = [...ingredients];
-                    const ingredientIndex = updatedIngredients.findIndex(
-                        (ingredient) => ingredient.id === selectedIngredient
-                    );
-                    updatedIngredients[ingredientIndex].quantity +=
-                        parseInt(restockQuantity);
-                    setIngredients(updatedIngredients);
-                    setRestockName("");
-                    setRestockQuantity("");
-                    setRestockPrice("");
+                    console.log("ran");
+                    const updatedMenuItems = [...menuItems]; // Create a copy of menuItems array
+                    updatedMenuItems[selectedMenuItem] = {
+                        // Update the selected menu item
+                        ...updatedMenuItems[selectedMenuItem],
+                        price: editPrice,
+                        name: editName,
+                    };
+                    setMenuItems(updatedMenuItems);
                 })
                 .catch((error) => {
                     console.error("Error:", error);
+                    // Handle error if needed
                 });
         }
     };
 
-    /**
-     * Handles the addition of a new ingredient.
-     */
-    const handleAddIngredient = () => {
+    const handleAddMenuItem = () => {
         const newItem = {
+            id: menuItems.length,
             name: newItemName || "New Item",
             price: newItemPrice || 0,
-            quantity: 0,
+            type: newItemType || 0,
         };
-        setIngredients([...ingredients, newItem]);
-        setSelectedIngredient(ingredients.length);
+        setMenuItems([...menuItems, newItem]);
+        setSelectedMenuItem(menuItems.length);
+        setEditName("");
+        setEditPrice("");
+        console.log(newItemType);
+        // setNewItemId("");
         setNewItemName("");
         setNewItemPrice("");
-        addIngredient(newItem);
+        addMenuItem(newItem);
     };
 
-    /**
-     * Handles the search query input change event.
-     * @param {Object} e - The event object.
-     */
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
 
-    /**
-     * Filters the ingredients based on the search query.
-     */
-    const filteredIngredients = ingredients.filter((item) =>
+    const filteredMenuItems = menuItems.filter((item) =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const handleDeleteMenuItem = () => {
+        if (selectedMenuItem !== null) {
+            // Call API to delete menu item
+            deleteMenuItems(selectedMenuItem)
+                .then(() => {
+                    // Filter out the deleted item from menuItems
+                    const updatedMenuItems = menuItems.filter(
+                        (item) => item.id !== selectedMenuItem
+                    );
+                    setMenuItems(updatedMenuItems);
+                    // Reset selection after deletion
+                    setSelectedMenuItem(null);
+                })
+                .catch((error) => {
+                    console.error("Error deleting menu item:", error);
+                    // Handle error if needed
+                });
+        }
+    };
 
     return (
         &lt;div style={{ marginLeft: "15%", display: "flex" }}>
             &lt;div style={{ width: "50%", padding: "20px" }}>
-                &lt;Typography variant="h6">Ingredients&lt;/Typography>
+                &lt;Typography variant="h6">Menu Items&lt;/Typography>
                 &lt;TextField
                     label="Search"
                     value={searchQuery}
@@ -179,7 +173,6 @@ const InventoryPage = () => {
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
-                &lt;Typography variant="h6">Inventory Stock&lt;/Typography>
                 &lt;div
                     style={{
                         marginTop: "20px",
@@ -187,21 +180,20 @@ const InventoryPage = () => {
                         overflowY: "auto",
                     }}
                 >
-                    {filteredIngredients.map((item, index) => (
+                    {filteredMenuItems.map((item, index) => (
                         &lt;div
                             key={index}
                             style={{
                                 cursor: "pointer",
                                 padding: "8px",
                                 backgroundColor:
-                                    index === selectedIngredient
+                                    index === selectedMenuItem
                                         ? "#f0f0f0"
                                         : "transparent",
-                                color: item.quantity &lt; 1005 ? "red" : "inherit",
                             }}
-                            onClick={() => handleIngredientClick(item.id)}
+                            onClick={() => handleMenuItemClick(item.id)}
                         >
-                            {item.name}: {item.quantity}
+                            {item.name} - ${item.price}
                         &lt;/div>
                     ))}
                 &lt;/div>
@@ -218,7 +210,7 @@ const InventoryPage = () => {
                     alignItems: "flex-start",
                 }}
             >
-                &lt;Typography variant="h6">Add Ingredient&lt;/Typography>
+                &lt;Typography variant="h6">Add Menu Item&lt;/Typography>
                 &lt;TextField
                     label="Name"
                     value={newItemName}
@@ -235,60 +227,64 @@ const InventoryPage = () => {
                 />
                 &lt;TextField
                     select
-                    label="Supplier"
-                    value={newSupplier}
-                    onChange={(e) => setNewSupplier(e.target.value)}
+                    label="Type"
+                    value={newItemType}
+                    onChange={(e) => setNewItemType(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 >
-                    {suppliers.map((supplier) => (
-                        &lt;MenuItem key={supplier} value={supplier}>
-                            {supplier}
+                    {menuItemTypes.map((type) => (
+                        &lt;MenuItem key={type} value={type}>
+                            {type}
                         &lt;/MenuItem>
                     ))}
                 &lt;/TextField>
                 &lt;Button
                     variant="contained"
-                    onClick={handleAddIngredient}
+                    onClick={handleAddMenuItem}
                     style={{ marginBottom: "20px" }}
                 >
                     Add
                 &lt;/Button>
-                &lt;Typography variant="h6">Restock Ingredient&lt;/Typography>
+                &lt;Typography variant="h6">
+                    {selectedMenuItem !== null
+                        ? "Edit Menu Item"
+                        : "Edit Menu Item"}
+                &lt;/Typography>
                 &lt;TextField
                     label="Name"
-                    value={restockName}
-                    onChange={(e) => setRestockName(e.target.value)}
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
                 &lt;TextField
-                    label="Quantity"
-                    value={restockQuantity}
-                    onChange={(e) => setRestockQuantity(e.target.value)}
-                    fullWidth
-                    style={{ marginBottom: "20px" }}
-                />
-                &lt;TextField
-                    label="Unit Price"
-                    value={restockPrice}
-                    onChange={(e) => setRestockPrice(e.target.value)}
+                    label="Price"
+                    value={editPrice}
+                    onChange={(e) => setEditPrice(e.target.value)}
                     fullWidth
                     style={{ marginBottom: "20px" }}
                 />
                 &lt;Button
                     variant="contained"
-                    onClick={handleRestockIngredient}
-                    disabled={selectedIngredient === null}
+                    onClick={handleEditMenuItem}
+                    disabled={selectedMenuItem === null}
                 >
-                    Restock
+                    Edit
+                &lt;/Button>
+                &lt;Button
+                    variant="contained"
+                    onClick={handleDeleteMenuItem}
+                    disabled={selectedMenuItem === null}
+                >
+                    Delete
                 &lt;/Button>
             &lt;/div>
         &lt;/div>
     );
 };
 
-export default InventoryPage;
+export default MenuPage;
 </code></pre>
         </article>
     </section>

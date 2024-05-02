@@ -1,4 +1,10 @@
-// Manager.js
+/**
+ * Represents a manager dashboard view component.
+ * Displays a sidebar for navigation and content area for different pages such as
+ * Employees, Inventory, Statistics, and Menu.
+ * @module ManagerView
+ */
+
 import React, { useState } from "react";
 import "./Manager.css"; // Assuming you have CSS for styling
 
@@ -9,6 +15,10 @@ import StatsPage from "./pages/StatsPage";
 import MenuPage from "./pages/MenuPage";
 // Use named export export { component_name } instead of export default, makes it easier when changing component's name
 
+/**
+ * A React component representing the manager dashboard view.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ManagerView = () => {
     const [page, setPage] = useState("employees"); // Default page is employees
 

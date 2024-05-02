@@ -1,3 +1,8 @@
+/**
+ * Determines the color associated with an item name based on predefined mappings.
+ * @param {string} itemName - The name of the item for which to determine the color.
+ * @returns {string} - The color associated with the item name. Returns "inherit" if no match is found.
+ */
 export const getItemNameColor = (itemName) => {
     const colorMap = {
         Beef: "#efdcfc",

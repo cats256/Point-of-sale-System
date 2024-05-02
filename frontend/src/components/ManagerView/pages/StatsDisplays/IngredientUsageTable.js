@@ -1,10 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { getIngredientUsage } from "../../../../network/api";
-
+/**
+ * Represents a component for displaying ingredient usage data in a table.
+ * @param {Object} props - The props object containing the start and end dates.
+ * @param {Date} props.start_date - The start date for the period of ingredient usage.
+ * @param {Date} props.end_date - The end date for the period of ingredient usage.
+ * @returns {JSX.Element} The JSX element representing the ingredient usage table component.
+ */
 const IngredientUsageTable = ({ start_date, end_date }) => {
+    /**
+     * State hook for storing the ingredient usage data.
+     * @type {Array}
+     */
     const [ingredientUsage, setIngredientUsage] = useState([]);
 
+    /**
+     * Effect hook for fetching ingredient usage data from the server.
+     * @function
+     * @param {Date} start_date - The start date for the period of ingredient usage.
+     * @param {Date} end_date - The end date for the period of ingredient usage.
+     */
     useEffect(() => {
+        /**
+         * Fetches ingredient usage data from the server.
+         * @async
+         * @function
+         * @returns {Promise<void>} A promise that resolves when data is fetched successfully.
+         */
         const fetchIngredientUsage = async () => {
             try {
                 const data = await getIngredientUsage(start_date, end_date);
@@ -14,9 +34,9 @@ const IngredientUsageTable = ({ start_date, end_date }) => {
             }
         };
 
-        // Fetch ingredient usage data when component mounts
+        // Fetch ingredient usage data when component mounts or when start_date or end_date changes
         fetchIngredientUsage();
-    }, [start_date, end_date]); // Include start_date and end_date in the dependency array to fetch data when they change
+    }, [start_date, end_date]);
 
     return (
         <div>

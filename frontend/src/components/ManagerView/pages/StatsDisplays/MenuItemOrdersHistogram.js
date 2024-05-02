@@ -1,60 +1,69 @@
-import React, { useState, useEffect } from "react";
-import { Bar } from "react-chartjs-2";
-import {
-    getOrderMenuItemsFromId,
-    getItemName,
-    getOrders,
-} from "../../../../network/api";
-
+/**
+ * Represents a component for displaying a histogram of menu item orders.
+ * @param {Object} props - The props object containing the start and end dates.
+ * @param {Date} props.start_date - The start date for the period of analysis.
+ * @param {Date} props.end_date - The end date for the period of analysis.
+ * @returns {JSX.Element} The JSX element representing the menu item orders histogram component.
+ */
 const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
+    /**
+     * State hook for storing the labels of menu items.
+     * @type {Array}
+     */
     const [itemLabels, setLabels] = useState([]);
+
+    /**
+     * State hook for storing the data of menu items.
+     * @type {Object}
+     */
     const [itemData, setData] = useState({});
+
+    /**
+     * State hook for storing the background colors for the histogram bars.
+     * @type {Array}
+     */
     const [backgroundColors, setBackgroundColors] = useState([]);
+
+    /**
+     * State hook for storing the border colors for the histogram bars.
+     * @type {Array}
+     */
     const [borderColors, setBorderColors] = useState({});
 
+    /**
+     * Effect hook for fetching menu item orders data from the server.
+     * @function
+     * @param {Date} start_date - The start date for the period of analysis.
+     * @param {Date} end_date - The end date for the period of analysis.
+     */
     useEffect(() => {
-        // Fetch ingredient usage data when component mounts
+        /**
+         * Fetches menu item orders data from the server.
+         * @async
+         * @function
+         * @returns {Promise<void>} A promise that resolves when data is fetched successfully.
+         */
         const fetchData = async () => {
-            // const topten = await getTopTen();
-            ///// TO DO: get order menu items from a timeline ... date -> orders.... get order ids for that timeline... get count of menu items from order_menu_items where the id is from a to b
+            // Fetch order data from the server based on the provided start_date and end_date
             const orders = await getOrders(start_date, end_date);
-            const order_ids = [];
-            // console.log(orders);
-
-            ///// date -> orders.... get order ids for that timeline
-            orders.forEach((order) => {
-                const orderId = order[0];
-                order_ids.push(orderId);
-            });
-            // console.log(order_ids);
+            const order_ids = orders.map((order) => order[0]); // Extracting order IDs from orders
             order_ids.sort();
-            // console.log(order_ids);
             const start_id = order_ids[0];
             const finish_id = order_ids[order_ids.length - 1];
-            console.log(start_id);
-            console.log(finish_id);
 
-            /////  get count of menu items from order_menu_items where the id is from a to b
+            // Fetch menu item data based on the order IDs retrieved
             const menu_items = await getOrderMenuItemsFromId(
                 start_id,
                 finish_id
             );
-            console.log(menu_items);
-            // console.log("here");
-            // console.log(all_menu_items);
-            // const menu_items = [];
 
-            // all_menu_items.forEach((item) => {
-            //     if (order_ids.includes(item.menu_item_id)){
-            //         menu_items.push(item);
-            //     }
-            // });
-            // console.log(menu_items);
+            // Prepare data for the histogram
             const _itemLabels = [];
             const _itemData = [];
             const _backgroundColors = [];
             const _borderColors = [];
-            // console.log(menu_items);
+
+            // Arrays for defining colors
             const backgroundColorsBank = [
                 "rgba(255, 99, 132, 0.2)",
                 "rgba(54, 162, 235, 0.2)",
@@ -80,18 +89,17 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
                 "rgba(153, 102, 255, 1)",
             ];
 
-            // console.log(menu_items.length);
+            // Loop through menu items and retrieve necessary information
             for (let i = 0; i < menu_items.length; i++) {
                 const item_id = menu_items[i]["menu_item_id"];
-                // console.log(item_id);
                 const item_name = await getItemName(item_id);
-                // console.log(item_name.item_name);
                 _itemLabels.push(item_name.item_id);
                 _itemData.push(menu_items[i]["category_count"]);
                 _backgroundColors.push(backgroundColorsBank[i % 10]);
                 _borderColors.push(borderColorsBank[i % 10]);
             }
-            // console.log(_itemLabels);
+
+            // Set the state with the fetched data
             setLabels(_itemLabels);
             setData(_itemData);
             setBackgroundColors(_backgroundColors);
@@ -101,6 +109,7 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
         fetchData();
     }, [start_date, end_date]);
 
+    // Data object for the histogram
     const data = {
         labels: itemLabels,
         datasets: [
@@ -114,6 +123,7 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
         ],
     };
 
+    // Render the histogram component
     return (
         <div>
             <h2>Menu Item Orders Histogram</h2>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/Authentication/logout.js</title>
+    <title>JSDoc: Source: utils/FontSizeProvider.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/Authentication/logout.js</h1>
+    <h1 class="page-title">Source: utils/FontSizeProvider.js</h1>
 
     
 
@@ -26,64 +26,62 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Represents a logout component using Google's OAuth service.
- * This component provides a logout button and handles the logout flow,
- * clearing the user's session and redirecting to the home page upon successful logout.
- *
- * @component
- * @example
- * return (
- *   &lt;Logout />
- * )
+            <pre class="prettyprint source linenums"><code>import React, { createContext, useContext, useState, useEffect } from "react";
+
+/**
+ * Context for managing font size and icon scale in the application.
+ * @type {React.Context&lt;Object>}
  */
 
-import { GoogleLogout } from "@leecheuk/react-google-login";
-import { Button } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+const FontSizeContext = createContext();
 
-const clientID =
-    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+/**
+ * Provider component for managing font size and icon scale.
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components.
+ * @returns {JSX.Element} The provider component.
+ */
 
-function Logout() {
-    /**
-     * State to track if the user is logged in.
-     * @type {boolean}
-     */
+export const FontSizeProvider = ({ children }) => {
+    const [fontSizeMultiplier, setFontSizeMultiplier] = useState(1); // Default to 1
+    const [iconScaleMultiplier, setIconScaleMultiplier] = useState(1);
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
-    const navigate = useNavigate();
-
-    /**
-     * Handles the logout event.
-     * Clears the user's email from sessionStorage and updates the logged-in state,
-     * then navigates to the root page '/'.
-     *
-     * @param {Object} res - The response object returned from the logout event.
-     */
-
-    const onSuccess = (res) => {
-        console.log("Logout Successful!");
-        sessionStorage.setItem("user_email", "");
-        setIsLoggedIn(false);
-        navigate("/");
+    const toggleFontSize = () => {
+        setFontSizeMultiplier(fontSizeMultiplier === 1 ? 2 : 1); // Toggle between 1 and 2
     };
 
-    return (
-        &lt;div id="signOutButton">
-            &lt;Button
-                variant="outlined"
-                onClick={onSuccess}
-                className="logout-button"
-            >
-                Logout
-            &lt;/Button>
-        &lt;/div>
-    );
-}
+    const toggleIconScale = () => {
+        setIconScaleMultiplier((currentScale) => (currentScale === 1 ? 2 : 1));
+    };
 
-export { Logout };
+    const value = {
+        fontSizeMultiplier,
+        setFontSizeMultiplier,
+        toggleFontSize,
+        iconScaleMultiplier,
+        setIconScaleMultiplier,
+        toggleIconScale,
+    };
+
+    useEffect(() => {
+        document.documentElement.style.setProperty(
+            "--dynamic-font-size",
+            `${20 * fontSizeMultiplier}px`
+        );
+        document.documentElement.style.setProperty(
+            "--dynamic-icon-scale",
+            `${iconScaleMultiplier}`
+        );
+    }, [fontSizeMultiplier, iconScaleMultiplier]);
+
+    return (
+        &lt;FontSizeContext.Provider value={value}>
+            {children}
+        &lt;/FontSizeContext.Provider>
+    );
+};
+
+export const useFontSize = () => useContext(FontSizeContext);
 </code></pre>
         </article>
     </section>

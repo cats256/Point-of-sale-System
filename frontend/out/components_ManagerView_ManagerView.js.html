@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/Authentication/logout.js</title>
+    <title>JSDoc: Source: components/ManagerView/ManagerView.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/Authentication/logout.js</h1>
+    <h1 class="page-title">Source: components/ManagerView/ManagerView.js</h1>
 
     
 
@@ -27,63 +27,43 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Represents a logout component using Google's OAuth service.
- * This component provides a logout button and handles the logout flow,
- * clearing the user's session and redirecting to the home page upon successful logout.
- *
- * @component
- * @example
- * return (
- *   &lt;Logout />
- * )
+ * Represents a manager dashboard view component.
+ * Displays a sidebar for navigation and content area for different pages such as
+ * Employees, Inventory, Statistics, and Menu.
+ * @module ManagerView
  */
 
-import { GoogleLogout } from "@leecheuk/react-google-login";
-import { Button } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import "./Manager.css"; // Assuming you have CSS for styling
 
-const clientID =
-    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+import Sidebar from "./Sidebar";
+import EmployeesPage from "./pages/EmployeesPage";
+import InventoryPage from "./pages/InventoryPage";
+import StatsPage from "./pages/StatsPage";
+import MenuPage from "./pages/MenuPage";
+// Use named export export { component_name } instead of export default, makes it easier when changing component's name
 
-function Logout() {
-    /**
-     * State to track if the user is logged in.
-     * @type {boolean}
-     */
-
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
-    const navigate = useNavigate();
-
-    /**
-     * Handles the logout event.
-     * Clears the user's email from sessionStorage and updates the logged-in state,
-     * then navigates to the root page '/'.
-     *
-     * @param {Object} res - The response object returned from the logout event.
-     */
-
-    const onSuccess = (res) => {
-        console.log("Logout Successful!");
-        sessionStorage.setItem("user_email", "");
-        setIsLoggedIn(false);
-        navigate("/");
-    };
+/**
+ * A React component representing the manager dashboard view.
+ * @returns {JSX.Element} The rendered component.
+ */
+const ManagerView = () => {
+    const [page, setPage] = useState("employees"); // Default page is employees
 
     return (
-        &lt;div id="signOutButton">
-            &lt;Button
-                variant="outlined"
-                onClick={onSuccess}
-                className="logout-button"
-            >
-                Logout
-            &lt;/Button>
+        &lt;div className="app">
+            &lt;Sidebar setPage={setPage} />
+            &lt;div className="content">
+                {page === "employees" &amp;&amp; &lt;EmployeesPage />}
+                {page === "inventory" &amp;&amp; &lt;InventoryPage />}
+                {page === "stats" &amp;&amp; &lt;StatsPage />}
+                {page === "menu" &amp;&amp; &lt;MenuPage />}
+            &lt;/div>
         &lt;/div>
     );
-}
+};
 
-export { Logout };
+export { ManagerView };
 </code></pre>
         </article>
     </section>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: ConflictError</title>
+    <title>JSDoc: Module: Sidebar</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: ConflictError</h1>
+    <h1 class="page-title">Module: Sidebar</h1>
 
     
 
@@ -28,9 +28,8 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ConflictError<span class="signature">(message<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Represents an HTTP 409 Conflict error.</div>
+            
         
     
 </header>
@@ -39,13 +38,113 @@
     <div class="container-overview">
     
         
+            <div class="description">Represents a sidebar component for navigation.Provides buttons for navigating to different pages in the manager dashboard.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
 
     
-    <h2>Constructor</h2>
+
     
 
     
-    <h4 class="name" id="ConflictError"><span class="type-signature"></span>new ConflictError<span class="signature">(message<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_ManagerView_Sidebar.js.html">components/ManagerView/Sidebar.js</a>, <a href="components_ManagerView_Sidebar.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~Sidebar"><span class="type-signature">(inner) </span>Sidebar<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
     
 
     
@@ -53,7 +152,7 @@
 
 
 <div class="description">
-    Constructs a new ConflictError instance.
+    A React component representing the sidebar for navigation.
 </div>
 
 
@@ -77,11 +176,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -93,39 +188,72 @@
 
         <tr>
             
-                <td class="name"><code>message</code></td>
+                <td class="name"><code>props</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
+
+            
+
+            <td class="description last">The component properties.
+                <h6>Properties</h6>
                 
 
-                
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>setPage</code></td>
+            
+
+            <td class="type">
+            
                 
-                </td>
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
             
 
             
-                <td class="default">
-                
-                    ""
-                
-                </td>
-            
 
-            <td class="description last">The error message.</td>
+            <td class="description last">Function to set the currently displayed page.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -166,7 +294,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="network_errors.js.html">network/errors.js</a>, <a href="network_errors.js.html#line37">line 37</a>
+        <a href="components_ManagerView_Sidebar.js.html">components/ManagerView/Sidebar.js</a>, <a href="components_ManagerView_Sidebar.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -191,46 +319,34 @@
 
 
 
-
-
-
-
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
+<h5>Returns:</h5>
 
         
+<div class="param-desc">
+    The rendered component.
+</div>
 
 
-    <ul>
-        <li><a href="HttpError.html">HttpError</a></li>
-    </ul>
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
 
 
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="ConflictError.html">ConflictError</a></dt>
-            <dd></dd>
-        </dl>
-    
+    </dd>
+</dl>
 
     
 
-    
 
-    
 
-    
 
+
+        
     
 
     

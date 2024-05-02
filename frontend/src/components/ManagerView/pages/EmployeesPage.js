@@ -1,6 +1,14 @@
-// EmployeesPage.js
-// tiles with name, id, orders completed
-// gravatar images?..
+/**
+ * Represents a component for managing employees.
+ * Displays tiles with employee name, ID, and orders completed.
+ * Gravatar images are used for employee avatars.
+ * Provides functionality for updating employee salary, deleting employees,
+ * adding new employees, and fetching employee data.
+ * @module EmployeesPage
+ */
+
+import React, { useEffect, useState, useCallback } from "react";
+import sha256 from "crypto-js/sha256";
 import {
     getEmployees,
     updateSalary,
@@ -8,19 +16,26 @@ import {
     addEmployee,
     getHighestEmployeeId,
 } from "../../../network/api";
-// import { updateSalary } from "../../../network/api";
 
-/* api requests needed: employee names (or list of id's and call for name based on id if we want to get info based on id not name),
-  employee image (either on same list as names in dictionary form or gathered from name),
-  all employee information for name (could also be from id if that's easier) */
-import React, { useEffect, useState, useCallback } from "react";
-import sha256 from "crypto-js/sha256";
+/**
+ * Generates a hash of the provided email address using SHA-256 algorithm.
+ * @param {string} email - The email address to be hashed.
+ * @returns {string} The hashed email.
+ */
+const hashEmail = (email) => {
+    const trimmedEmail = email.trim().toLowerCase();
+    const hashedEmail = sha256(trimmedEmail).toString();
+    return hashedEmail;
+};
 
+/**
+ * A React component for managing employees.
+ * @returns {JSX.Element} The rendered component.
+ */
 const EmployeesPage = () => {
+    // State hooks for managing component data
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [selectedEmployeeNum, setSelectedEmployeeNum] = useState(null);
-
-    // const employees = ["Laine", "Matthew", "Brinley", "Nhat", "Carolina", "Tatiana"];
     const [employeeNames, setEmployeeNames] = useState([]);
     const [employeeImages, setEmployeeImages] = useState([]);
     const [employeeJob, setEmployeeJob] = useState("");
@@ -33,6 +48,9 @@ const EmployeesPage = () => {
     const [newEmployeeSalary, setNewEmployeeSalary] = useState("");
     const [newEmployeeManager, setNewEmployeeManager] = useState(false);
 
+    /**
+     * Fetches employee data from the server.
+     */
     const fetchData = useCallback(async () => {
         const employees_ = await getEmployees();
         const employee_names = [];
@@ -54,14 +72,12 @@ const EmployeesPage = () => {
         fetchData();
     }, [fetchData]);
 
-    // const CryptoJS = require('crypto-js');
-
-    const hashEmail = (email) => {
-        const trimmedEmail = email.trim().toLowerCase();
-        const hashedEmail = sha256(trimmedEmail).toString(); //CryptoJS.SHA256(trimmedEmail).toString(CryptoJS.enc.Hex);
-        return hashedEmail;
-    };
-
+    /**
+     * Handles the click event on an employee tile.
+     * Sets the selected employee and updates the displayed job title.
+     * @param {object} employee - The selected employee object.
+     * @param {number} num - The index of the selected employee in the list.
+     */
     const handleEmployeeClick = (employee, num) => {
         setSelectedEmployee(employee);
         setSelectedEmployeeNum(num);
@@ -72,6 +88,11 @@ const EmployeesPage = () => {
         }
     };
 
+    /**
+     * Updates the salary of the specified employee.
+     * @param {number} employeeId - The ID of the employee whose salary is to be updated.
+     * @param {string} newSalary - The new salary value.
+     */
     const handleUpdateSalary = (employeeId, newSalary) => {
         if (newSalary !== null) {
             const parsedNewSalary = parseInt(newSalary);
