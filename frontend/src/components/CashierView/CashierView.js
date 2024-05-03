@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
-import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
+// import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
 import {
     Button,
     Dialog,
@@ -398,55 +398,55 @@ const CashierView = ({ menuItems, languages, language }) => {
     /**
      * Renders the accessibility options panel.
      */
-    const Accessibility = () => {
-        const [showAccessibilityPanel, setShowAccessibilityPanel] =
-            useState(false);
+    // const Accessibility = () => {
+    //     const [showAccessibilityPanel, setShowAccessibilityPanel] =
+    //         useState(false);
 
-        return (
-            <>
-                <button
-                    style={{
-                        gridRow: 8,
-                        gridColumn: 2,
-                    }}
-                    aria-label="accessibility options"
-                    onClick={() =>
-                        setShowAccessibilityPanel((prevState) => !prevState)
-                    } // Adjusted to call the toggle function
-                >
-                    <SettingsAccessibilityIcon />
-                </button>
-                {showAccessibilityPanel && (
-                    <div
-                        style={{
-                            position: "fixed",
-                            bottom: "50%",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            background: "white",
-                            padding: "20px",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "16px",
-                        }}
-                    >
-                        <button
-                            onClick={() =>
-                                setShowAccessibilityPanel(
-                                    (prevState) => !prevState
-                                )
-                            }
-                        >
-                            <CloseIcon />
-                        </button>
-                        <span>Accessibility Options</span>
-                    </div>
-                )}
-            </>
-        );
-    };
+    //     return (
+    //         <>
+    //             <button
+    //                 style={{
+    //                     gridRow: 8,
+    //                     gridColumn: 2,
+    //                 }}
+    //                 aria-label="accessibility options"
+    //                 onClick={() =>
+    //                     setShowAccessibilityPanel((prevState) => !prevState)
+    //                 } // Adjusted to call the toggle function
+    //             >
+    //                 <SettingsAccessibilityIcon />
+    //             </button>
+    //             {showAccessibilityPanel && (
+    //                 <div
+    //                     style={{
+    //                         position: "fixed",
+    //                         bottom: "50%",
+    //                         left: "50%",
+    //                         transform: "translateX(-50%)",
+    //                         background: "white",
+    //                         padding: "20px",
+    //                         borderRadius: "8px",
+    //                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    //                         display: "flex",
+    //                         alignItems: "center",
+    //                         gap: "16px",
+    //                     }}
+    //                 >
+    //                     <button
+    //                         onClick={() =>
+    //                             setShowAccessibilityPanel(
+    //                                 (prevState) => !prevState
+    //                             )
+    //                         }
+    //                     >
+    //                         <CloseIcon />
+    //                     </button>
+    //                     <span>Accessibility Options</span>
+    //                 </div>
+    //             )}
+    //         </>
+    //     );
+    // };
 
     return (
         <div className="view">
@@ -463,8 +463,8 @@ const CashierView = ({ menuItems, languages, language }) => {
                 <div className="right-panel">{DisplayBasket()}</div>
                 <div className="center-panel">
                     {PopulateMenuItems()}
-                    {Accessibility()}
-                    <Button
+                    {/* {Accessibility()} */}
+                    {/* <Button
                         variant="outlined"
                         style={{
                             backgroundColor: "#ecebed",
@@ -488,7 +488,7 @@ const CashierView = ({ menuItems, languages, language }) => {
                         onClick={handleComboDialog}
                     >
                         Make a Combo
-                    </Button>
+                    </Button> */}
                     <Dialog open={openDialog} onClose={handleCloseDialog}>
                         <DialogTitle>Combos</DialogTitle>
                         <DialogContent>
