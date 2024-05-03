@@ -9,6 +9,7 @@
 <tr class="heading-text decor">
 <td class="title">&nbsp;<br><strong class="title">server</strong></td>
 <td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cbswag%5Ccsce315%5Cproject-3%5Cbackend%5Cserver.py">c:\users\bswag\csce315\project-3\backend\server.py</a></td></tr></table>
+    <p><span class="code">#&nbsp;import&nbsp;eventlet</span></p>
 <p>
 <table class="section">
 <tr class="decor pkg-content-decor heading-text">
@@ -155,6 +156,18 @@ Returns:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;response&nbsp;with&nbsp;employee&nbsp;id</span></dd></dl>
+ <dl><dt><a name="-ingredient_delete"><strong>ingredient_delete</strong></a>()</dt><dd><span class="code">Deletes&nbsp;an&nbsp;ingredient&nbsp;from&nbsp;the&nbsp;database.&nbsp;<br>
+&nbsp;<br>
+Given&nbsp;an&nbsp;ingredient&nbsp;id,&nbsp;it&nbsp;removes&nbsp;that&nbsp;row&nbsp;from&nbsp;the&nbsp;database.&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;message&nbsp;indicating&nbsp;success</span></dd></dl>
+ <dl><dt><a name="-ingredient_edit"><strong>ingredient_edit</strong></a>()</dt><dd><span class="code">Updates&nbsp;the&nbsp;name,&nbsp;price,&nbsp;and&nbsp;supplier&nbsp;of&nbsp;ingredient.&nbsp;<br>
+&nbsp;<br>
+Given&nbsp;a&nbsp;new&nbsp;name,&nbsp;price,&nbsp;and&nbsp;supplier,&nbsp;it&nbsp;changes&nbsp;the&nbsp;values&nbsp;associated&nbsp;with&nbsp;that&nbsp;ingredient&nbsp;id&nbsp;in&nbsp;the&nbsp;ingredient&nbsp;table.&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;message&nbsp;indicating&nbsp;success</span></dd></dl>
  <dl><dt><a name="-ingredient_usage"><strong>ingredient_usage</strong></a>()</dt><dd><span class="code">Retrieve&nbsp;information&nbsp;about&nbsp;ingredient&nbsp;usage&nbsp;within&nbsp;a&nbsp;specified&nbsp;date&nbsp;range.<br>
 &nbsp;<br>
 It&nbsp;calculates&nbsp;the&nbsp;total&nbsp;count&nbsp;of&nbsp;each&nbsp;ingredient&nbsp;used&nbsp;in&nbsp;menu&nbsp;items&nbsp;ordered&nbsp;during&nbsp;that&nbsp;period,&nbsp;<br>
@@ -238,5 +251,14 @@ Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;response&nbsp;containing&nbsp;the&nbsp;translated&nbsp;text.</span></dd></dl>
 </td></tr></table><p>
 <table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
     
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>app</strong> = &lt;Flask 'server'&gt;<br>
+<strong>conn</strong> = &lt;connection object at 0x000002039D922DF0; dsn: '...=csce-315-db.engr.tamu.edu port=5432', closed: 0&gt;<br>
+<strong>database_password</strong> = 'nighthawk'<br>
+<strong>deepl_auth_key</strong> = 'a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx'<br>
+<strong>request</strong> = &lt;LocalProxy unbound&gt;<br>
+<strong>translator</strong> = &lt;deepl.translator.Translator object&gt;</td></tr></table>
 </body></html>
