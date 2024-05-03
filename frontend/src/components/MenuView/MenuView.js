@@ -42,23 +42,50 @@ const MenuView = ({
     }
 
     const gridItems = Object.keys(translatedMenuItems).flatMap((type) => [
-        ...translatedMenuItems[type].map((item, index) => (
-            <div key={type + index} className="grid-item">
-                <img
-                    src={"/square_image.jpg"}
-                    alt={item.translatedName + " Image"}
-                />
-                <div
-                    style={{
-                        paddingLeft: "16px",
-                        paddingRight: "16px",
-                        textAlign: "center",
-                    }}
-                >
-                    {item.translatedName.toUpperCase()} - ${item.price}
+        ...translatedMenuItems[type].map((item, index) => {
+            const imageExists = () => {
+                try {
+                    return Boolean(require(`../../img/${item.name}.png`));
+                } catch (error) {
+                    return false;
+                }
+            };
+
+            return (
+                <div key={type + index} className="grid-item">
+                    {imageExists() ? (
+                        <img
+                            src={require(`../../img/${item.name}.png`)}
+                            alt={item.translatedName + " Image"}
+                            style={{
+                                width: "120px",
+                                height: "120px",
+                                objectFit: "cover",
+                            }}
+                        />
+                    ) : (
+                        <img
+                            src="/square_image.jpg"
+                            alt={item.translatedName + " Image"}
+                            style={{
+                                width: "120px",
+                                height: "120px",
+                                objectFit: "cover",
+                            }}
+                        />
+                    )}
+                    <div
+                        style={{
+                            paddingLeft: "16px",
+                            paddingRight: "16px",
+                            textAlign: "center",
+                        }}
+                    >
+                        {item.translatedName.toUpperCase()} - ${item.price}
+                    </div>
                 </div>
-            </div>
-        )),
+            );
+        }),
     ]);
 
     const emptyItems = Array.from(
