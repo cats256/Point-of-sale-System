@@ -450,9 +450,16 @@ const CashierView = ({ menuItems, languages, language }) => {
 
     return (
         <div className="view">
-            <NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+            <NavBar
+                increaseZoom={increaseZoom}
+                decreaseZoom={decreaseZoom}
+                zoom={zoom}
+            />
 
-            <div className="panels" style={{ transform: `scale(${zoom / 100})` }}>
+            <div
+                className="panels"
+                style={{ transform: `scale(${zoom / 100})` }}
+            >
                 <div className="right-panel">{DisplayBasket()}</div>
                 <div className="center-panel">
                     {PopulateMenuItems()}
@@ -485,10 +492,14 @@ const CashierView = ({ menuItems, languages, language }) => {
                     <Dialog open={openDialog} onClose={handleCloseDialog}>
                         <DialogTitle>Combos</DialogTitle>
                         <DialogContent>
-                            <Button onClick={() => handleMakeCombo("kettleChips")}>
+                            <Button
+                                onClick={() => handleMakeCombo("kettleChips")}
+                            >
                                 Kettle Chips
                             </Button>
-                            <Button onClick={() => handleMakeCombo("frenchFries")}>
+                            <Button
+                                onClick={() => handleMakeCombo("frenchFries")}
+                            >
                                 Fries
                             </Button>
                         </DialogContent>
