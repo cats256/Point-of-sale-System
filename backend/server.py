@@ -445,7 +445,7 @@ def menu_item_name():
         cur.close()
 
         if item_name:
-            return jsonify({"item_id": item_name})
+            return jsonify({"item_name": item_name})
         else:
             return jsonify({"error": "Menu item not found"}), 404
 
@@ -542,8 +542,8 @@ def what_sells_together():
 
     query = sql.SQL("""
         SELECT 
-            om1.menu_item_id AS menu_item_id_1, 
-            om2.menu_item_id AS menu_item_id_2, 
+            mi1.name AS menu_item_name_1, 
+            mi2.name AS menu_item_name_2, 
             COUNT(*) AS count 
         FROM 
             order_menu_items om1 
@@ -551,11 +551,15 @@ def what_sells_together():
                 ON om1.order_id = om2.order_id AND om1.menu_item_id < om2.menu_item_id
             JOIN orders o 
                 ON om1.order_id = o.id
+            JOIN menu_items mi1
+                ON om1.menu_item_id = mi1.id
+            JOIN menu_items mi2
+                ON om2.menu_item_id = mi2.id
         WHERE 
             o.date BETWEEN CAST(%s AS TIMESTAMP) AND CAST(%s AS TIMESTAMP)
         GROUP BY 
-            om1.menu_item_id, 
-            om2.menu_item_id
+            mi1.name, 
+            mi2.name
         ORDER BY 
             count DESC;
     """)
