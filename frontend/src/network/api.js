@@ -265,6 +265,10 @@ export async function getHighestEmployeeId() {
     return request("/highest_employee_id", { method: "GET" });
 }
 
+export async function getHighestMenuItemId() {
+    return request("/highest_menu_item_id", { method: "GET" });
+}
+
 export async function getCurrent() {
     return request("/in_progress", { method: "GET" });
 }

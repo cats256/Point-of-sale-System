@@ -629,16 +629,21 @@ def menu_item_delete():
     Returns:
         jsonify: JSON message indicating success
     """
-    id = request.args.get("id")
+    data = request.json
+
+    id = data.get("id")
+    # print(id)
 
     cur = get_cursor()
     query = sql.SQL("DELETE FROM menu_items WHERE id = %s;")
     cur.execute(query, (id, ))
-    try:
-        query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
-        cur.execute(query2, (id, ))
-    except psycopg2.Error as e:
-        print(f"menu item had not been ordered: {e}")
+    query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
+    cur.execute(query2, (id, ))
+    # try:
+    #     query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
+    #     cur.execute(query2, (id, ))
+    # except psycopg2.Error as e:
+    #     print(f"menu item had not been ordered: {e}")
     conn.commit()
     cur.close()
     return jsonify(
@@ -890,6 +895,22 @@ def highest_employee_id():
     """
     cur = get_cursor()
     query = sql.SQL("SELECT MAX(id) AS max_id FROM employees;")
+    cur.execute(query)
+    highest_id = cur.fetchone()[0]
+    cur.close()
+    return jsonify({"highest_id": highest_id})
+
+# API endpoint to fetch 10 most sold menu items
+@app.route("/highest_menu_item_id", methods=["GET"])
+def highest_menu_item_id():
+    """
+    Retrieves the largest menu item id
+
+    Returns:
+        jsonify: JSON response with menu item id
+    """
+    cur = get_cursor()
+    query = sql.SQL("SELECT MAX(id) AS max_id FROM menu_items;")
     cur.execute(query)
     highest_id = cur.fetchone()[0]
     cur.close()
