@@ -9,7 +9,7 @@
     align-items: center;
     min-height: 6vh;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 36px;
     position: relative;
 }
 
@@ -18,16 +18,31 @@
  */
 .navSide {
     position: static;
+    flex-grow: 1;
+    flex-basis: 0;
+    display: flex;
+    align-items: center;
+}
+
+.navSide .left {
+    justify-content: start;
+}
+
+.navSide.right {
+    justify-content: end;
 }
 
 /**
  * Styles for the navigation header.
  */
 .navHeader {
+    flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-inline: 10px;
+    flex-grow: 1;
+    flex-basis: 0;
 }
 
 /**
