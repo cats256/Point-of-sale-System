@@ -437,20 +437,12 @@ def menu_item_name():
     """
     item_id = request.args.get("id")
 
-    try:
-        cur = get_cursor()
-        query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
-        cur.execute(query, (item_id,))
-        item_name = cur.fetchone()[0]
-        cur.close()
-
-        if item_name:
-            return jsonify({"item_id": item_name})
-        else:
-            return jsonify({"error": "Menu item not found"}), 404
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    cur = get_cursor()
+    query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
+    cur.execute(query, (item_id, ))
+    item_name = cur.fetchone() 
+    cur.close()
+    return jsonify(item_name)
 
 
 # API endpoint for ingredient usage report
@@ -1018,6 +1010,25 @@ def salary():
             "message": "Salary successfully updated",
         }
     )
+
+# API endpoint to get menu items associated with order
+@app.route("/menu_id_list", methods=["GET"])
+def menu_id_list():
+    """
+    Retrieves all menu item ids associated with order id. 
+
+    Returns:
+        jsonify: JSON response with menu item id
+    """
+
+    order_id = request.args.get("id")
+
+    cur = get_cursor()
+    query = sql.SQL("SELECT menu_item_id FROM order_menu_items WHERE order_id=%s;")
+    cur.execute(query, (order_id, ))
+    id_list = cur.fetchall()
+    cur.close()
+    return jsonify(id_list)
 
 
 # API endpoint to submit a restock order

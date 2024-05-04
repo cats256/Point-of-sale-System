@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { cancelOrder, completeOrder, getCurrent, deleteOrder } from "../../network/api";
+import { cancelOrder, completeOrder, getCurrent, deleteOrder, itemsList, getItemName } from "../../network/api";
 import "./KitchenView.css";
 import NavBar from "../common/navBar";
 import CloseIcon from "@mui/icons-material/Close";
@@ -32,13 +32,41 @@ const KitchenView = () => {
   };
 
   const OrderPopUp = ({ orderNumber, onClose, onComplete, onCancel, onDelete }) => {
+    const [itemNames, setItemNames] = useState([]);
+    console.log(orderNumber);
+  
+    useEffect(() => {
+      const fetchItemNames = async () => {
+        try {
+          const nestedItemIds = await itemsList(orderNumber-1);
+          const itemIds = nestedItemIds.flat();
+          const names = await Promise.all(itemIds.map(async (itemId) => {
+              const response = await getItemName(itemId);
+              return response;
+        }));
+          setItemNames(names);
+        } catch (error) {
+          console.error('Error fetching item names:', error);
+        }
+      };
+  
+      fetchItemNames();
+    }, [orderNumber]);
+  
     return (
-        <section className="order-popup">
+      <section className="order-popup">
         <div className="order-popup-content">
           <button className="close-button" onClick={onClose}>
             <CloseIcon />
           </button>
-          <h3 className="popup-title">Order {orderNumber}</h3>
+          <h3 className="popup-title">Order {orderNumber-1}</h3>
+          <div className="order-items">
+            {itemNames.map((itemName, index) => (
+              <div key={index} className="order-item">
+                <span>{itemName}</span> {/* Display item name */}
+              </div>
+            ))}
+          </div>
           <div className="button-container">
             <button className="complete-button" onClick={onComplete}>
               Mark order complete
@@ -110,7 +138,7 @@ const KitchenView = () => {
                 className="button-primary" // Apply button-secondary class here
                 onClick={() => handleOrderClick(order.id)}
               >
-                Order {order.id}
+                Order {order.id-1}
               </button>
             </div>
           ))}

@@ -326,3 +326,12 @@ export async function deleteOrder(formData) {
         body: JSON.stringify(formData),
     });
 }
+
+export async function itemsList(orderId) {
+    const response = await request(
+        `/menu_id_list?id=${encodeURIComponent(orderId)}`,
+        { method: "GET" }
+    );
+    return response; // Return the entire response object
+}
+

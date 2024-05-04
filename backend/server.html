@@ -179,6 +179,10 @@ sorted&nbsp;in&nbsp;descending&nbsp;order.&nbsp;<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;containing&nbsp;id,&nbsp;name,&nbsp;ingredient&nbsp;usage&nbsp;count,&nbsp;and&nbsp;current&nbsp;quanity&nbsp;for&nbsp;each&nbsp;ingredient.</span></dd></dl>
+ <dl><dt><a name="-menu_id_list"><strong>menu_id_list</strong></a>()</dt><dd><span class="code">Retrieves&nbsp;all&nbsp;menu&nbsp;item&nbsp;ids&nbsp;associated&nbsp;with&nbsp;order&nbsp;id.&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;response&nbsp;with&nbsp;menu&nbsp;item&nbsp;id</span></dd></dl>
  <dl><dt><a name="-menu_item_add"><strong>menu_item_add</strong></a>()</dt><dd><span class="code">Adds&nbsp;new&nbsp;row&nbsp;to&nbsp;menu&nbsp;items&nbsp;table.&nbsp;<br>
 &nbsp;<br>
 Given&nbsp;a&nbsp;name,&nbsp;price,&nbsp;and&nbsp;type,&nbsp;a&nbsp;new&nbsp;menu&nbsp;item&nbsp;is&nbsp;created&nbsp;in&nbsp;the&nbsp;database.&nbsp;<br>
@@ -262,7 +266,7 @@ Returns:<br>
     
 <tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
 <td class="singlecolumn"><strong>app</strong> = &lt;Flask 'server'&gt;<br>
-<strong>conn</strong> = &lt;connection object at 0x000002039D922DF0; dsn: '...=csce-315-db.engr.tamu.edu port=5432', closed: 0&gt;<br>
+<strong>conn</strong> = &lt;connection object at 0x0000020E73CE3230; dsn: '...=csce-315-db.engr.tamu.edu port=5432', closed: 0&gt;<br>
 <strong>database_password</strong> = 'nighthawk'<br>
 <strong>deepl_auth_key</strong> = 'a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx'<br>
 <strong>request</strong> = &lt;LocalProxy unbound&gt;<br>
