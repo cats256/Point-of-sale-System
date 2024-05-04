@@ -5,6 +5,7 @@ import { CashierView } from "./components/CashierView/CashierView";
 import { CustomerView } from "./components/CustomerView/CustomerView";
 import { ManagerView } from "./components/ManagerView/ManagerView";
 import { MenuView } from "./components/MenuView/MenuView";
+import KitchenView from "./components/KitchenView/KitchenView";
 import { Login } from "./components/Authentication/login";
 import { Logout } from "./components/Authentication/logout";
 import { getLanguages, getMenuItems } from "./network/api";
@@ -14,16 +15,15 @@ import { useLocation } from "react-router-dom";
 import { CircularProgress, Pagination } from "@mui/material";
 import { formatItemName } from "./utils/formatItemName";
 import { translate } from "./network/api";
-import { gapi } from "gapi-script";
-
-const clientID =
-    "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
+import { useLanguage } from "./components/common/languageContext";
 
 function App() {
     const [menuItems, setMenuItems] = useState([]);
     const [translatedMenuItems, setTranslatedMenuItems] = useState(null);
-    const [languages, setLanguages] = useState({});
-    const [currLanguage, setCurrLanguage] = useState(``);
+    // const [languages, setLanguages] = useState({});
+    // const [currLanguage, setCurrLanguage] = useState(``);
+    const { languages, setLanguages, currLanguage, setCurrLanguage } =
+        useLanguage();
     const location = useLocation();
     sessionStorage.setItem("user_email", "");
 
@@ -150,6 +150,7 @@ function App() {
                     />
                 }
             />
+            <Route path="/kitchen" element={<KitchenView />} />
         </Routes>
     );
 }

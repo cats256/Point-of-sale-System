@@ -54,7 +54,17 @@ const CustomerView = ({ menuItems }) => {
 
     const MenuItemPopUp = ({ item, onClose }) => {
         let itemName = formatItemName(item);
-        let imgSrc = require(`../../img/${item.name}.png`);
+        const imageExists = () => {
+            try {
+                return Boolean(require(`../../img/${item.name}.png`));
+            } catch (error) {
+                return false;
+            }
+        };
+
+        let imgSrc = imageExists()
+            ? require(`../../img/${item.name}.png`)
+            : "/square_image.jpg";
 
         return (
             <section
@@ -114,7 +124,19 @@ const CustomerView = ({ menuItems }) => {
             <section className="menuItemsContainer">
                 {filteredItems.map((item, index) => {
                     let itemName = item.translatedName || formatItemName(item);
-                    let imgSrc = require(`../../img/${item.name}.png`);
+                    const imageExists = () => {
+                        try {
+                            return Boolean(
+                                require(`../../img/${item.name}.png`)
+                            );
+                        } catch (error) {
+                            return false;
+                        }
+                    };
+
+                    let imgSrc = imageExists()
+                        ? require(`../../img/${item.name}.png`)
+                        : "/square_image.jpg";
 
                     return (
                         <button

@@ -1,4 +1,5 @@
 import { GoogleLogout } from "@leecheuk/react-google-login";
+import { Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,13 +15,19 @@ function Logout() {
         sessionStorage.setItem("user_email", "");
         setIsLoggedIn(false);
         navigate("/");
-    }
+    };
 
-    return(
+    return (
         <div id="signOutButton">
-            <button onClick={onSuccess}>Logout</button>
+            <Button
+                variant="outlined"
+                onClick={onSuccess}
+                className="logout-button"
+            >
+                Logout
+            </Button>
         </div>
-    )
+    );
 }
 
 export {Logout};

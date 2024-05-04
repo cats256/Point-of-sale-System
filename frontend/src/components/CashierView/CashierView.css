@@ -1,14 +1,27 @@
+/**
+ * Represents the main view container.
+ * Styles the container to display as a flex column with a minimum height of 100vh.
+ */
 .view {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+/**
+ * Represents the container for panels.
+ * Styles the container to display as a flex container that grows to fill available space.
+ */
 .panels {
     display: flex;
     flex-grow: 1;
 }
 
+/**
+ * Represents the left panel container.
+ * Styles the container to display as a flex column with a width of 15vw.
+ * Justifies the content with space-between.
+ */
 .left-panel {
     display: flex;
     flex-direction: column;
@@ -25,6 +38,12 @@
     margin: 10px;
 } */
 
+/**
+ * Represents the center panel container.
+ * Styles the container to display as a grid with 3 columns and 8 rows.
+ * Sets border properties for styling.
+ * Adjusts width and overflow properties for responsiveness.
+ */
 .center-panel {
     flex-direction: column;
     width: auto;
@@ -40,13 +59,22 @@
     grid-auto-flow: row;
 }
 
+/**
+ * Represents the right panel container.
+ * Styles the container with padding, width, and border properties.
+ */
 .right-panel {
     padding: 10px;
     width: 25vw;
     border-bottom: 2px solid black;
-    height: 100vh;
+    /* height: 100%; */
 }
 
+/**
+ * Represents the menu item component.
+ * Styles the menu item with a white background, flex layout, and border.
+ * Spans 2 rows in the grid layout.
+ */
 .menu-item {
     background-color: white;
     display: flex;
@@ -57,6 +85,10 @@
     border: 1px solid #ddd;
 }
 
+/**
+ * Styles the images within the menu item.
+ * Sets maximum width, height, and object-fit properties.
+ */
 .menu-item img {
     max-width: 30%;
     height: auto;

@@ -159,6 +159,30 @@ export async function editMenuItems(formData) {
     });
 }
 
+export async function deleteMenuItems(formData) {
+    return request("/menu_item_delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function editIngredient(formData) {
+    return request("/ingredient_edit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function deleteIngredient(formData) {
+    return request("/ingredient_delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
 export async function addMenuItem(formData) {
     return request("/menu_item_add", {
         method: "POST",
@@ -214,6 +238,28 @@ export async function getIngredientUsage(start_date, end_date) {
     return response.data;
 }
 
+export async function getSalesReport(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/sales_report`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
+export async function getWhatSellsTogether(start_date, end_date) {
+    const response = await axios.get(`${API_BASE}/what_sells_together`, {
+        params: {
+            start_date,
+            end_date,
+        },
+    });
+
+    return response.data;
+}
+
 export async function getOrderTrends(start_date, end_date) {
     const response = await axios.get(`${API_BASE}/order_trends`, {
         params: {
@@ -241,6 +287,10 @@ export async function getHighestEmployeeId() {
     return request("/highest_employee_id", { method: "GET" });
 }
 
+export async function getHighestMenuItemId() {
+    return request("/highest_menu_item_id", { method: "GET" });
+}
+
 export async function getCurrent() {
     return request("/in_progress", { method: "GET" });
 }
@@ -263,6 +313,14 @@ export async function cancelOrder(formData) {
 
 export async function completeOrder(formData) {
     return request("/completed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function deleteOrder(formData) {
+    return request("/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

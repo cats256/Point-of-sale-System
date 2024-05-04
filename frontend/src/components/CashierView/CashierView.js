@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
-import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
+// import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
 import {
     Button,
     Dialog,
@@ -24,6 +24,13 @@ import { CategoryButton } from "../common/CategoryButton";
 import "./CashierView.css";
 import NavBar from "../common/navBar";
 
+/**
+ * Represents the main component for the cashier view interface.
+ *
+ * @param {Array} menuItems - An array containing the menu items available.
+ * @param {Array} languages - An array containing language options.
+ * @param {string} language - The selected language.
+ */
 const CashierView = ({ menuItems, languages, language }) => {
     const [panel, setPanel] = useState(null);
     const [currType, setCurrType] = useState(null);
@@ -40,16 +47,25 @@ const CashierView = ({ menuItems, languages, language }) => {
         RemoveItemConfirmationDialog,
     } = useBasket();
 
+    /**
+     * Increases the zoom level by 25%.
+     */
     const increaseZoom = () => {
         setZoom(zoom + 25);
     };
 
+    /**
+     * Decreases the zoom level by 25%.
+     */
     const decreaseZoom = () => {
         if (zoom > 100) {
             setZoom(zoom - 25);
         }
     };
 
+    /**
+     * Populates the menu items based on the selected panel.
+     */
     const PopulateMenuItems = () => {
         // sorting the beef & bean burgers to group by type
         const customSort = (a, b) => {
@@ -69,6 +85,12 @@ const CashierView = ({ menuItems, languages, language }) => {
         console.log("filtered", filteredItems);
         filteredItems.sort(customSort);
 
+        /**
+         * Handles the click event for a menu item.
+         * Adds the selected item to the basket.
+         *
+         * @param {Object} item - The menu item to be added to the basket.
+         */
         const handleItemClick = (item) => {
             addItemToBasket(item);
         };
@@ -141,14 +163,25 @@ const CashierView = ({ menuItems, languages, language }) => {
         // </div>
     };
 
+    /**
+     * Opens the combo dialog to make a combo selection.
+     */
     const handleComboDialog = () => {
         setOpenDialog(true);
     };
 
+    /**
+     * Closes the combo dialog.
+     */
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
 
+    /**
+     * Handles the combo selection based on the choice made.
+     *
+     * @param {string} choice - A string representing the chosen combo option.
+     */
     const handleMakeCombo = (choice) => {
         setOpenDialog(false);
 
@@ -189,6 +222,9 @@ const CashierView = ({ menuItems, languages, language }) => {
         }
     };
 
+    /**
+     * Displays the basket items along with subtotal, tax, and total.
+     */
     const DisplayBasket = () => {
         // Subtotal, tax, & total
         const subtotal = basket.reduce(
@@ -359,66 +395,76 @@ const CashierView = ({ menuItems, languages, language }) => {
         );
     };
 
-    const Accessibility = () => {
-        const [showAccessibilityPanel, setShowAccessibilityPanel] =
-            useState(false);
+    /**
+     * Renders the accessibility options panel.
+     */
+    // const Accessibility = () => {
+    //     const [showAccessibilityPanel, setShowAccessibilityPanel] =
+    //         useState(false);
 
-        return (
-            <>
-                <button
-                    style={{
-                        gridRow: 8,
-                        gridColumn: 2,
-                    }}
-                    aria-label="accessibility options"
-                    onClick={() =>
-                        setShowAccessibilityPanel((prevState) => !prevState)
-                    } // Adjusted to call the toggle function
-                >
-                    <SettingsAccessibilityIcon />
-                </button>
-                {showAccessibilityPanel && (
-                    <div
-                        style={{
-                            position: "fixed",
-                            bottom: "50%",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            background: "white",
-                            padding: "20px",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "16px",
-                        }}
-                    >
-                        <button
-                            onClick={() =>
-                                setShowAccessibilityPanel(
-                                    (prevState) => !prevState
-                                )
-                            }
-                        >
-                            <CloseIcon />
-                        </button>
-                        <span>Accessibility Options</span>
-                    </div>
-                )}
-            </>
-        );
-    };
+    //     return (
+    //         <>
+    //             <button
+    //                 style={{
+    //                     gridRow: 8,
+    //                     gridColumn: 2,
+    //                 }}
+    //                 aria-label="accessibility options"
+    //                 onClick={() =>
+    //                     setShowAccessibilityPanel((prevState) => !prevState)
+    //                 } // Adjusted to call the toggle function
+    //             >
+    //                 <SettingsAccessibilityIcon />
+    //             </button>
+    //             {showAccessibilityPanel && (
+    //                 <div
+    //                     style={{
+    //                         position: "fixed",
+    //                         bottom: "50%",
+    //                         left: "50%",
+    //                         transform: "translateX(-50%)",
+    //                         background: "white",
+    //                         padding: "20px",
+    //                         borderRadius: "8px",
+    //                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    //                         display: "flex",
+    //                         alignItems: "center",
+    //                         gap: "16px",
+    //                     }}
+    //                 >
+    //                     <button
+    //                         onClick={() =>
+    //                             setShowAccessibilityPanel(
+    //                                 (prevState) => !prevState
+    //                             )
+    //                         }
+    //                     >
+    //                         <CloseIcon />
+    //                     </button>
+    //                     <span>Accessibility Options</span>
+    //                 </div>
+    //             )}
+    //         </>
+    //     );
+    // };
 
     return (
         <div className="view">
-            <NavBar increaseZoom={increaseZoom} decreaseZoom={decreaseZoom} zoom={zoom} />
+            <NavBar
+                increaseZoom={increaseZoom}
+                decreaseZoom={decreaseZoom}
+                zoom={zoom}
+            />
 
-            <div className="panels" style={{ transform: `scale(${zoom / 100})` }}>
+            <div
+                className="panels"
+                style={{ transform: `scale(${zoom / 100})` }}
+            >
                 <div className="right-panel">{DisplayBasket()}</div>
                 <div className="center-panel">
                     {PopulateMenuItems()}
-                    {Accessibility()}
-                    <Button
+                    {/* {Accessibility()} */}
+                    {/* <Button
                         variant="outlined"
                         style={{
                             backgroundColor: "#ecebed",
@@ -442,14 +488,18 @@ const CashierView = ({ menuItems, languages, language }) => {
                         onClick={handleComboDialog}
                     >
                         Make a Combo
-                    </Button>
+                    </Button> */}
                     <Dialog open={openDialog} onClose={handleCloseDialog}>
                         <DialogTitle>Combos</DialogTitle>
                         <DialogContent>
-                            <Button onClick={() => handleMakeCombo("kettleChips")}>
+                            <Button
+                                onClick={() => handleMakeCombo("kettleChips")}
+                            >
                                 Kettle Chips
                             </Button>
-                            <Button onClick={() => handleMakeCombo("frenchFries")}>
+                            <Button
+                                onClick={() => handleMakeCombo("frenchFries")}
+                            >
                                 Fries
                             </Button>
                         </DialogContent>
