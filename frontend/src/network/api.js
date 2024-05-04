@@ -342,3 +342,19 @@ export async function deleteOrder(formData) {
         body: JSON.stringify(formData),
     });
 }
+
+export async function getItemNameList(menuItemId) {
+    const response = await request(
+        `/menu_item_name_list?id=${encodeURIComponent(menuItemId)}`,
+        { method: "GET" }
+    );
+    return response; // Return the entire response object
+}
+
+export async function itemsList(orderId) {
+    const response = await request(
+        `/menu_id_list?id=${encodeURIComponent(orderId)}`,
+        { method: "GET" }
+    );
+    return response; // Return the entire response object
+}

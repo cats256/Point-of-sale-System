@@ -70,6 +70,12 @@ menu&nbsp;item&nbsp;orders&nbsp;table.&nbsp;<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;message&nbsp;indicating&nbsp;success</span></dd></dl>
+ <dl><dt><a name="-email"><strong>email</strong></a>()</dt><dd><span class="code">Updates&nbsp;the&nbsp;salary&nbsp;of&nbsp;an&nbsp;employee&nbsp;in&nbsp;the&nbsp;database.&nbsp;&nbsp;<br>
+&nbsp;<br>
+Given&nbsp;an&nbsp;employee&nbsp;id&nbsp;and&nbsp;a&nbsp;new&nbsp;salary,&nbsp;it&nbsp;changes&nbsp;the&nbsp;salary&nbsp;of&nbsp;the&nbsp;employee&nbsp;in&nbsp;the&nbsp;employee&nbsp;table.&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;message&nbsp;indicating&nbsp;success</span></dd></dl>
  <dl><dt><a name="-get_current_orders"><strong>get_current_orders</strong></a>()</dt><dd><span class="code">Retrieve&nbsp;all&nbsp;orders&nbsp;with&nbsp;status&nbsp;"in&nbsp;progress".<br>
 &nbsp;<br>
 It&nbsp;is&nbsp;used&nbsp;to&nbsp;display&nbsp;current&nbsp;items&nbsp;in&nbsp;the&nbsp;kitchen&nbsp;view.&nbsp;<br>
@@ -179,6 +185,10 @@ sorted&nbsp;in&nbsp;descending&nbsp;order.&nbsp;<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;containing&nbsp;id,&nbsp;name,&nbsp;ingredient&nbsp;usage&nbsp;count,&nbsp;and&nbsp;current&nbsp;quanity&nbsp;for&nbsp;each&nbsp;ingredient.</span></dd></dl>
+ <dl><dt><a name="-menu_id_list"><strong>menu_id_list</strong></a>()</dt><dd><span class="code">Retrieves&nbsp;all&nbsp;menu&nbsp;item&nbsp;ids&nbsp;associated&nbsp;with&nbsp;order&nbsp;id.&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;response&nbsp;with&nbsp;menu&nbsp;item&nbsp;id</span></dd></dl>
  <dl><dt><a name="-menu_item_add"><strong>menu_item_add</strong></a>()</dt><dd><span class="code">Adds&nbsp;new&nbsp;row&nbsp;to&nbsp;menu&nbsp;items&nbsp;table.&nbsp;<br>
 &nbsp;<br>
 Given&nbsp;a&nbsp;name,&nbsp;price,&nbsp;and&nbsp;type,&nbsp;a&nbsp;new&nbsp;menu&nbsp;item&nbsp;is&nbsp;created&nbsp;in&nbsp;the&nbsp;database.&nbsp;<br>
@@ -209,6 +219,12 @@ Given&nbsp;the&nbsp;id&nbsp;of&nbsp;a&nbsp;menu&nbsp;item,&nbsp;it&nbsp;returns&
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;response&nbsp;with&nbsp;menu&nbsp;item&nbsp;name.</span></dd></dl>
+ <dl><dt><a name="-menu_item_name_list"><strong>menu_item_name_list</strong></a>()</dt><dd><span class="code">Retrieves&nbsp;menu&nbsp;item&nbsp;name.&nbsp;<br>
+&nbsp;<br>
+Given&nbsp;the&nbsp;id&nbsp;of&nbsp;a&nbsp;menu&nbsp;item,&nbsp;it&nbsp;returns&nbsp;the&nbsp;name&nbsp;associated&nbsp;with&nbsp;that&nbsp;id.&nbsp;&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;response&nbsp;with&nbsp;menu&nbsp;item&nbsp;name.</span></dd></dl>
  <dl><dt><a name="-order_id"><strong>order_id</strong></a>()</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;current&nbsp;order&nbsp;id.&nbsp;<br>
 &nbsp;<br>
 Returns:<br>
@@ -220,6 +236,12 @@ It&nbsp;calculates&nbsp;the&nbsp;count&nbsp;of&nbsp;pairs&nbsp;of&nbsp;menu&nbsp
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;with&nbsp;the&nbsp;2&nbsp;ids&nbsp;of&nbsp;the&nbsp;menu&nbsp;items&nbsp;in&nbsp;the&nbsp;pair,&nbsp;the&nbsp;number&nbsp;of&nbsp;orders&nbsp;they&nbsp;were&nbsp;included&nbsp;together,&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;the&nbsp;date&nbsp;of&nbsp;the&nbsp;orders&nbsp;for&nbsp;each&nbsp;pair.</span></dd></dl>
+ <dl><dt><a name="-position"><strong>position</strong></a>()</dt><dd><span class="code">Updates&nbsp;the&nbsp;salary&nbsp;of&nbsp;an&nbsp;employee&nbsp;in&nbsp;the&nbsp;database.&nbsp;&nbsp;<br>
+&nbsp;<br>
+Given&nbsp;an&nbsp;employee&nbsp;id&nbsp;and&nbsp;a&nbsp;new&nbsp;salary,&nbsp;it&nbsp;changes&nbsp;the&nbsp;salary&nbsp;of&nbsp;the&nbsp;employee&nbsp;in&nbsp;the&nbsp;employee&nbsp;table.&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jsonify:&nbsp;JSON&nbsp;message&nbsp;indicating&nbsp;success</span></dd></dl>
  <dl><dt><a name="-restock_order"><strong>restock_order</strong></a>()</dt><dd><span class="code">Adds&nbsp;new&nbsp;restock&nbsp;order&nbsp;to&nbsp;database.&nbsp;<br>
 &nbsp;<br>
 Given&nbsp;an&nbsp;ingredient&nbsp;name,&nbsp;id,&nbsp;quantity&nbsp;to&nbsp;order,&nbsp;and&nbsp;price,&nbsp;it&nbsp;creates&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;restock&nbsp;order&nbsp;in&nbsp;the<br>
@@ -262,7 +284,7 @@ Returns:<br>
     
 <tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
 <td class="singlecolumn"><strong>app</strong> = &lt;Flask 'server'&gt;<br>
-<strong>conn</strong> = &lt;connection object at 0x000002039D922DF0; dsn: '...=csce-315-db.engr.tamu.edu port=5432', closed: 0&gt;<br>
+<strong>conn</strong> = &lt;connection object at 0x00000284483DF9A0; dsn: '...=csce-315-db.engr.tamu.edu port=5432', closed: 0&gt;<br>
 <strong>database_password</strong> = 'nighthawk'<br>
 <strong>deepl_auth_key</strong> = 'a80c467c-4902-4f58-a2b9-a31da3e4a2f5:fx'<br>
 <strong>request</strong> = &lt;LocalProxy unbound&gt;<br>
