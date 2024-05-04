@@ -30,71 +30,73 @@ const WhatSellsTogether = ({ start_date, end_date }) => {
     return (
         <div>
             <h2>What Sells Together</h2>
-            <table
-                style={{
-                    borderCollapse: "collapse",
-                    border: "1px solid black",
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Menu Item 1
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Menu Item 2
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Count
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {whatSellsTogether.map((sale, index) => (
-                        <tr key={index} style={{ border: "1px solid black" }}>
-                            <td
+            <div style={{ maxHeight: "80vh", overflowY: "auto" }}>
+                <table
+                    style={{
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                    }}
+                >
+                    <thead>
+                        <tr>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[0]}
-                            </td>
-                            <td
+                                Menu Item 1
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[1]}
-                            </td>
-                            <td
+                                Menu Item 2
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[2]}
-                            </td>
+                                Count
+                            </th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody style={{ maxHeight: "80vh", overflowY: "auto", maxWidth: "100wh" }}>
+                        {whatSellsTogether.map((sale, index) => (
+                            <tr key={index} style={{ border: "1px solid black" }}>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[0]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[1]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[2]}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

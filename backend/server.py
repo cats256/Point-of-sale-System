@@ -722,6 +722,67 @@ def menu_item_delete():
         }
     )
 
+# API endpoint to update ingredient information
+@app.route("/ingredient_edit", methods=["POST"])
+def ingredient_edit():
+    """
+    Updates the name, price, and supplier of ingredient. 
+
+    Given a new name, price, and supplier, it changes the values associated with that ingredient id in the ingredient table. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
+    data = request.json
+
+    id = data.get("id")
+    name = data.get("name")
+    price = data.get("price")
+    supplier = data.get("supplier")
+
+    cur = get_cursor()
+    query = sql.SQL("UPDATE ingredients SET price = %s WHERE id = %s;")
+    cur.execute(query, (price, id))
+    query2 = sql.SQL("UPDATE ingredients SET name = %s WHERE id = %s;")
+    cur.execute(query2, (name, id))
+    query3 = sql.SQL("UPDATE ingredients SET supplier = %s WHERE id = %s;")
+    cur.execute(query3, (supplier, id))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "ingredient successfully updated",
+        }
+    )
+
+# API endpoint to delete ingredient
+@app.route("/ingredient_delete", methods=["POST"])
+def ingredient_delete():
+    """
+    Deletes an ingredient from the database. 
+
+    Given an ingredient id, it removes that row from the database. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
+    id = request.args.get("id")
+
+    cur = get_cursor()
+    query0 = sql.SQL("DELETE FROM restock_order WHERE id = %s;")
+    cur.execute(query0, (id, ))
+    query = sql.SQL("DELETE FROM ingredients WHERE id = %s;")
+    cur.execute(query, (id, ))
+    query2 = sql.SQL("DELETE FROM menu_item_ingredients WHERE ingredient_id = %s;")
+    cur.execute(query2, (id, ))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "ingredient successfully deleted",
+        }
+    )
+
 # API endpoint to mark order completed 
 @app.route("/completed", methods=["POST"])
 def complete_order():

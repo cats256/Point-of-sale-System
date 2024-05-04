@@ -21,87 +21,89 @@ const IngredientUsageTable = ({ start_date, end_date }) => {
     return (
         <div>
             <h2>Ingredient Usage</h2>
-            <table
-                style={{
-                    borderCollapse: "collapse",
-                    border: "1px solid black",
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Ingredient ID
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Ingredient Name
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Total Ingredients Used
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Ingredient Quantity Left
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {ingredientUsage.map((ingredient, index) => (
-                        <tr key={index} style={{ border: "1px solid black" }}>
-                            <td
+            <div style={{ maxHeight: "80vh", overflowY: "auto" }}>
+                <table
+                    style={{
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                    }}
+                >
+                    <thead>
+                        <tr>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {ingredient[0]}
-                            </td>
-                            <td
+                                Ingredient ID
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {ingredient[1]}
-                            </td>
-                            <td
+                                Ingredient Name
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {ingredient[2]}
-                            </td>
-                            <td
+                                Total Ingredients Used
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {ingredient[3]}
-                            </td>
+                                Ingredient Quantity Left
+                            </th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {ingredientUsage.map((ingredient, index) => (
+                            <tr key={index} style={{ border: "1px solid black" }}>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {ingredient[0]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {ingredient[1]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {ingredient[2]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {ingredient[3]}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
