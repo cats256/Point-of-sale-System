@@ -499,6 +499,44 @@ def ingredient_usage():
     return ingredients_info
 
 # API endpoint for sales report
+@app.route("/excess_report", methods=["GET"])
+def excess_report():
+    cur = get_cursor()
+
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    query = sql.SQL(
+        """
+        SELECT
+            i.id AS ingredient_id,
+            i.name AS ingredient_name,
+            COUNT(mii.ingredient_id) AS total_ingredient_count,
+            i.quantity AS ingredient_quantity
+        FROM
+            orders o
+            JOIN order_menu_items omi ON o.id = omi.order_id
+            JOIN menu_items mi ON omi.menu_item_id = mi.id
+            JOIN menu_item_ingredients mii ON mi.id = mii.menu_item_id
+            JOIN ingredients i ON mii.ingredient_id = i.id
+        WHERE
+            o.date >= %s
+            AND o.date <= %s
+        GROUP BY
+            i.id
+        HAVING
+            COUNT(mii.ingredient_id) < (i.quantity * 0.10)
+        ORDER BY
+            total_ingredient_count DESC
+        """
+    )
+    cur.execute(query, (start_date, end_date))
+    excess = cur.fetchall()
+    cur.close()
+
+    return excess
+
+# API endpoint for sales report
 @app.route("/sales_report", methods=["GET"])
 def sales_report():
     cur = get_cursor()

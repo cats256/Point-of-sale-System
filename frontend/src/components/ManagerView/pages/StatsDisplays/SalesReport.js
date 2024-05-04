@@ -19,88 +19,90 @@ const SalesReport = ({ start_date, end_date }) => {
     }, [start_date, end_date]); // Include start_date and end_date in the dependency array to fetch data when they change
     return (
         <div>
-            <h2>Menu Item ID</h2>
-            <table
-                style={{
-                    borderCollapse: "collapse",
-                    border: "1px solid black",
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Menu Item Name
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Total Sales Count
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Total Ingredients Used
-                        </th>
-                        <th
-                            style={{
-                                border: "1px solid black",
-                                padding: "8px",
-                            }}
-                        >
-                            Total Sales Amount
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salesReport.map((sale, index) => (
-                        <tr key={index} style={{ border: "1px solid black" }}>
-                            <td
+            <h2>Sales Report</h2>
+            <div style={{ maxHeight: "80vh", overflowY: "auto" }}>
+                <table
+                    style={{
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                    }}
+                >
+                    <thead>
+                        <tr>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[0]}
-                            </td>
-                            <td
+                                Menu Item Id
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[1]}
-                            </td>
-                            <td
+                                Menu Item Name
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[2]}
-                            </td>
-                            <td
+                                Total Sales Count
+                            </th>
+                            <th
                                 style={{
                                     border: "1px solid black",
                                     padding: "8px",
                                 }}
                             >
-                                {sale[3]}
-                            </td>
+                                Total Sales Amount
+                            </th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {salesReport.map((sale, index) => (
+                            <tr key={index} style={{ border: "1px solid black" }}>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[0]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[1]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[2]}
+                                </td>
+                                <td
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                    }}
+                                >
+                                    {sale[3]}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
