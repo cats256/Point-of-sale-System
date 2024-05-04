@@ -1019,6 +1019,60 @@ def salary():
         }
     )
 
+# API endpoint to update an employee's email
+@app.route("/email", methods=["POST"])
+def email():
+    """
+    Updates the salary of an employee in the database.  
+
+    Given an employee id and a new salary, it changes the salary of the employee in the employee table. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
+    data = request.json
+
+    id = data.get("id")
+    email = data.get("email")
+
+    cur = get_cursor()
+    query = sql.SQL("UPDATE employees SET email = %s WHERE id = %s;")
+    cur.execute(query, (email, id))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Email successfully updated",
+        }
+    )
+
+# API endpoint to update an employee's position
+@app.route("/position", methods=["POST"])
+def position():
+    """
+    Updates the salary of an employee in the database.  
+
+    Given an employee id and a new salary, it changes the salary of the employee in the employee table. 
+
+    Returns:
+        jsonify: JSON message indicating success
+    """
+    data = request.json
+
+    id = data.get("id")
+    manager = data.get("manager")
+
+    cur = get_cursor()
+    query = sql.SQL("UPDATE employees SET manager = %s WHERE id = %s;")
+    cur.execute(query, (manager, id))
+    conn.commit()
+    cur.close()
+    return jsonify(
+        {
+            "message": "Email successfully updated",
+        }
+    )
+
 
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])

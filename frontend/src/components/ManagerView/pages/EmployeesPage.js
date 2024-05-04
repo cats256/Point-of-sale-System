@@ -7,6 +7,8 @@ import {
     deleteEmployee,
     addEmployee,
     getHighestEmployeeId,
+    updateEmail,
+    updatePosition,
 } from "../../../network/api";
 // import { updateSalary } from "../../../network/api";
 
@@ -26,12 +28,16 @@ const EmployeesPage = () => {
     const [employeeJob, setEmployeeJob] = useState("");
     const [employees, setEmployees] = useState([]);
     const [newSalary, setNewSalary] = useState();
+    const [newEmail, setNewEmail] = useState("");
+    const [changePosition, setChangePosition] = useState(false);
     const [reasonForDeletion, setReasonForDeletion] = useState("");
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [newEmployeeName, setNewEmployeeName] = useState("");
     const [newEmployeeEmail, setNewEmployeeEmail] = useState("");
     const [newEmployeeSalary, setNewEmployeeSalary] = useState("");
     const [newEmployeeManager, setNewEmployeeManager] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);
+
 
     const fetchData = useCallback(async () => {
         const employees_ = await getEmployees();
@@ -65,12 +71,21 @@ const EmployeesPage = () => {
     const handleEmployeeClick = (employee, num) => {
         setSelectedEmployee(employee);
         setSelectedEmployeeNum(num);
+        setShowEdit(false);
         if (employees[num]["manager"]) {
             setEmployeeJob("Manager");
         } else {
             setEmployeeJob("Employee");
         }
     };
+
+    const toggleEdit = () => {
+        setShowEdit(!showEdit);
+    };
+    
+    const toggleChangePosition = () => {
+        setChangePosition(!changePosition);
+    };  
 
     const handleUpdateSalary = (employeeId, newSalary) => {
         if (newSalary !== null) {
@@ -98,6 +113,53 @@ const EmployeesPage = () => {
             }
         } else {
             alert("Please enter a new salary.");
+        }
+    };
+
+    const handleUpdateEmail = (employeeId, newEmail) => {
+        if (newEmail !== null) {
+            // Construct employee data
+            const employeeData = {
+                id: employeeId,
+                email: newEmail,
+            };
+            // Update salary
+            updateEmail(employeeData)
+                .then(() => {
+                    setNewEmail("");
+                    fetchData();
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    // Handle error if needed
+                });
+        } else {
+            alert("Please enter a new email.");
+        }
+    };
+
+    const handleUpdatePosition = () => {
+        const isManager = employees[selectedEmployeeNum]["manager"];
+        const newManagerStatus = !isManager;
+    
+        // Construct employee data with updated manager status
+        const employeeData = {
+            id: employees[selectedEmployeeNum]["id"],
+            manager: newManagerStatus,
+        };
+    
+        // Update employee's manager status if changePosition is true
+        if (changePosition) {
+            updatePosition(employeeData)
+                .then(() => {
+                    // Refresh data after update
+                    setChangePosition(false); // Reset checkbox state
+                    fetchData();
+                })
+                .catch((error) => {
+                    console.error("Error updating position:", error);
+                    // Handle error if needed
+                });
         }
     };
 
@@ -233,40 +295,6 @@ const EmployeesPage = () => {
                                     Salary:
                                 </span>{" "}
                                 {employees[selectedEmployeeNum]["salary"]}
-                                {/* <button style={{ marginLeft: "10px" }} onClick={handleUpdateSalary(selectedEmployee)}>Update</button> */}
-                                <div style={{ marginBottom: "10px" }}>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter new salary"
-                                        value={newSalary}
-                                        onChange={(e) =>
-                                            setNewSalary(e.target.value)
-                                        }
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                handleUpdateSalary(
-                                                    employees[
-                                                        selectedEmployeeNum
-                                                    ]["id"],
-                                                    newSalary
-                                                );
-                                            }
-                                        }}
-                                    />
-                                    <button
-                                        style={{ marginLeft: "10px" }}
-                                        onClick={() =>
-                                            handleUpdateSalary(
-                                                employees[selectedEmployeeNum][
-                                                    "id"
-                                                ],
-                                                newSalary
-                                            )
-                                        }
-                                    >
-                                        Update
-                                    </button>
-                                </div>
                             </div>
                             <div
                                 style={{
@@ -307,6 +335,75 @@ const EmployeesPage = () => {
                                         </button>
                                     </div>
                                 )}
+                                <button onClick={toggleEdit}>Edit</button>
+                                    {showEdit && (
+                                        <div>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter new salary"
+                                                value={newSalary}
+                                                onChange={(e) => setNewSalary(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        handleUpdateSalary(
+                                                            employees[selectedEmployeeNum]["id"],
+                                                            newSalary
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                style={{ marginLeft: "10px" }}
+                                                onClick={() =>
+                                                    handleUpdateSalary(
+                                                        employees[selectedEmployeeNum]["id"],
+                                                        newSalary
+                                                    )
+                                                }
+                                            >
+                                                Update Salary
+                                            </button>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter new email"
+                                                value={newEmail}
+                                                onChange={(e) => setNewEmail(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        handleUpdateEmail(
+                                                            employees[selectedEmployeeNum]["id"],
+                                                            newEmail
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                style={{ marginLeft: "10px" }}
+                                                onClick={() =>
+                                                    handleUpdateEmail(
+                                                        employees[selectedEmployeeNum]["id"],
+                                                        newEmail
+                                                    )
+                                                }
+                                            >
+                                                Update Email
+                                            </button>
+                                            <label>
+                                                Change Position:
+                                                <input
+                                                    type="checkbox"
+                                                    checked={changePosition}
+                                                    onChange={toggleChangePosition}
+                                                />
+                                            </label>
+                                            <button
+                                                style={{ marginLeft: "10px" }}
+                                                onClick={handleUpdatePosition}
+                                            >
+                                                Update Position
+                                            </button>
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     </div>

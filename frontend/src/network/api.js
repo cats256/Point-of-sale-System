@@ -151,6 +151,22 @@ export async function updateSalary(formData) {
     });
 }
 
+export async function updateEmail(formData) {
+    return request("/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
+export async function updatePosition(formData) {
+    return request("/position", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+}
+
 export async function editMenuItems(formData) {
     return request("/menu_item_edit", {
         method: "POST",
