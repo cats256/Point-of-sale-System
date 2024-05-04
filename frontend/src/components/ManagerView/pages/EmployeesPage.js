@@ -131,7 +131,7 @@ const EmployeesPage = () => {
             // Assuming you have a function to add an employee to the database
             // You can call an API or use another method to send this data to the server
             const newEmployeeIdAwait = await getHighestEmployeeId();
-            console.log(newEmployeeIdAwait.highest_id);
+            // console.log(newEmployeeIdAwait.highest_id);
             const newEmployeeId = parseInt(newEmployeeIdAwait.highest_id) +1;
             const employeeData = {
                 id: newEmployeeId,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, MenuItem } from "@mui/material";
-import { editMenuItems, getMenuItems, addMenuItem, getMenuItemTypes, deleteMenuItems  } from "../../../network/api";
+import { editMenuItems, getMenuItems, addMenuItem, getMenuItemTypes, deleteMenuItems, getHighestMenuItemId  } from "../../../network/api";
 
 // const types = ["Burger", "Sandwich", "Dessert"]; // List of types
 
@@ -8,6 +8,7 @@ const MenuPage = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [menuItemTypes, setMenuItemTypes] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+  const [selectedMenuItemIndex, setSelectedMenuItemIndex] = useState(null);
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
 //   const [newItemId, setNewItemId] = useState("");
@@ -15,48 +16,52 @@ const MenuPage = () => {
   const [newItemPrice, setNewItemPrice] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [newItemType, setNewItemType] = useState("");
+  const [customItemType, setCustomItemType] = useState("");
+
+  async function fetchMenuItems() {
+    try {
+      const items = await getMenuItems();
+      setMenuItems(items);
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+    }
+  }
+
+  async function fetchMenuItemTypes() {
+      try {
+        const types = await getMenuItemTypes();
+        const types_list = [];
+        for (let i = 0; i < types.length; i++){
+          types_list.push(types[i]["type"]);
+        }
+        setMenuItemTypes(types_list);
+        if (types_list.length > 0) {
+          setNewItemType(types_list[0]); // Set initial value for newItemType
+        }
+        console.log(types);
+      } catch (error) {
+        console.error("Error fetching menu item types:", error);
+      }
+  }
 
   useEffect(() => {
     // Fetch menu items from API
-    async function fetchMenuItems() {
-      try {
-        const items = await getMenuItems();
-        setMenuItems(items);
-      } catch (error) {
-        console.error("Error fetching menu items:", error);
-      }
-    }
     fetchMenuItems();
-
-    async function fetchMenuItemTypes() {
-        try {
-          const types = await getMenuItemTypes();
-          const types_list = [];
-          for (let i = 0; i < types.length; i++){
-            types_list.push(types[i]["type"]);
-          }
-          setMenuItemTypes(types_list);
-          if (types_list.length > 0) {
-            setNewItemType(types_list[0]); // Set initial value for newItemType
-          }
-          console.log(types);
-        } catch (error) {
-          console.error("Error fetching menu item types:", error);
-        }
-    }
     fetchMenuItemTypes();    
   }, []);
 
   const handleMenuItemClick = (index) => {
-    setSelectedMenuItem(index);
-    console.log(menuItems[index]);
+    setSelectedMenuItemIndex(index);
+    setSelectedMenuItem(menuItems[index]["id"]);
+    console.log(menuItems[index]["id"]);
     console.log(menuItems);
-    setEditName(menuItems[index].name);
-    setEditPrice(menuItems[index].price);
+    setEditName(menuItems[index]["name"]);
+    setEditPrice(menuItems[index]["price"]);
   };
 
   const handleEditMenuItem = () => {
     if (selectedMenuItem !== null) {
+        console.log(selectedMenuItem);
         const editData = {
             id: selectedMenuItem,
             name: editName,
@@ -66,8 +71,8 @@ const MenuPage = () => {
             .then(() => {
                 console.log("ran");
                 const updatedMenuItems = [...menuItems]; // Create a copy of menuItems array
-                updatedMenuItems[selectedMenuItem] = { // Update the selected menu item
-                ...updatedMenuItems[selectedMenuItem],
+                updatedMenuItems[selectedMenuItemIndex] = { // Update the selected menu item
+                ...updatedMenuItems[selectedMenuItemIndex],
                 price: editPrice,
                 name: editName,
                 };
@@ -80,22 +85,32 @@ const MenuPage = () => {
     }
   };
 
-  const handleAddMenuItem = () => {
+  const handleAddMenuItem = async () => {
+    const newMenuItemIdAwait = await getHighestMenuItemId();
+    const newMenuItemId = parseInt(newMenuItemIdAwait.highest_id) +1;
     const newItem = {
-      id: menuItems.length,
+      id: newMenuItemId,
       name: newItemName || "New Item",
       price: newItemPrice || 0,
-      type: newItemType || 0,
+      type: customItemType || newItemType,
     };
-    setMenuItems([...menuItems, newItem]);
-    setSelectedMenuItem(menuItems.length);
     setEditName("");
     setEditPrice("");
-    console.log(newItemType);
-    // setNewItemId("");
-    setNewItemName("");
-    setNewItemPrice("");
-    addMenuItem(newItem);
+    addMenuItem(newItem)
+      .then(() => {
+        setMenuItems([...menuItems, newItem]);
+        if (customItemType){
+          setMenuItemTypes([...menuItemTypes, customItemType])
+        }
+        setSelectedMenuItem(newMenuItemId);
+        setSelectedMenuItemIndex(menuItems.length-1);
+        setNewItemName("");
+        setNewItemPrice("");
+        setCustomItemType(""); // Reset customItemType after adding
+      })
+      .catch(error => {
+        console.error("Error adding menu item:", error);
+      });
   };
 
   const handleSearch = (e) => {
@@ -109,15 +124,25 @@ const MenuPage = () => {
   const handleDeleteMenuItem = () => {
     if (selectedMenuItem !== null) {
       // Call API to delete menu item
-      deleteMenuItems(selectedMenuItem)
-        .then(() => {
+      console.log(selectedMenuItem);
+      console.log(menuItems);
+      const deleted_item = {
+        id: selectedMenuItem,
+    };
+      deleteMenuItems(deleted_item)
+        .then(async () => {
           // Filter out the deleted item from menuItems
-          const updatedMenuItems = menuItems.filter(
-            (item) => item.id !== selectedMenuItem
-          );
+          // const updatedMenuItems = menuItems.filter(
+          //   (item) => item.id !== selectedMenuItem
+          // );
+          const updatedMenuItems = await getMenuItems();
           setMenuItems(updatedMenuItems);
+          // fetchMenuItems();
+          // fetchMenuItemTypes();
           // Reset selection after deletion
           setSelectedMenuItem(null);
+          setEditName("");
+          setEditPrice("");
         })
         .catch((error) => {
           console.error("Error deleting menu item:", error);
@@ -148,7 +173,7 @@ const MenuPage = () => {
                 backgroundColor:
                   index === selectedMenuItem ? "#f0f0f0" : "transparent",
               }}
-              onClick={() => handleMenuItemClick(item.id)}
+              onClick={() => handleMenuItemClick(index)}
             >
               {item.name} - ${item.price}
             </div>
@@ -195,7 +220,19 @@ const MenuPage = () => {
                 {type}
             </MenuItem>
             ))}
+            <MenuItem key="createNew" value="createNew">
+              Create New Type
+            </MenuItem>
         </TextField>
+        {newItemType === "createNew" && (
+          <TextField
+            label="Custom Type"
+            value={customItemType}
+            onChange={e => setCustomItemType(e.target.value)}
+            fullWidth
+            style={{ marginBottom: "20px" }}
+          />
+        )}
         <Button
           variant="contained"
           onClick={handleAddMenuItem}
