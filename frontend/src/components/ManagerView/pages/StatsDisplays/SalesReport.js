@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { getOrderTrends } from "../../../../network/api";
+import { getSalesReport } from "../../../../network/api";
 
-const OrderTrendsTable = ({ start_date, end_date }) => {
-    const [orderTrends, setOrderTrends] = useState([]);
+const SalesReport = ({ start_date, end_date }) => {
+    const [salesReport, setSalesReport] = useState([]);
 
     useEffect(() => {
+        const fetchSalesReport = async () => {
+            try {
+                const data = await getSalesReport(start_date, end_date);
+                setSalesReport(data);
+            } catch (error) {
+                console.error("Error fetching sales report:", error);
+            }
+        };
+
         // Fetch ingredient usage data when component mounts
-        fetchOrderTrends();
+        fetchSalesReport();
     }, [start_date, end_date]); // Include start_date and end_date in the dependency array to fetch data when they change
-
-    const fetchOrderTrends = async () => {
-        try {
-            const data = await getOrderTrends(start_date, end_date);
-            // console.log(data);
-            setOrderTrends(data);
-        } catch (error) {
-            console.error("Error fetching ingredient usage:", error);
-        }
-    };
-
     return (
         <div>
-            <h2>Ingredient Usage</h2>
+            <h2>Menu Item ID</h2>
             <table
                 style={{
                     borderCollapse: "collapse",
@@ -36,7 +34,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Title 1
+                            Menu Item Name
                         </th>
                         <th
                             style={{
@@ -44,7 +42,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Title 2
+                            Total Sales Count
                         </th>
                         <th
                             style={{
@@ -52,7 +50,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Title 3
+                            Total Ingredients Used
                         </th>
                         <th
                             style={{
@@ -60,12 +58,12 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                 padding: "8px",
                             }}
                         >
-                            Title 4
+                            Total Sales Amount
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {orderTrends.map((order, index) => (
+                    {salesReport.map((sale, index) => (
                         <tr key={index} style={{ border: "1px solid black" }}>
                             <td
                                 style={{
@@ -73,7 +71,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                     padding: "8px",
                                 }}
                             >
-                                {order[0]}
+                                {sale[0]}
                             </td>
                             <td
                                 style={{
@@ -81,7 +79,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                     padding: "8px",
                                 }}
                             >
-                                {order[1]}
+                                {sale[1]}
                             </td>
                             <td
                                 style={{
@@ -89,7 +87,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                     padding: "8px",
                                 }}
                             >
-                                {order[2]}
+                                {sale[2]}
                             </td>
                             <td
                                 style={{
@@ -97,7 +95,7 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
                                     padding: "8px",
                                 }}
                             >
-                                {order[3]}
+                                {sale[3]}
                             </td>
                         </tr>
                     ))}
@@ -107,4 +105,4 @@ const OrderTrendsTable = ({ start_date, end_date }) => {
     );
 };
 
-export default OrderTrendsTable;
+export default SalesReport;
