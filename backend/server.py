@@ -768,13 +768,15 @@ def menu_item_delete():
     data = request.json
 
     id = data.get("id")
-    # print(id)
+    print(id)
 
     cur = get_cursor()
     query = sql.SQL("DELETE FROM menu_items WHERE id = %s;")
     cur.execute(query, (id, ))
+    print("deleted 1")
     query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
     cur.execute(query2, (id, ))
+    print("deleted 2")
     # try:
     #     query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
     #     cur.execute(query2, (id, ))

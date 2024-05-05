@@ -54,7 +54,7 @@ const MenuPage = () => {
     setSelectedMenuItemIndex(index);
     setSelectedMenuItem(menuItems[index]["id"]);
     console.log(menuItems[index]["id"]);
-    console.log(menuItems);
+    // console.log(menuItems);
     setEditName(menuItems[index]["name"]);
     setEditPrice(menuItems[index]["price"]);
   };
@@ -132,14 +132,11 @@ const MenuPage = () => {
       deleteMenuItems(deleted_item)
         .then(async () => {
           // Filter out the deleted item from menuItems
-          // const updatedMenuItems = menuItems.filter(
-          //   (item) => item.id !== selectedMenuItem
-          // );
-          const updatedMenuItems = await getMenuItems();
+          const updatedMenuItems = menuItems.filter(
+            (item) => item.id !== selectedMenuItem
+          );
+          // const updatedMenuItems = await getMenuItems();
           setMenuItems(updatedMenuItems);
-          // fetchMenuItems();
-          // fetchMenuItemTypes();
-          // Reset selection after deletion
           setSelectedMenuItem(null);
           setEditName("");
           setEditPrice("");
@@ -171,7 +168,7 @@ const MenuPage = () => {
                 cursor: "pointer",
                 padding: "8px",
                 backgroundColor:
-                  index === selectedMenuItem ? "#f0f0f0" : "transparent",
+                  index === selectedMenuItemIndex ? "#f0f0f0" : "transparent",
               }}
               onClick={() => handleMenuItemClick(index)}
             >
