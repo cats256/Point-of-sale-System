@@ -85,7 +85,7 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
                 const item_id = menu_items[i]["menu_item_id"];
                 // console.log(item_id);
                 const item_name = await getItemName(item_id);
-                // console.log(item_name);
+                // console.log(item_name.item_name);
                 _itemLabels.push(item_name.item_name);
                 _itemData.push(menu_items[i]["category_count"]);
                 _backgroundColors.push(backgroundColorsBank[i % 10]);
