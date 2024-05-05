@@ -50,9 +50,11 @@ const MenuPage = () => {
     fetchMenuItemTypes();    
   }, []);
 
-  const handleMenuItemClick = (index) => {
+  const handleMenuItemClick = (id) => {
+    // console.log(index);
+    const index = menuItems.findIndex(menuItem => menuItem.id === id);
     setSelectedMenuItemIndex(index);
-    setSelectedMenuItem(menuItems[index]["id"]);
+    setSelectedMenuItem(id);
     console.log(menuItems[index]["id"]);
     // console.log(menuItems);
     setEditName(menuItems[index]["name"]);
@@ -168,9 +170,9 @@ const MenuPage = () => {
                 cursor: "pointer",
                 padding: "8px",
                 backgroundColor:
-                  index === selectedMenuItemIndex ? "#f0f0f0" : "transparent",
+                  index === selectedMenuItem ? "#f0f0f0" : "transparent",
               }}
-              onClick={() => handleMenuItemClick(index)}
+              onClick={() => handleMenuItemClick(item.id)}
             >
               {item.name} - ${item.price}
             </div>

@@ -264,8 +264,9 @@ const CustomerView = ({ menuItems }) => {
                 <div key={index} className="basketItem">
                     <div>
                         <span className="basketItemName">
-                            {`${item.translatedName.toUpperCase()} ` ||
-                                `${formatItemName(item)} `}
+                            {item.translatedName
+                                ? `${item.translatedName.toUpperCase()} `
+                                : `${formatItemName(item)} `}
                         </span>
                         ${parseFloat(item.price * item.quantity).toFixed(2)}
                         {/* Quantity modification buttons */}
