@@ -27,7 +27,6 @@ function App() {
     const location = useLocation();
     sessionStorage.setItem("user_email", "");
 
-    console.log(menuItems);
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
         key: "HLRHT43XJPSVMQHAMK7PDLL92",

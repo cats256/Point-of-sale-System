@@ -6,7 +6,7 @@ import { Logout } from "./logout";
 import { gapi } from "gapi-script";
 import { Login } from "./login";
 import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
-import './navpage.css';
+import "./navpage.css";
 
 const clientID =
     "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
@@ -37,7 +37,11 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
             </div>
 
             <div className="control-panel">
-                <FormControl variant="outlined" className="custom-select">
+                <FormControl
+                    variant="filled"
+                    className="custom-select"
+                    style={{}}
+                >
                     <InputLabel>Language</InputLabel>
                     <Select
                         value={currLanguage}
@@ -53,7 +57,7 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                 </FormControl>
                 <Logout />
             </div>
-    
+
             <div className="nav-container" style={{ margin: 10 }}>
                 <Link to="/manager">
                     <Button variant="outlined">Manager</Button>
@@ -62,7 +66,8 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                     <Button variant="outlined">Cashier</Button>
                 </Link>
                 <Link to="/customer">
-                    <Button variant="outlined">Kiosk</Button>  {/* New button for Kiosk */}
+                    <Button variant="outlined">Kiosk</Button>{" "}
+                    {/* New button for Kiosk */}
                 </Link>
                 <Link to="/menu">
                     <Button variant="outlined">Menu</Button>
@@ -71,7 +76,7 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                     <Button variant="outlined">Kitchen</Button>
                 </Link>
             </div>
-    
+
             <div style={{ display: "none" }}>
                 <Login />
             </div>
