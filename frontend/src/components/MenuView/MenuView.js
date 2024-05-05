@@ -2,6 +2,7 @@ import { CircularProgress, Pagination } from "@mui/material";
 import { Clock } from "digital-clock-react";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
 import ReactWeather from "react-open-weather";
 
 import "./MenuView.css";
@@ -13,8 +14,11 @@ const MenuView = ({
     translatedMenuItems,
 }) => {
     const [page, setPage] = useState(1);
+    const [isCycle, setIsCycle] = useState(true);
 
     useEffect(() => {
+        if (!isCycle) return;
+
         const timerId = setInterval(() => {
             setPage((prevPage) =>
                 (prevPage + 1) % 8 === 0 ? 1 : prevPage + 1
@@ -24,7 +28,7 @@ const MenuView = ({
         return () => {
             clearInterval(timerId);
         };
-    }, []);
+    }, [isCycle]);
 
     if (!translatedMenuItems) {
         return (
@@ -65,7 +69,7 @@ const MenuView = ({
                         />
                     ) : (
                         <img
-                            src="/square_image.jpg"
+                            src={require(`../../img/new.png`)}
                             alt={item.translatedName + " Image"}
                             style={{
                                 width: "120px",
@@ -146,7 +150,30 @@ const MenuView = ({
                     margin: 0,
                 }}
             >
-                <div style={{ height: "80px", width: "200px" }}></div>
+                <div
+                    style={{
+                        height: "80px",
+                        width: "200px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        style={{ width: "80%", height: "80%" }}
+                        onClick={() => setIsCycle(!isCycle)}
+                    >
+                        {isCycle ? "Stop Cycling" : "Start Cycling"}
+                    </Button>
+
+                    {/* <button
+                        style={{ width: "100%", height: "100%" }}
+                        onClick={() => setIsCycle(!isCycle)}
+                    >
+                        {isCycle ? "Stop Cycling" : "Start Cycling"}
+                    </button> */}
+                </div>
                 <Pagination
                     count={7}
                     variant="outlined"
@@ -154,6 +181,7 @@ const MenuView = ({
                     hidePrevButton
                     hideNextButton
                     page={page}
+                    onChange={(_, value) => setPage(value)}
                 />
                 <Clock isMode24H size="small" />
             </div>
