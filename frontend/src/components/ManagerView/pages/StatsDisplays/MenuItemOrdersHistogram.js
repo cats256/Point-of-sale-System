@@ -92,6 +92,7 @@ const MenuItemOrdersHistogram = ({ start_date, end_date }) => {
                 _borderColors.push(borderColorsBank[i % 10]);
             }
             // console.log(_itemLabels);
+            // console.log(_itemData);
             setLabels(_itemLabels);
             setData(_itemData);
             setBackgroundColors(_backgroundColors);

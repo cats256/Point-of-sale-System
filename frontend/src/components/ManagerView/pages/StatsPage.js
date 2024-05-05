@@ -16,7 +16,6 @@ import MenuItemOrdersHistogram from "./StatsDisplays/MenuItemOrdersHistogram";
 import IngredientUsageTable from "./StatsDisplays/IngredientUsageTable";
 import SalesReport from "./StatsDisplays/SalesReport";
 import WhatSellsTogether from "./StatsDisplays/WhatSellsTogether";
-import ExcessReport from "./StatsDisplays/ExcessReport";
 // import OrderTrendsTable from "./StatsDisplays/OrderTrendsTable";
 
 const StatsPage = () => {
@@ -51,22 +50,10 @@ const StatsPage = () => {
                     Ingredient Usage Table
                 </Button>
                 <Button
-                    variant={displayGraph === "SalesReport" ? "contained" : "outlined"}
-                    onClick={() => setDisplayGraph("SalesReport")}
-                >
-                    Sales Report
-                </Button>
-                <Button
                     variant={displayGraph === "WhatSellsTogether" ? "contained" : "outlined"}
                     onClick={() => setDisplayGraph("WhatSellsTogether")}
                 >
                     What Sells Together
-                </Button>
-                <Button
-                    variant={displayGraph === "ExcessReport " ? "contained" : "outlined"}
-                    onClick={() => setDisplayGraph("ExcessReport")}
-                >
-                    Excess Report
                 </Button>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -122,13 +109,8 @@ const StatsPage = () => {
                     start_date={startDate}
                     end_date={endDate}
                 />
-            ) : displayGraph === "WhatSellsTogether" ?(
-                <WhatSellsTogether
-                    start_date={startDate}
-                    end_date={endDate}
-                />
             ) : (
-                <ExcessReport
+                <WhatSellsTogether
                     start_date={startDate}
                     end_date={endDate}
                 />
