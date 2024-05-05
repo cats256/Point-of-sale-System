@@ -58,7 +58,6 @@ export async function getOrderMenuItems() {
     // });
 
     // return response.data;
-    
 }
 
 export async function getOrderMenuItemsFromId(start_id, end_id) {
@@ -71,7 +70,6 @@ export async function getOrderMenuItemsFromId(start_id, end_id) {
     });
 
     return response.data;
-    
 }
 
 export async function getMenuItemTypes() {
@@ -322,7 +320,7 @@ export async function getCurrent() {
     return request("/in_progress", { method: "GET" });
 }
 
-export async function addIngredient(formData){
+export async function addIngredient(formData) {
     return request("/add_ingredient", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

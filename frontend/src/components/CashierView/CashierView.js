@@ -81,8 +81,6 @@ const CashierView = ({ menuItems, languages, language }) => {
                 ? menuItems[panel]
                 : [];
 
-        console.log("menu items", menuItems);
-        console.log("filtered", filteredItems);
         filteredItems.sort(customSort);
 
         /**

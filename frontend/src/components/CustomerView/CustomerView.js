@@ -1,13 +1,84 @@
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatItemName } from "../../utils/formatItemName";
 import { useBasket } from "../common/BasketContext";
 import "./CustomerView.css";
 import NavBar from "../common/navBar";
+import { translate } from "../../network/api";
+import { useLanguage } from "../common/languageContext";
+import Button from "@mui/material/Button";
 
 const CustomerView = ({ menuItems }) => {
+    const itemTypes = [
+        "Burgers",
+        "Baskets",
+        "Sandwiches",
+        "Drinks",
+        "Desserts",
+        "Sides",
+        "Sauces",
+    ];
+    const [translatedItemTypes, setTranslatedItemTypes] = useState(itemTypes);
+    const [myOrderText, setMyOrderText] = useState("My Order");
+    const [clearOrderText, setClearOrderText] = useState("Clear Order");
+    const [placeOrderText, setPlaceOrderText] = useState("Place Order");
+
+    const { languages, setLanguages, currLanguage, setCurrLanguage } =
+        useLanguage();
+
+    useEffect(() => {
+        const translateItemTypes = async () => {
+            if (!itemTypes || !currLanguage) {
+                return;
+            }
+
+            const translatedItemTypes = await Promise.all(
+                itemTypes.map(async (type) => {
+                    if (currLanguage === "English (American)") {
+                        return type;
+                    }
+                    const translatedType = await translate(
+                        type,
+                        languages[currLanguage]
+                    );
+                    return translatedType;
+                })
+            );
+
+            setTranslatedItemTypes(translatedItemTypes);
+        };
+
+        translateItemTypes();
+
+        if (currLanguage === "English (American)") {
+            setMyOrderText("My Order");
+        } else {
+            translate("My Order", languages[currLanguage]).then((data) =>
+                setMyOrderText(data)
+            );
+        }
+
+        if (currLanguage === "English (American)") {
+            setClearOrderText("Clear Order");
+        } else {
+            translate("Clear Order", languages[currLanguage]).then((data) =>
+                setClearOrderText(data)
+            );
+        }
+
+        if (currLanguage === "English (American)") {
+            setPlaceOrderText("Place Order");
+        } else {
+            translate("Place Order", languages[currLanguage]).then((data) =>
+                setPlaceOrderText(data)
+            );
+        }
+    }, [currLanguage, languages]);
+
+    console.log(translatedItemTypes);
+
     const [panel, setPanel] = useState("Burgers");
     const [currType, setCurrType] = useState("Burgers");
     const [zoom, setZoom] = useState(100);
@@ -38,7 +109,7 @@ const CustomerView = ({ menuItems }) => {
         }
     };
 
-    const typeButton = (text, panel = "") => (
+    const typeButton = (text, translatedText = "", panel = "") => (
         <button
             variant="outlined"
             onClick={() => {
@@ -48,7 +119,7 @@ const CustomerView = ({ menuItems }) => {
             className={`typeBtn ${currType === text ? "typeBtnActive" : ""}`}
             aria-pressed={true}
         >
-            {text}
+            {translatedText || text}
         </button>
     );
 
@@ -123,7 +194,9 @@ const CustomerView = ({ menuItems }) => {
         return (
             <section className="menuItemsContainer">
                 {filteredItems.map((item, index) => {
-                    let itemName = item.translatedName || formatItemName(item);
+                    let itemName =
+                        item.translatedName.toUpperCase() ||
+                        formatItemName(item);
                     const imageExists = () => {
                         try {
                             return Boolean(
@@ -169,9 +242,10 @@ const CustomerView = ({ menuItems }) => {
         );
     };
 
+    console.log(basket);
     const DisplayBasket = () => (
         <aside className="basket">
-            <h1>My Basket</h1>
+            <h1>{myOrderText}</h1>
 
             {/* Clear Cart button */}
             <div className="flexBox">
@@ -182,7 +256,7 @@ const CustomerView = ({ menuItems }) => {
                     }}
                     disabled={basket.length === 0}
                 >
-                    Clear Basket
+                    {clearOrderText}
                 </button>
             </div>
 
@@ -190,7 +264,8 @@ const CustomerView = ({ menuItems }) => {
                 <div key={index} className="basketItem">
                     <div>
                         <span className="basketItemName">
-                            {formatItemName(item)}{" "}
+                            {`${item.translatedName.toUpperCase()} ` ||
+                                `${formatItemName(item)} `}
                         </span>
                         ${parseFloat(item.price * item.quantity).toFixed(2)}
                         {/* Quantity modification buttons */}
@@ -231,7 +306,7 @@ const CustomerView = ({ menuItems }) => {
                     disabled={basket.length === 0}
                     className="basketPlaceOrderBtn"
                 >
-                    Place Order
+                    {placeOrderText}
                 </button>
             </footer>
         </aside>
@@ -253,13 +328,9 @@ const CustomerView = ({ menuItems }) => {
                 }}
             >
                 <aside className="typeMenu">
-                    {typeButton("Burgers")}
-                    {typeButton("Baskets")}
-                    {typeButton("Sandwiches")}
-                    {typeButton("Drinks")}
-                    {typeButton("Desserts")}
-                    {typeButton("Sides")}
-                    {typeButton("Sauces")}
+                    {itemTypes.map((type, index) =>
+                        typeButton(type, translatedItemTypes[index])
+                    )}
                 </aside>
 
                 <article className="centerPanel">{PopulateMenuItems()}</article>
