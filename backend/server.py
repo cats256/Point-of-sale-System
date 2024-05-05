@@ -452,6 +452,25 @@ def menu_item_name():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/menu_item_name_list", methods=["GET"])
+def menu_item_name_list():
+    """
+    Retrieves menu item name. 
+
+    Given the id of a menu item, it returns the name associated with that id.  
+
+    Returns:
+        jsonify: JSON response with menu item name. 
+    """
+    item_id = request.args.get("id")
+
+    cur = get_cursor()
+    query = sql.SQL("SELECT name FROM menu_items WHERE id=%s;")
+    cur.execute(query, (item_id,))
+    item_name = cur.fetchone()[0]
+    cur.close()
+    return jsonify(item_name)
+
 
 # API endpoint for ingredient usage report
 @app.route("/ingredient_usage", methods=["GET"])
@@ -749,13 +768,15 @@ def menu_item_delete():
     data = request.json
 
     id = data.get("id")
-    # print(id)
+    print(id)
 
     cur = get_cursor()
     query = sql.SQL("DELETE FROM menu_items WHERE id = %s;")
     cur.execute(query, (id, ))
+    print("deleted 1")
     query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
     cur.execute(query2, (id, ))
+    print("deleted 2")
     # try:
     #     query2 = sql.SQL("DELETE FROM order_menu_items WHERE menu_item_id = %s;")
     #     cur.execute(query2, (id, ))
@@ -1114,6 +1135,25 @@ def position():
             "message": "Email successfully updated",
         }
     )
+
+# API endpoint to get menu items associated with order
+@app.route("/menu_id_list", methods=["GET"])
+def menu_id_list():
+    """
+    Retrieves all menu item ids associated with order id. 
+
+    Returns:
+        jsonify: JSON response with menu item id
+    """
+
+    order_id = request.args.get("id")
+
+    cur = get_cursor()
+    query = sql.SQL("SELECT menu_item_id FROM order_menu_items WHERE order_id=%s;")
+    cur.execute(query, (order_id, ))
+    id_list = cur.fetchall()
+    cur.close()
+    return jsonify(id_list)
 
 
 # API endpoint to submit a restock order
