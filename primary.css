@@ -20,13 +20,13 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Roboto Slab", serif;
+    font-family: "Roboto", serif;
     color: var(--primary-color);
 }
 
 button,
 .button {
-    font-family: "Roboto Slab", serif;
+    font-family: "Roboto", serif;
 }
 
 /* UI Components */

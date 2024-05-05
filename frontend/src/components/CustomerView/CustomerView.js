@@ -8,8 +8,8 @@ import "./CustomerView.css";
 import NavBar from "../common/navBar";
 
 const CustomerView = ({ menuItems }) => {
-    const [panel, setPanel] = useState(null);
-    const [currType, setCurrType] = useState(null);
+    const [panel, setPanel] = useState("Burgers");
+    const [currType, setCurrType] = useState("Burgers");
     const [zoom, setZoom] = useState(100);
 
     const {
