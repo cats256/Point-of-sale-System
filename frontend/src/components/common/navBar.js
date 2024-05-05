@@ -3,6 +3,7 @@ import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
 import { useFontSize } from "../../utils/FontSizeProvider";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState } from "react";
+import { Clock } from "digital-clock-react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import "./navBar.css";
@@ -152,6 +153,12 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
     return (
         <nav className="navBar">
             <div className="navSide left">
+                <div style={{ 
+                            transform: `scale(0.7)`,
+                            marginLeft: '-30px',
+                            }}>
+                    <Clock isMode24H size="small"/>
+                </div>
                 <Accessibility
                     increaseZoom={increaseZoom}
                     decreaseZoom={decreaseZoom}
@@ -186,6 +193,7 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
                         ))}
                     </Select>
                 </FormControl>
+
             </div>
         </nav>
     );
