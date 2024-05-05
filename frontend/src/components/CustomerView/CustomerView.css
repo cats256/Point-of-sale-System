@@ -15,6 +15,24 @@
     --accessibility-blue: #2289c1;
 }
 
+/* High Contrast Variables */
+:root.high-contrast {
+    --primary-color: #000000; /* Black */
+    --light-primary-color: #ffffff; /* White */
+    --secondary-color: #ffffff; /* White */
+    --accent-color: #ffcc00; /* Bright Yellow */
+    --neutral-dark: #ffffff; /* White */
+    --neutral-light: #000000; /* Black */
+    --neutral-medium: #333333; /* Dark Gray */
+    --white: #ffffff; /* White */
+    --close: #ff0000; /* Bright Red */
+    --open: #00ff00; /* Bright Green */
+    --border-radius-r: 15px;
+    --dynamic-font-size: 20px;
+    --dynamic-icon-scale: 1.5;
+    --accessibility-blue: #0094ff; /* Bright Blue */
+}
+
 .typeBtn {
     border-radius: var(--border-radius-r);
     margin: 4px;
@@ -98,6 +116,12 @@
     margin: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     font-size: 20px;
+}
+
+.high-contrast .menuItemBtn {
+    background-color: var(--neutral-light);
+    color: var(--primary-color);
+    border: 2px solid var(--accent-color);
 }
 
 .menuItemImg {

@@ -393,59 +393,6 @@ const CashierView = ({ menuItems, languages, language }) => {
         );
     };
 
-    /**
-     * Renders the accessibility options panel.
-     */
-    // const Accessibility = () => {
-    //     const [showAccessibilityPanel, setShowAccessibilityPanel] =
-    //         useState(false);
-
-    //     return (
-    //         <>
-    //             <button
-    //                 style={{
-    //                     gridRow: 8,
-    //                     gridColumn: 2,
-    //                 }}
-    //                 aria-label="accessibility options"
-    //                 onClick={() =>
-    //                     setShowAccessibilityPanel((prevState) => !prevState)
-    //                 } // Adjusted to call the toggle function
-    //             >
-    //                 <SettingsAccessibilityIcon />
-    //             </button>
-    //             {showAccessibilityPanel && (
-    //                 <div
-    //                     style={{
-    //                         position: "fixed",
-    //                         bottom: "50%",
-    //                         left: "50%",
-    //                         transform: "translateX(-50%)",
-    //                         background: "white",
-    //                         padding: "20px",
-    //                         borderRadius: "8px",
-    //                         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    //                         display: "flex",
-    //                         alignItems: "center",
-    //                         gap: "16px",
-    //                     }}
-    //                 >
-    //                     <button
-    //                         onClick={() =>
-    //                             setShowAccessibilityPanel(
-    //                                 (prevState) => !prevState
-    //                             )
-    //                         }
-    //                     >
-    //                         <CloseIcon />
-    //                     </button>
-    //                     <span>Accessibility Options</span>
-    //                 </div>
-    //             )}
-    //         </>
-    //     );
-    // };
-
     return (
         <div className="view">
             <NavBar
@@ -461,32 +408,6 @@ const CashierView = ({ menuItems, languages, language }) => {
                 <div className="right-panel">{DisplayBasket()}</div>
                 <div className="center-panel">
                     {PopulateMenuItems()}
-                    {/* {Accessibility()} */}
-                    {/* <Button
-                        variant="outlined"
-                        style={{
-                            backgroundColor: "#ecebed",
-                            color: "black",
-                            borderColor: "black",
-                            gridColumn: 1,
-                            gridRow: 8,
-                        }}
-                    >
-                        Order
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        style={{
-                            backgroundColor: "#ecebed",
-                            color: "black",
-                            borderColor: "black",
-                            gridColumn: 3,
-                            gridRow: 8,
-                        }}
-                        onClick={handleComboDialog}
-                    >
-                        Make a Combo
-                    </Button> */}
                     <Dialog open={openDialog} onClose={handleCloseDialog}>
                         <DialogTitle>Combos</DialogTitle>
                         <DialogContent>

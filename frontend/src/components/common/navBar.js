@@ -18,12 +18,20 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
  */
 const Accessibility = ({ increaseZoom, decreaseZoom }) => {
     const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
-    const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
     const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
     const [highContrastEnabled, setHighContrastEnabled] = useState(false);
     const { toggleFontSize, toggleIconScale, fontSizeMultiplier } =
         useFontSize();
 
+    const toggleHighContrast = () => {
+        setHighContrastEnabled(!highContrastEnabled);
+        if (!highContrastEnabled) {
+            document.documentElement.classList.add('high-contrast');
+        } else {
+            document.documentElement.classList.remove('high-contrast');
+        }
+    };
+    
     return (
         <>
             <button
@@ -54,20 +62,6 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                     </span>
 
                     <div className="accessibilityOptions">
-                        <button
-                            className={classNames("accessibilityOptionBtn", {
-                                accessibilityOptionBtnActive:
-                                    screenReaderEnabled,
-                            })}
-                            onClick={() =>
-                                setScreenReaderEnabled(!screenReaderEnabled)
-                            }
-                            variant="contained"
-                        >
-                            {screenReaderEnabled
-                                ? "Disable Screen Reader"
-                                : "Enable Screen Reader"}
-                        </button>
 
                         <button
                             className={classNames("accessibilityOptionBtn", {
@@ -105,9 +99,10 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                                 accessibilityOptionBtnActive:
                                     highContrastEnabled,
                             })}
-                            onClick={() =>
+                            onClick={() => {
                                 setHighContrastEnabled(!highContrastEnabled)
-                            }
+                                toggleHighContrast()
+                            }}
                             variant="contained"
                         >
                             {highContrastEnabled

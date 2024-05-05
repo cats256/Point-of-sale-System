@@ -132,7 +132,7 @@ function App() {
                 }
             />
             <Route
-                path="/customer"
+                path="/kiosk"
                 element={<CustomerView menuItems={translatedMenuItems} />}
             />
             <Route

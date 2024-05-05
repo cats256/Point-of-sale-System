@@ -91,22 +91,20 @@ export const BasketProvider = ({ children }) => {
             const comboDetails = {
                 Burgers: { name: "Combo with Fries", price: 1.69 },
                 Baskets: { name: "Combo with Fries", price: 1.1 },
-                // Add other types as needed
             };
 
             const combo = comboDetails[item.type];
             if (combo) {
                 const comboItem = {
-                    name: item.name + " " + combo.name, // This will be used for display
+                    name: item.name + " " + combo.name,
                     price: combo.price,
-                    isComboItem: true, // A flag to indicate this is a combo addition
-                    parentId: item.id, // Assuming each item has a unique ID
+                    isComboItem: true, 
+                    parentId: item.id,
                 };
-                // Add the combo as a separate item in the basket
                 addItemToBasket(comboItem);
             }
 
-            setIsCombo(false); // Reset the combo flag
+            setIsCombo(false);
         }
     };
 
