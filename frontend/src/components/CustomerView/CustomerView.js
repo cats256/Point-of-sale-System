@@ -64,7 +64,7 @@ const CustomerView = ({ menuItems }) => {
 
         let imgSrc = imageExists()
             ? require(`../../img/${item.name}.png`)
-            : "/square_image.jpg";
+            : require(`../../img/new.png`);
 
         return (
             <section
@@ -136,7 +136,7 @@ const CustomerView = ({ menuItems }) => {
 
                     let imgSrc = imageExists()
                         ? require(`../../img/${item.name}.png`)
-                        : "/square_image.jpg";
+                        : require(`../../img/new.png`);
 
                     return (
                         <button

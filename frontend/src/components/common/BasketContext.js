@@ -70,9 +70,9 @@ export const BasketProvider = ({ children }) => {
      * Toggles the combo flag state.
      */
     const handleMakeCombo = () => {
-        console.log(isCombo)
+        console.log(isCombo);
         setIsCombo(!isCombo);
-        console.log(isCombo)
+        console.log(isCombo);
     };
 
     /**
@@ -81,7 +81,8 @@ export const BasketProvider = ({ children }) => {
      * @param {Object} item - The item to add to the basket.
      */
     const addItemToBasketWithCombo = (item) => {
-        if (!isCombo) { // to not add duplicates
+        if (!isCombo) {
+            // to not add duplicates
             addItemToBasket(item);
         }
 
