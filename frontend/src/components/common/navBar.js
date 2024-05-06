@@ -3,6 +3,7 @@ import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
 import { useFontSize } from "../../utils/FontSizeProvider";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState } from "react";
+import { Clock } from "digital-clock-react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import "./navBar.css";
@@ -18,12 +19,20 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
  */
 const Accessibility = ({ increaseZoom, decreaseZoom }) => {
     const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
-    const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
     const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
     const [highContrastEnabled, setHighContrastEnabled] = useState(false);
     const { toggleFontSize, toggleIconScale, fontSizeMultiplier } =
         useFontSize();
 
+    const toggleHighContrast = () => {
+        setHighContrastEnabled(!highContrastEnabled);
+        if (!highContrastEnabled) {
+            document.documentElement.classList.add('high-contrast');
+        } else {
+            document.documentElement.classList.remove('high-contrast');
+        }
+    };
+    
     return (
         <>
             <button
@@ -54,20 +63,6 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                     </span>
 
                     <div className="accessibilityOptions">
-                        <button
-                            className={classNames("accessibilityOptionBtn", {
-                                accessibilityOptionBtnActive:
-                                    screenReaderEnabled,
-                            })}
-                            onClick={() =>
-                                setScreenReaderEnabled(!screenReaderEnabled)
-                            }
-                            variant="contained"
-                        >
-                            {screenReaderEnabled
-                                ? "Disable Screen Reader"
-                                : "Enable Screen Reader"}
-                        </button>
 
                         <button
                             className={classNames("accessibilityOptionBtn", {
@@ -105,9 +100,10 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                                 accessibilityOptionBtnActive:
                                     highContrastEnabled,
                             })}
-                            onClick={() =>
+                            onClick={() => {
                                 setHighContrastEnabled(!highContrastEnabled)
-                            }
+                                toggleHighContrast()
+                            }}
                             variant="contained"
                         >
                             {highContrastEnabled
@@ -157,6 +153,12 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
     return (
         <nav className="navBar">
             <div className="navSide left">
+                <div style={{ 
+                            transform: `scale(0.7)`,
+                            marginLeft: '-30px',
+                            }}>
+                    <Clock isMode24H size="small"/>
+                </div>
                 <Accessibility
                     increaseZoom={increaseZoom}
                     decreaseZoom={decreaseZoom}
@@ -178,9 +180,11 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
                         width: "184px",
                     }}
                 >
-                    <InputLabel>Language</InputLabel>
+                    <InputLabel id="language-label">Language</InputLabel>
                     <Select
                         value={currLanguage}
+                        id="language-select"
+                        labelId="language-label"
                         label="Language"
                         onChange={handleChange}
                     >
@@ -191,6 +195,7 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
                         ))}
                     </Select>
                 </FormControl>
+
             </div>
         </nav>
     );

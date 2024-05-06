@@ -77,8 +77,6 @@ const CustomerView = ({ menuItems }) => {
         }
     }, [currLanguage, languages]);
 
-    console.log(translatedItemTypes);
-
     const [panel, setPanel] = useState("Burgers");
     const [currType, setCurrType] = useState("Burgers");
     const [zoom, setZoom] = useState(100);
@@ -117,7 +115,7 @@ const CustomerView = ({ menuItems }) => {
                 setCurrType(text);
             }}
             className={`typeBtn ${currType === text ? "typeBtnActive" : ""}`}
-            aria-pressed={true}
+            aria-label={`${text}`}
         >
             {translatedText || text}
         </button>
@@ -153,7 +151,7 @@ const CustomerView = ({ menuItems }) => {
                 </button>
 
                 {/* Image of the menu item */}
-                <img src={imgSrc} alt={itemName} className="fullWidthImage" />
+                <img src={imgSrc} className="fullWidthImage" />
 
                 {/* Name of the menu item */}
                 <div className="popUpItemNameTxt">{itemName}</div>
@@ -222,7 +220,7 @@ const CustomerView = ({ menuItems }) => {
                         >
                             <img
                                 src={imgSrc}
-                                alt={itemName}
+                                alt={`${item.name}`}
                                 className="menuItemImg"
                             />
                             <div className="menuItemNameTxt">{itemName}</div>
@@ -245,7 +243,7 @@ const CustomerView = ({ menuItems }) => {
     console.log(basket);
     const DisplayBasket = () => (
         <aside className="basket">
-            <h1>{myOrderText}</h1>
+            <h1 className="basketHeading">{myOrderText}</h1>
 
             {/* Clear Cart button */}
             <div className="flexBox">
@@ -264,9 +262,7 @@ const CustomerView = ({ menuItems }) => {
                 <div key={index} className="basketItem">
                     <div>
                         <span className="basketItemName">
-                            {item.translatedName
-                                ? `${item.translatedName.toUpperCase()} `
-                                : `${formatItemName(item)} `}
+                            {`${item.translatedName?.toUpperCase()} ` ||  `${formatItemName(item)} ` }
                         </span>
                         ${parseFloat(item.price * item.quantity).toFixed(2)}
                         {/* Quantity modification buttons */}
