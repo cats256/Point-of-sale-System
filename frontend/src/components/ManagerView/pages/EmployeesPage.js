@@ -234,7 +234,7 @@ const EmployeesPage = () => {
                         >
                             <img
                                 src={employeeImages[index]}
-                                alt="Employee"
+                                alt={`Employee ${employee}`}
                                 style={{
                                     width: "20%",
                                     height: "20%",

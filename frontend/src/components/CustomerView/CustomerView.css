@@ -1,36 +1,36 @@
 :root {
-    --primary-color: #8b1d41; /* Burgundy */
-    --light-primary-color: #ae8e99; /* light, muted Burgundy */
+    --primary-color: #771636; /* Burgundy */
+    --light-primary-color: #ad9aa0; /* light, muted Burgundy */
     --secondary-color: #f5f5f5; /* Cream */
-    --accent-color: #c2a061; /* Gold */
+    --accent-color: #b1893f; /* Gold */
     --neutral-dark: #323232; /* Charcoal */
     --neutral-light: #e8e8e8; /* Light Gray */
     --neutral-medium: #d3d3d3; /* Medium Gray */
     --white: white;
     --close: red;
     --open: green;
+    --accessibility-blue: #2289c1;
     --border-radius-r: 15px;
     --dynamic-font-size: 20px;
     --dynamic-icon-scale: 1.5;
-    --accessibility-blue: #2289c1;
 }
 
 /* High Contrast Variables */
 :root.high-contrast {
-    --primary-color: #000000; /* Black */
-    --light-primary-color: #ffffff; /* White */
-    --secondary-color: #ffffff; /* White */
-    --accent-color: #ffcc00; /* Bright Yellow */
-    --neutral-dark: #ffffff; /* White */
-    --neutral-light: #000000; /* Black */
-    --neutral-medium: #333333; /* Dark Gray */
-    --white: #ffffff; /* White */
-    --close: #ff0000; /* Bright Red */
-    --open: #00ff00; /* Bright Green */
+    --primary-color: #007bff; /* Bright Blue */
+    --light-primary-color: #b3d7ff; /* Very Light Blue */
+    --secondary-color: #0b1965; /* bark blue */
+    --accent-color: #ffdd00; /* Bright Yellow */
+    --neutral-dark: #002366; /* Dark Blue/Navy */
+    --neutral-light: #ddedfa; /* Very Light Gray */
+    --neutral-medium: #a6a6a6; /* Medium Gray */
+    --white: #ffffff; /* Pure White */
+    --close: #ff3333; /* Bright Red */
+    --open: #bfff00; /* Lime Green */
+    --accessibility-blue: #2a52be; /* Deep Cerulean */
     --border-radius-r: 15px;
     --dynamic-font-size: 20px;
     --dynamic-icon-scale: 1.5;
-    --accessibility-blue: #0094ff; /* Bright Blue */
 }
 
 .typeBtn {
@@ -48,8 +48,9 @@
 .typeBtnActive {
     /* for staying in active mode */
     background-color: var(--accent-color);
-    color: var(--secondary-color);
+    color: var(--neutral-dark);
     font-weight: bold;
+    font-size: larger;
 }
 
 .menuItemPopUp {
@@ -120,8 +121,7 @@
 
 .high-contrast .menuItemBtn {
     background-color: var(--neutral-light);
-    color: var(--primary-color);
-    border: 2px solid var(--accent-color);
+    color: var( --neutral-dark);
 }
 
 .menuItemImg {
@@ -151,6 +151,10 @@
     color: var(--white);
     padding: 0.8vh;
     font-size: inherit;
+}
+
+.basketHeading {
+    color: var(--neutral-dark);
 }
 
 .basketItem {
@@ -199,15 +203,11 @@
     display: flex;
     min-width: 100vw;
     height: 90vh;
-    /* height: 100%;
-    bottom: 0px;
-    align-items: stretch; */
 }
 
 .typeMenu {
     display: flex;
     flex-direction: column;
-    /* justify-content: space-around; */
     width: 15vw;
     margin: 8px;
 }

@@ -180,9 +180,11 @@ const NavBar = ({ increaseZoom, decreaseZoom, zoom }) => {
                         width: "184px",
                     }}
                 >
-                    <InputLabel>Language</InputLabel>
+                    <InputLabel id="language-label">Language</InputLabel>
                     <Select
                         value={currLanguage}
+                        id="language-select"
+                        labelId="language-label"
                         label="Language"
                         onChange={handleChange}
                     >

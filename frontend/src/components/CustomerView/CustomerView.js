@@ -243,7 +243,7 @@ const CustomerView = ({ menuItems }) => {
     console.log(basket);
     const DisplayBasket = () => (
         <aside className="basket">
-            <h1>{myOrderText}</h1>
+            <h1 className="basketHeading">{myOrderText}</h1>
 
             {/* Clear Cart button */}
             <div className="flexBox">
