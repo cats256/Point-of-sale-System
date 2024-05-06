@@ -8,7 +8,6 @@ import "./CustomerView.css";
 import NavBar from "../common/navBar";
 import { translate } from "../../network/api";
 import { useLanguage } from "../common/languageContext";
-import Button from "@mui/material/Button";
 
 const CustomerView = ({ menuItems }) => {
     const itemTypes = [
