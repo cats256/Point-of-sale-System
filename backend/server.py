@@ -1155,6 +1155,23 @@ def menu_id_list():
     cur.close()
     return jsonify(id_list)
 
+# API endpoint to fetch employees
+@app.route("/employee_type", methods=["GET"])
+def get_employee_type():
+    """
+    Retrieve role of an employee.
+
+    Returns:
+        jsonify: JSON response containing position for an employee.
+    """
+
+    email = request.args.get("email")
+    cur = get_cursor()
+    query = sql.SQL("SELECT manager FROM employees WHERE email = %s;")
+    cur.execute(query, (email,))
+    position = cur.fetchone()[0]
+    cur.close()
+    return jsonify({"position": position})
 
 # API endpoint to submit a restock order
 @app.route("/restock_order", methods=["POST"])

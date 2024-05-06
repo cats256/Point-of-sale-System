@@ -12,7 +12,7 @@ function Logout() {
 
     const onSuccess = (res) => {
         console.log("Logout Successful!");
-        sessionStorage.setItem("user_email", "");
+        sessionStorage.setItem("user_position", "");
         setIsLoggedIn(false);
         navigate("/");
     };

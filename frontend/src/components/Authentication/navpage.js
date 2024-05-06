@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Logout } from "./logout";
 import { gapi } from "gapi-script";
@@ -8,11 +8,12 @@ import { Login } from "./login";
 import { ReactComponent as ReveilleLogo } from "../../img/reveille_logo.svg";
 import "./navpage.css";
 
+
 const clientID =
     "476374173797-vghpjr5o250bgv0mtuukj5b9bosvelfr.apps.googleusercontent.com";
 
 function Nav({ languages, setCurrLanguage, currLanguage }) {
-    sessionStorage.setItem("user_email", "");
+    const [currentPosition, setCurrentPosition] = useState("");
 
     useEffect(() => {
         function start() {
@@ -23,6 +24,7 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
         }
 
         gapi.load("client:auth2", start);
+        setCurrentPosition(sessionStorage.getItem("user_position"));
     }, []);
 
     const handleChange = (event) => {
@@ -59,12 +61,18 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
             </div>
 
             <div className="nav-container" style={{ margin: 10 }}>
+                {currentPosition === "true" && (
                 <Link to="/manager">
                     <Button variant="outlined">Manager</Button>
                 </Link>
-                <Link to="/cashier">
-                    <Button variant="outlined">Cashier</Button>
-                </Link>
+                )}
+                {["true", "false"].includes(currentPosition) && (
+                <>
+                    <Link to="/cashier">
+                        <Button variant="outlined">Cashier</Button>
+                    </Link>
+                </>
+                )}
                 <Link to="/customer">
                     <Button variant="outlined">Kiosk</Button>{" "}
                     {/* New button for Kiosk */}
@@ -72,9 +80,11 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                 <Link to="/menu">
                     <Button variant="outlined">Menu</Button>
                 </Link>
+                {["true", "false"].includes(currentPosition) && (
                 <Link to="/kitchen">
                     <Button variant="outlined">Kitchen</Button>
                 </Link>
+                )}
             </div>
 
             <div style={{ display: "none" }}>
