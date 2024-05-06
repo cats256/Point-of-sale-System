@@ -1,3 +1,38 @@
+:root {
+    --primary-color: #771636; /* Burgundy */
+    --light-primary-color: #ad9aa0; /* light, muted Burgundy */
+    --secondary-color: #f5f5f5; /* Cream */
+    --accent-color: #b1893f; /* Gold */
+    --neutral-dark: #323232; /* Charcoal */
+    --neutral-light: #e8e8e8; /* Light Gray */
+    --neutral-medium: #d3d3d3; /* Medium Gray */
+    --white: white;
+    --close: red;
+    --open: green;
+    --accessibility-blue: #2289c1;
+    --border-radius-r: 15px;
+    --dynamic-font-size: 20px;
+    --dynamic-icon-scale: 1.5;
+}
+
+/* High Contrast Variables */
+:root.high-contrast {
+    --primary-color: #096cd6; /* Bright Blue */
+    --light-primary-color: #b3d7ff; /* Very Light Blue */
+    --secondary-color: #0b1965; /* bark blue */
+    --accent-color: #ffdd00; /* Bright Yellow */
+    --neutral-dark: #002366; /* Dark Blue/Navy */
+    --neutral-light: #ddedfa; /* Very Light Gray */
+    --neutral-medium: #a6a6a6; /* Medium Gray */
+    --white: #ffffff; /* Pure White */
+    --close: #ff3333; /* Bright Red */
+    --open: #bfff00; /* Lime Green */
+    --accessibility-blue: #2a52be; /* Deep Cerulean */
+    --border-radius-r: 15px;
+    --dynamic-font-size: 20px;
+    --dynamic-icon-scale: 1.5;
+}
+
 /**
  * Styles for the navigation bar.
  */
@@ -59,7 +94,7 @@
  * Styles for the navigation title.
  */
 .navTitle {
-    color: #c7b46d;
+    color: var(--accent-color);
     font-weight: bold;
     font-size: 2rem;
 }
