@@ -16,16 +16,27 @@ import { CircularProgress, Pagination } from "@mui/material";
 import { formatItemName } from "./utils/formatItemName";
 import { translate } from "./network/api";
 import { useLanguage } from "./components/common/languageContext";
+import NavBar from "./components/common/navBar";
 
 function App() {
     const [menuItems, setMenuItems] = useState([]);
     const [translatedMenuItems, setTranslatedMenuItems] = useState(null);
+    const [zoom, setZoom] = useState(100);
     // const [languages, setLanguages] = useState({});
     // const [currLanguage, setCurrLanguage] = useState(``);
     const { languages, setLanguages, currLanguage, setCurrLanguage } =
         useLanguage();
     const location = useLocation();
-    sessionStorage.setItem("user_email", "");
+    
+    const increaseZoom = () => {
+        setZoom(zoom + 25);
+    };
+
+    const decreaseZoom = () => {
+        if (zoom > 100) {
+            setZoom(zoom - 25);
+        }
+    };
 
     // may need to do something with API key exposure
     const { data, isLoading, errorMessage } = useVisualCrossing({
@@ -97,13 +108,16 @@ function App() {
 
     if (location.pathname === "/") {
         return (
-            <div style={{ margin: 10 }}>
-                <Login />
-
-                <div style={{ display: "none" }}>
-                    <Logout />
+            <main style={{minHeight: '100vh'}}>
+                <NavBar
+                    increaseZoom={increaseZoom}
+                    decreaseZoom={decreaseZoom}
+                    zoom={zoom}
+                />
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', minHeight: '80vh' }}>
+                    <Login />
                 </div>
-            </div>
+            </main>
         );
     }
 

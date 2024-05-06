@@ -367,3 +367,13 @@ export async function itemsList(orderId) {
     );
     return response; // Return the entire response object
 }
+
+export async function getPositionFromEmail(email) {
+    const response = await axios.get(`${API_BASE}/employee_type`, {
+        params: {
+            email,
+        },
+    });
+
+    return response.data;
+}
