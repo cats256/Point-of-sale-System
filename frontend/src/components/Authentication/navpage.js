@@ -73,7 +73,7 @@ function Nav({ languages, setCurrLanguage, currLanguage }) {
                     </Link>
                 </>
                 )}
-                <Link to="/customer">
+                <Link to="/kiosk">
                     <Button variant="outlined">Kiosk</Button>{" "}
                     {/* New button for Kiosk */}
                 </Link>
