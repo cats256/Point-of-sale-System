@@ -19,8 +19,8 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
  */
 const Accessibility = ({ increaseZoom, decreaseZoom }) => {
     const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
-    const [longPressBtnEnabled, setLongPressBtnEnabled] = useState(false);
     const [highContrastEnabled, setHighContrastEnabled] = useState(false);
+    const [colorBlindEnabled, setColorBlindEnabled] = useState(false);
     const { toggleFontSize, toggleIconScale, fontSizeMultiplier } =
         useFontSize();
 
@@ -30,6 +30,15 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
             document.documentElement.classList.add('high-contrast');
         } else {
             document.documentElement.classList.remove('high-contrast');
+        }
+    };
+
+    const toggleColorBlind = () => {
+        setColorBlindEnabled(!colorBlindEnabled);
+        if (!colorBlindEnabled) {
+            document.documentElement.classList.add('color-blind');
+        } else {
+            document.documentElement.classList.remove('color-blind');
         }
     };
     
@@ -80,7 +89,7 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                                 : "Enable Large Text"}
                         </button>
 
-                        <button
+                        {/* <button
                             className={classNames("accessibilityOptionBtn", {
                                 accessibilityOptionBtnActive:
                                     longPressBtnEnabled,
@@ -93,7 +102,7 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                             {longPressBtnEnabled
                                 ? "Disable Long Press Buttons"
                                 : "Enable Long Press Buttons"}
-                        </button>
+                        </button> */}
 
                         <button
                             className={classNames("accessibilityOptionBtn", {
@@ -109,6 +118,22 @@ const Accessibility = ({ increaseZoom, decreaseZoom }) => {
                             {highContrastEnabled
                                 ? "Disable High Contrast"
                                 : "Enable High Contrast"}
+                        </button>
+
+                        <button
+                            className={classNames("accessibilityOptionBtn", {
+                                accessibilityOptionBtnActive:
+                                    colorBlindEnabled,
+                            })}
+                            onClick={() => {
+                                setColorBlindEnabled(!colorBlindEnabled)
+                                toggleColorBlind()
+                            }}
+                            variant="contained"
+                        >
+                            {colorBlindEnabled
+                                ? "Disable Color Blind"
+                                : "Enable Color Blind"}
                         </button>
 
                         <button

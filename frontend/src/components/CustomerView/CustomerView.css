@@ -14,7 +14,7 @@
 .typeBtnActive {
     /* for staying in active mode */
     background-color: var(--accent-color);
-    color: var(--neutral-dark);
+    color: var(--neutral-dark2);
     font-weight: bold;
     font-size: larger;
 }
